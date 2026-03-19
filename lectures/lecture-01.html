@@ -1,0 +1,2701 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+  <head>
+    <meta charset="utf-8" />
+    <title>المحاضرة الأولى — مقدمة وإعداد البيئة</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080c14;
+        --surf: #0d1520;
+        --card: #111b2a;
+        --bdr: #1c2d42;
+        --bdr2: #243650;
+        --acc: #f97316;
+        --acc2: #fb923c;
+        --wh: #f0f6ff;
+        --sub: #7a9bbf;
+        --dim: #3a5470;
+        --gn: #10d97a;
+        --bl: #38bdf8;
+        --pu: #c084fc;
+        --rd: #f87171;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Tajawal", sans-serif;
+        --W: 1060px;
+        --H: 596px;
+        --R: 14px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #03060b;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--sans);
+        overflow: hidden;
+        gap: 18px;
+        padding: 0 0 8px;
+      }
+
+      #stage {
+        position: relative;
+        width: var(--W);
+        height: var(--H);
+        flex-shrink: 0;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: var(--W);
+        height: var(--H);
+        background: var(--bg);
+        border-radius: var(--R);
+        border: 1px solid var(--bdr);
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        box-shadow:
+          0 28px 70px rgba(0, 0, 0, 0.88),
+          0 0 0 1px rgba(249, 115, 22, 0.04);
+      }
+
+      .slide.active {
+        display: flex;
+        animation: fadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.986);
+        }
+
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ── NAV ROW ── */
+      #nav-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      #instr-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surf);
+        border: 1px solid var(--bdr);
+        border-radius: 50px;
+        padding: 5px 14px 5px 6px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .iav {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid var(--acc);
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+
+      .iav img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .inm {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--wh);
+        white-space: nowrap;
+      }
+
+      .irl {
+        font-size: 9.5px;
+        color: var(--sub);
+        font-family: var(--mono);
+        white-space: nowrap;
+      }
+
+      #nav {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: var(--surf);
+        border: 1px solid var(--bdr);
+        border-radius: 50px;
+        padding: 5px 6px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+        flex-shrink: 0;
+      }
+
+      .nb {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        color: var(--sub);
+        background: transparent;
+      }
+
+      .nb:hover:not(:disabled) {
+        background: var(--card);
+        color: var(--wh);
+      }
+
+      .nb:disabled {
+        opacity: 0.22;
+        cursor: not-allowed;
+      }
+
+      .nb.next {
+        background: var(--acc);
+        color: #fff;
+        margin-right: 4px;
+      }
+
+      .nb.next:hover:not(:disabled) {
+        background: var(--acc2);
+      }
+
+      #ctr {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--dim);
+        padding: 0 10px;
+        white-space: nowrap;
+      }
+
+      #dots {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        padding: 0 4px;
+      }
+
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--bdr2);
+        cursor: pointer;
+        transition: all 0.22s;
+      }
+
+      .dot.on {
+        background: var(--acc);
+        width: 14px;
+        border-radius: 3px;
+      }
+
+      /* ── TOPBAR ── */
+      .tb {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        border-bottom: 1px solid var(--bdr);
+        background: rgba(11, 18, 32, 0.88);
+        flex-shrink: 0;
+        position: relative;
+        z-index: 2;
+      }
+
+      .tb .tag {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--acc);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .tb .pn {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--dim);
+      }
+
+      .tb .cid {
+        font-size: 10.5px;
+        color: var(--dim);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dlive {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--acc);
+        animation: pulse 2s infinite;
+        display: inline-block;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+
+        50% {
+          opacity: 0.22;
+        }
+      }
+
+      .sb {
+        flex: 1;
+        padding: 22px 32px 18px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .sh {
+        font-size: 23px;
+        font-weight: 900;
+        color: var(--wh);
+        text-align: right;
+        line-height: 1.25;
+        margin-bottom: 16px;
+      }
+
+      .sh .a {
+        color: var(--acc);
+      }
+
+      .sh .a2 {
+        color: var(--bl);
+      }
+
+      .sh .ag {
+        color: var(--gn);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--sub);
+        border: 1px solid var(--bdr);
+      }
+
+      .cmd {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--gn);
+        background: rgba(16, 217, 122, 0.07);
+        border: 1px solid rgba(16, 217, 122, 0.18);
+        border-radius: 5px;
+        padding: 2px 8px;
+        display: inline-block;
+      }
+
+      .note {
+        background: rgba(249, 115, 22, 0.07);
+        border: 1px solid rgba(249, 115, 22, 0.17);
+        border-radius: 8px;
+        padding: 9px 14px;
+        font-size: 12px;
+        color: var(--acc);
+        text-align: right;
+        font-style: italic;
+      }
+
+      /* ── COVER ── */
+      #s1 {
+        flex-direction: row;
+      }
+
+      .cvl {
+        width: 310px;
+        background: var(--surf);
+        border-left: 1px solid var(--bdr);
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .cvl::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--acc), transparent);
+      }
+
+      .cvl pre {
+        flex: 1;
+        padding: 26px 20px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 2.05;
+        color: #1d3450;
+        overflow: hidden;
+      }
+
+      .cvl-ft {
+        height: 48px;
+        border-top: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      .cvl-ft i {
+        font-size: 17px;
+      }
+
+      .cvl-ft .sp {
+        flex: 1;
+      }
+
+      .cvl-ft .v {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        color: var(--dim);
+      }
+
+      .cvr {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 36px 44px 32px 24px;
+        position: relative;
+      }
+
+      .cvr::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        left: -60px;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(
+          circle,
+          rgba(249, 115, 22, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .cv-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(249, 115, 22, 0.1);
+        border: 1px solid rgba(249, 115, 22, 0.22);
+        border-radius: 6px;
+        padding: 5px 13px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--acc);
+        align-self: flex-end;
+        margin-bottom: 24px;
+      }
+
+      .cv-eye {
+        font-size: 13px;
+        color: var(--sub);
+        font-weight: 500;
+        text-align: right;
+        margin-bottom: 6px;
+      }
+
+      .cv-h {
+        font-size: 46px;
+        font-weight: 900;
+        line-height: 1.1;
+        text-align: right;
+        color: var(--wh);
+        margin-bottom: 6px;
+      }
+
+      .cv-h span {
+        color: var(--acc);
+        display: block;
+      }
+
+      .cv-tag {
+        font-size: 13.5px;
+        color: var(--sub);
+        text-align: right;
+        margin-bottom: 4px;
+      }
+
+      .cv-mono {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        color: var(--dim);
+        text-align: right;
+      }
+
+      .cv-chips {
+        display: flex;
+        gap: 9px;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+
+      .chip {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 7px;
+        padding: 9px 14px;
+        text-align: center;
+      }
+
+      .chip .cl {
+        font-size: 9.5px;
+        color: var(--sub);
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .chip .cv {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--wh);
+      }
+
+      /* ── AGENDA ── */
+      .ag-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .ag-row {
+        display: flex;
+        align-items: center;
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 8px;
+        overflow: hidden;
+        flex: 1;
+        transition: border-color 0.2s;
+      }
+
+      .ag-row:hover {
+        border-color: var(--acc);
+      }
+
+      .ag-n {
+        width: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--acc);
+        background: rgba(249, 115, 22, 0.06);
+        border-left: 1px solid var(--bdr);
+        align-self: stretch;
+        flex-shrink: 0;
+      }
+
+      .ag-ic {
+        width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--sub);
+        flex-shrink: 0;
+      }
+
+      .ag-tx {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--wh);
+        text-align: right;
+        padding-right: 4px;
+      }
+
+      .ag-tg {
+        margin-left: 14px;
+        flex-shrink: 0;
+      }
+
+      /* ── S3: FE vs BE — redesigned as role cards ── */
+      .role-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        flex: 1;
+      }
+
+      .role-card {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .role-card.fe-card {
+        border-top: 3px solid var(--gn);
+      }
+
+      .role-card.be-card {
+        border-top: 3px solid var(--acc);
+      }
+
+      .role-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        justify-content: flex-end;
+      }
+
+      .role-icon-wrap {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .role-icon-wrap.fe {
+        background: rgba(16, 217, 122, 0.12);
+      }
+
+      .role-icon-wrap.be {
+        background: rgba(249, 115, 22, 0.12);
+      }
+
+      .role-title {
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .role-title.gn {
+        color: var(--gn);
+      }
+
+      .role-title.oa {
+        color: var(--acc);
+      }
+
+      .role-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .role-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .role-row-label {
+        font-size: 12.5px;
+        color: var(--sub);
+        text-align: right;
+      }
+
+      .role-row-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+
+      .role-row-icon.gn {
+        background: rgba(16, 217, 122, 0.1);
+        color: var(--gn);
+      }
+
+      .role-row-icon.oa {
+        background: rgba(249, 115, 22, 0.1);
+        color: var(--acc);
+      }
+
+      .role-row-icon.bl {
+        background: rgba(56, 189, 248, 0.1);
+        color: var(--bl);
+      }
+
+      .role-row-icon.pu {
+        background: rgba(192, 132, 252, 0.1);
+        color: var(--pu);
+      }
+
+      /* API bridge between cards */
+      .role-bridge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      .bridge-pill {
+        background: var(--acc);
+        color: var(--bg);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 16px rgba(249, 115, 22, 0.35);
+      }
+
+      /* ── S4: FLOW ── */
+      .flrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 4px 0;
+      }
+
+      .fnd {
+        width: 185px;
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        padding: 16px 12px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .fnd.gn {
+        border-top: 2px solid var(--gn);
+      }
+
+      .fnd.oa {
+        border-top: 2px solid var(--acc);
+      }
+
+      .fnd.bl {
+        border-top: 2px solid var(--bl);
+      }
+
+      .fnd i {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 7px;
+      }
+
+      .fnd .nl {
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 3px;
+      }
+
+      .fnd .ns {
+        font-size: 10.5px;
+        color: var(--dim);
+        font-family: var(--mono);
+      }
+
+      .farr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        width: 80px;
+        flex-shrink: 0;
+      }
+
+      .fat {
+        font-size: 9.5px;
+        color: var(--dim);
+        font-family: var(--mono);
+      }
+
+      .fac {
+        font-size: 20px;
+        color: var(--acc);
+      }
+
+      /* tasks as 2-col grid */
+      .tgrid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .tchip {
+        background: rgba(249, 115, 22, 0.07);
+        border: 1px solid rgba(249, 115, 22, 0.14);
+        border-radius: 7px;
+        padding: 9px 6px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .tchip i {
+        font-size: 14px;
+        color: var(--acc);
+      }
+
+      .tchip span {
+        font-size: 11px;
+        color: var(--sub);
+      }
+
+      .tchip .ck {
+        font-size: 9px;
+        color: var(--dim);
+        font-family: var(--mono);
+        margin-top: 1px;
+      }
+
+      /* ── S5: COMM ── */
+      .coml {
+        display: grid;
+        grid-template-columns: 1fr 48px 1fr;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .comp {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .comp.fe {
+        border-top: 2px solid var(--gn);
+      }
+
+      .comp.mob {
+        border-top: 2px solid var(--pu);
+      }
+
+      .comh {
+        font-size: 14px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3px;
+      }
+
+      .comi {
+        font-size: 12.5px;
+        color: var(--sub);
+        text-align: right;
+        padding: 6px 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .comi-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        flex-shrink: 0;
+      }
+
+      .apictr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .apib {
+        background: var(--acc);
+        color: var(--bg);
+        font-weight: 900;
+        font-size: 13px;
+        padding: 8px 12px;
+        border-radius: 7px;
+        box-shadow: 0 0 16px rgba(249, 115, 22, 0.3);
+      }
+
+      /* ── AI slides ── */
+      .bal {
+        display: grid;
+        grid-template-columns: 1fr 46px 1fr;
+        gap: 11px;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .bac {
+        border-radius: 9px;
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .bac.bfr {
+        background: rgba(248, 113, 113, 0.05);
+        border: 1px solid rgba(248, 113, 113, 0.14);
+      }
+
+      .bac.aftr {
+        background: rgba(16, 217, 122, 0.04);
+        border: 1px solid rgba(16, 217, 122, 0.11);
+      }
+
+      .bah {
+        font-size: 14.5px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3px;
+      }
+
+      .bai {
+        font-size: 13px;
+        color: var(--sub);
+        text-align: right;
+        padding: 7px 11px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+      }
+
+      .vsctr {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .vsring {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--acc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 13px;
+        color: var(--bg);
+        box-shadow: 0 0 18px rgba(249, 115, 22, 0.38);
+      }
+
+      .qb {
+        border-radius: 8px;
+        padding: 11px 16px;
+        margin-bottom: 9px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .qb.bad {
+        background: rgba(248, 113, 113, 0.06);
+        border: 1px solid rgba(248, 113, 113, 0.18);
+      }
+
+      .qb.good {
+        background: rgba(16, 217, 122, 0.05);
+        border: 1px solid rgba(16, 217, 122, 0.14);
+      }
+
+      .qb::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+      }
+
+      .qb.bad::before {
+        background: var(--rd);
+      }
+
+      .qb.good::before {
+        background: var(--gn);
+      }
+
+      .ql {
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .ql.r {
+        color: var(--rd);
+      }
+
+      .ql.g {
+        color: var(--gn);
+      }
+
+      .qt {
+        font-size: 13px;
+        color: var(--sub);
+        text-align: right;
+      }
+
+      .qt.dm {
+        color: var(--dim);
+        font-style: italic;
+      }
+
+      .trow {
+        display: flex;
+        gap: 9px;
+        flex: 1;
+        margin-top: 4px;
+        align-items: stretch;
+      }
+
+      .tip {
+        flex: 1;
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 7px;
+        text-align: center;
+        border-top: 2px solid var(--acc);
+      }
+
+      .tip i {
+        font-size: 20px;
+        color: var(--acc);
+      }
+
+      .tip .tt {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--acc);
+      }
+
+      .tip .td {
+        font-size: 11.5px;
+        color: var(--sub);
+        line-height: 1.5;
+      }
+
+      .wg {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .wp {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .wp.oa {
+        border-top: 2px solid var(--acc);
+      }
+
+      .wp.pu {
+        border-top: 2px solid var(--pu);
+      }
+
+      .wph {
+        font-size: 14px;
+        font-weight: 800;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        justify-content: flex-end;
+        margin-bottom: 3px;
+      }
+
+      .wpi {
+        font-size: 12px;
+        color: var(--sub);
+        text-align: right;
+        padding: 6px 9px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 5px;
+      }
+
+      .coming {
+        background: rgba(249, 115, 22, 0.07);
+        border: 1px solid rgba(249, 115, 22, 0.17);
+        border-radius: 7px;
+        padding: 8px 13px;
+        font-size: 11.5px;
+        color: var(--acc);
+        text-align: right;
+        font-style: italic;
+        margin-top: 9px;
+      }
+
+      /* ── TOOLS 4 ── */
+      .t4g {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 11px;
+        flex: 1;
+      }
+
+      .t4 {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 14px 18px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .t4::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+      }
+
+      .t4.php::before {
+        background: #8892bf;
+      }
+
+      .t4.cmp::before {
+        background: var(--acc);
+      }
+
+      .t4.nod::before {
+        background: #339933;
+      }
+
+      .t4.vsc::before {
+        background: #007acc;
+      }
+
+      .t4i {
+        font-size: 32px;
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+
+      .t4i.php {
+        color: #8892bf;
+      }
+
+      .t4i.cmp {
+        color: var(--acc);
+      }
+
+      .t4i.nod {
+        color: #339933;
+      }
+
+      .t4i.vsc {
+        color: #007acc;
+      }
+
+      .t4info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .t4n {
+        font-size: 17px;
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .t4n.php {
+        color: #8892bf;
+      }
+
+      .t4n.cmp {
+        color: var(--acc);
+      }
+
+      .t4n.nod {
+        color: #339933;
+      }
+
+      .t4n.vsc {
+        color: #007acc;
+      }
+
+      .t4s {
+        font-size: 11px;
+        color: var(--dim);
+        text-align: right;
+      }
+
+      .t4d {
+        font-size: 12px;
+        color: var(--sub);
+        text-align: right;
+      }
+
+      /* ── CURSOR ── */
+      .cmpt {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 9px;
+        overflow: hidden;
+        border: 1px solid var(--bdr);
+        flex: 1;
+      }
+
+      .cmpt th {
+        background: var(--surf);
+        color: var(--acc);
+        font-size: 12.5px;
+        font-weight: 800;
+        padding: 12px 16px;
+        text-align: center;
+        border-bottom: 1px solid var(--bdr);
+      }
+
+      .cmpt th:first-child {
+        text-align: right;
+      }
+
+      .cmpt td {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--bdr);
+        font-size: 12.5px;
+        color: var(--sub);
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .cmpt td:first-child {
+        text-align: right;
+        color: var(--wh);
+        font-weight: 600;
+      }
+
+      .cmpt tr:last-child td {
+        border-bottom: none;
+      }
+
+      .cmpt tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.015);
+      }
+
+      .cmpt .win {
+        color: var(--gn);
+        font-weight: 700;
+      }
+
+      /* ── THREE TOOLS ── */
+      .t3g {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .t3 {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 11px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .t3::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+      }
+
+      .t3.tp::before {
+        background: #00c4b4;
+      }
+
+      .t3.pm::before {
+        background: #ff6c37;
+      }
+
+      .t3.gt::before {
+        background: #f05032;
+      }
+
+      .t3bg {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-family: var(--mono);
+        font-size: 9.5px;
+        padding: 2px 7px;
+        border-radius: 4px;
+      }
+
+      .t3bg.tp {
+        background: rgba(0, 196, 180, 0.11);
+        color: #00c4b4;
+      }
+
+      .t3bg.pm {
+        background: rgba(255, 108, 55, 0.11);
+        color: #ff6c37;
+      }
+
+      .t3bg.gt {
+        background: rgba(240, 80, 50, 0.11);
+        color: #f05032;
+      }
+
+      .t3i {
+        font-size: 30px;
+        margin-top: 12px;
+      }
+
+      .t3i.tp {
+        color: #00c4b4;
+      }
+
+      .t3i.pm {
+        color: #ff6c37;
+      }
+
+      .t3i.gt {
+        color: #f05032;
+      }
+
+      .t3n {
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .t3n.tp {
+        color: #00c4b4;
+      }
+
+      .t3n.pm {
+        color: #ff6c37;
+      }
+
+      .t3n.gt {
+        color: #f05032;
+      }
+
+      .t3bl {
+        width: 100%;
+      }
+
+      .t3lb {
+        font-size: 9.5px;
+        font-weight: 800;
+        color: var(--acc);
+        text-align: right;
+        margin-bottom: 2px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .t3tx {
+        font-size: 11.5px;
+        color: var(--sub);
+        text-align: right;
+        line-height: 1.45;
+      }
+
+      /* ── SUMMARY TABLE ── */
+      .stbl {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 9px;
+        overflow: hidden;
+        border: 1px solid var(--bdr);
+        flex: 1;
+      }
+
+      .stbl th {
+        background: var(--acc);
+        color: #fff;
+        padding: 10px 16px;
+        text-align: right;
+        font-weight: 800;
+        font-size: 12.5px;
+      }
+
+      .stbl td {
+        padding: 8px 16px;
+        border-bottom: 1px solid var(--bdr);
+        font-size: 12px;
+        color: var(--sub);
+        vertical-align: middle;
+      }
+
+      .stbl tr:last-child td {
+        border-bottom: none;
+      }
+
+      .stbl tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .trn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        justify-content: flex-end;
+        font-weight: 800;
+        font-size: 12.5px;
+      }
+
+      /* ── HOMEWORK ── */
+      .hwl {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .hwr {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        flex: 1;
+        position: relative;
+      }
+
+      .hwr::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--acc);
+      }
+
+      .hwn {
+        width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--acc);
+        background: rgba(249, 115, 22, 0.06);
+        border-left: 1px solid var(--bdr);
+        align-self: stretch;
+        flex-shrink: 0;
+      }
+
+      .hwb {
+        flex: 1;
+        padding: 13px 16px 13px 12px;
+      }
+
+      .hwt {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--wh);
+        text-align: right;
+        margin-bottom: 4px;
+      }
+
+      .hwd {
+        font-size: 12px;
+        color: var(--sub);
+        text-align: right;
+      }
+
+      .hwcr {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin-top: 7px;
+      }
+
+      /* ── CLOSING ── */
+      #s14 {
+        flex-direction: row;
+      }
+
+      .cll {
+        width: 320px;
+        background: var(--surf);
+        border-left: 1px solid var(--bdr);
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .cll::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--acc), transparent);
+      }
+
+      .clcode {
+        flex: 1;
+        padding: 24px 20px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 2.05;
+        color: #1d3450;
+        overflow: hidden;
+      }
+
+      .clft {
+        height: 46px;
+        border-top: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 11px;
+        flex-shrink: 0;
+      }
+
+      .clft i {
+        font-size: 16px;
+      }
+
+      .clft .sp {
+        flex: 1;
+      }
+
+      .clft .v {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        color: var(--dim);
+      }
+
+      .clr {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 32px 44px 28px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .clr::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        left: -80px;
+        width: 340px;
+        height: 340px;
+        background: radial-gradient(
+          circle,
+          rgba(249, 115, 22, 0.07) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .clbig {
+        font-size: 52px;
+        font-weight: 900;
+        line-height: 1.1;
+        text-align: right;
+      }
+
+      .clbig .l1 {
+        color: var(--wh);
+      }
+
+      .clbig .l2 {
+        color: var(--acc);
+      }
+
+      /* instructor info in closing */
+      .cl-instr {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--bdr);
+      }
+
+      .cl-instr-photo {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 2px solid var(--acc);
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .cl-instr-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .cl-instr-info {
+        text-align: right;
+      }
+
+      .cl-instr-name {
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--wh);
+      }
+
+      .cl-instr-role {
+        font-size: 10.5px;
+        color: var(--sub);
+        font-family: var(--mono);
+      }
+
+      .cl-instr-company {
+        font-size: 10px;
+        color: var(--acc);
+        margin-top: 1px;
+      }
+
+      .clnx {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--dim);
+        text-align: right;
+        margin-top: 12px;
+        line-height: 1.7;
+      }
+
+      .clnx .nx-label {
+        font-size: 9px;
+        color: var(--dim);
+        margin-bottom: 3px;
+      }
+
+      .clnx .nx-title {
+        font-size: 12px;
+        color: var(--sub);
+        font-weight: 700;
+      }
+
+      .clics {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 18px;
+      }
+
+      .clics i {
+        font-size: 20px;
+        opacity: 0.3;
+      }
+
+      .gn {
+        color: var(--gn);
+      }
+
+      .oa {
+        color: var(--acc);
+      }
+
+      .bl {
+        color: var(--bl);
+      }
+
+      .pu {
+        color: var(--pu);
+      }
+
+      .rd {
+        color: var(--rd);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="stage">
+      <!-- ══ S1 COVER ══ -->
+      <div class="slide active" id="s1">
+        <div class="cvl">
+          <pre>
+json_encode($data);
+
+class User {
+  public function
+    __construct() {
+    private $db;
+  }
+
+  if ($this->db->
+    connect_error) {
+    $this->db->connect(
+      'adnuta.sdb'
+    );
+  }
+
+  return json_encode(
+    $data
+  );
+}</pre
+          >
+          <div class="cvl-ft">
+            <i class="fas fa-brain" style="color: #c084fc"></i>
+            <i class="fab fa-git-alt" style="color: #f05032"></i>
+            <i class="fas fa-database" style="color: #38bdf8"></i>
+            <i class="fab fa-php" style="color: #8892bf"></i>
+            <span class="sp"></span><span class="v">v1.0.0</span>
+          </div>
+        </div>
+        <div class="cvr">
+          <div class="cv-badge"><i class="fas fa-code"></i> Backend Course</div>
+          <div class="cv-eye">المحاضرة الأولى</div>
+          <div class="cv-h">مقدمة وإعداد<span>بيئة التطوير</span></div>
+          <div class="cv-tag">
+            رحلتك لتعلم بناء الأنظمة الخلفية تبدأ من هنا.
+          </div>
+          <div class="cv-mono">Backend 101: PHP, AI Tools, &amp; Setup</div>
+          <div class="cv-chips">
+            <div class="chip">
+              <span class="cl">المتطلبات</span
+              ><span class="cv">لابتوب + إنترنت</span>
+            </div>
+            <div class="chip">
+              <span class="cl">المستوى</span><span class="cv">مبتدئ</span>
+            </div>
+            <div class="chip">
+              <span class="cl">المدة</span><span class="cv">٦٠ دقيقة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S2 AGENDA ══ -->
+      <div class="slide" id="s2">
+        <div class="tb">
+          <div class="cid">
+            <span class="dlive"></span> Backend Course — المحاضرة الأولى
+          </div>
+          <span class="tag">Agenda</span><span class="pn">02 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">ماذا سنتعلم <span class="a">اليوم؟</span></div>
+          <div class="ag-list">
+            <div class="ag-row">
+              <div class="ag-n">01</div>
+              <div class="ag-ic"><i class="fas fa-server"></i></div>
+              <div class="ag-tx">
+                ما هو Backend وكيف يشتغل في المنظومة الكاملة
+              </div>
+              <div class="ag-tg"><span class="pill">Section 1</span></div>
+            </div>
+            <div class="ag-row">
+              <div class="ag-n">02</div>
+              <div class="ag-ic"><i class="fas fa-brain"></i></div>
+              <div class="ag-tx">
+                AI وأدوات البرمجة الحديثة — كيف تستخدمها فعلياً
+              </div>
+              <div class="ag-tg"><span class="pill">Section 2</span></div>
+            </div>
+            <div class="ag-row">
+              <div class="ag-n">03</div>
+              <div class="ag-ic"><i class="fab fa-php"></i></div>
+              <div class="ag-tx">
+                تثبيت PHP + Composer + Node.js + VS Code / Cursor
+              </div>
+              <div class="ag-tg"><span class="pill">Section 3</span></div>
+            </div>
+            <div class="ag-row">
+              <div class="ag-n">04</div>
+              <div class="ag-ic"><i class="fas fa-laptop-code"></i></div>
+              <div class="ag-tx">Cursor IDE — البديل الأقوى لـ VS Code</div>
+              <div class="ag-tg"><span class="pill">Section 4</span></div>
+            </div>
+            <div class="ag-row">
+              <div class="ag-n">05</div>
+              <div class="ag-ic"><i class="fas fa-tools"></i></div>
+              <div class="ag-tx">
+                Flyenv / XAMPP + Postman + Git — أدوات العمل اليومية
+              </div>
+              <div class="ag-tg"><span class="pill">Section 5</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S3 FE vs BE — REDESIGNED ══ -->
+      <div class="slide" id="s3">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 1 — Backend</span
+          ><span class="pn">03 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            دورك كـ <span class="a">Backend Developer</span> — شو تعمل؟
+          </div>
+          <div class="role-layout" style="flex: 1; position: relative">
+            <!-- Frontend panel -->
+            <div class="role-card fe-card">
+              <div class="role-head">
+                <span class="role-title gn">Frontend Developer</span>
+                <div class="role-icon-wrap fe">
+                  <i
+                    class="fas fa-desktop"
+                    style="color: var(--gn); font-size: 16px"
+                  ></i>
+                </div>
+              </div>
+              <div class="role-rows">
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >يبني الواجهة التي يراها المستخدم</span
+                  >
+                  <div class="role-row-icon gn"><i class="fas fa-eye"></i></div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >يعمل بـ HTML / CSS / JS / Vue / React</span
+                  >
+                  <div class="role-row-icon gn">
+                    <i class="fas fa-code"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label">يرسل Requests ويستقبل JSON</span>
+                  <div class="role-row-icon bl">
+                    <i class="fas fa-exchange-alt"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >لا يتعامل مع الـ Database أبداً</span
+                  >
+                  <div class="role-row-icon pu"><i class="fas fa-ban"></i></div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >يعتمد على الـ Backend لكل البيانات</span
+                  >
+                  <div class="role-row-icon gn">
+                    <i class="fas fa-arrow-left"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Backend panel -->
+            <div class="role-card be-card">
+              <div class="role-head">
+                <span class="role-title oa">Backend Developer — أنت</span>
+                <div class="role-icon-wrap be">
+                  <i
+                    class="fas fa-server"
+                    style="color: var(--acc); font-size: 16px"
+                  ></i>
+                </div>
+              </div>
+              <div class="role-rows">
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >تكتب المنطق والقواعد الخفية للنظام</span
+                  >
+                  <div class="role-row-icon oa">
+                    <i class="fas fa-cogs"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >تبني الـ APIs التي يستهلكها الجميع</span
+                  >
+                  <div class="role-row-icon oa">
+                    <i class="fas fa-plug"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >تحمي البيانات (Auth / Validation)</span
+                  >
+                  <div class="role-row-icon oa">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >تتحدث مع الـ Database مباشرة (CRUD)</span
+                  >
+                  <div class="role-row-icon bl">
+                    <i class="fas fa-database"></i>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label"
+                    >تخدم الويب والجوال بنفس الـ API</span
+                  >
+                  <div class="role-row-icon pu">
+                    <i class="fas fa-mobile-alt"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bridge overlay -->
+            <div class="role-bridge">
+              <div class="bridge-pill">API / JSON</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S4 FLOW ══ -->
+      <div class="slide" id="s4">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 1 — Architecture</span
+          ><span class="pn">04 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            كيف يشتغل النظام — <span class="a">Client → Server → Database</span>
+          </div>
+          <div class="flrow">
+            <div class="fnd gn">
+              <i class="fas fa-globe gn"></i>
+              <div class="nl gn">Client</div>
+              <div class="ns">متصفح / جوال / تطبيق</div>
+            </div>
+            <div class="farr">
+              <div class="fat">HTTP Request</div>
+              <div class="fac">→</div>
+              <div class="fat">JSON Response</div>
+            </div>
+            <div class="fnd oa">
+              <i class="fas fa-server oa"></i>
+              <div class="nl oa">Backend Server</div>
+              <div class="ns">PHP / Laravel</div>
+            </div>
+            <div class="farr">
+              <div class="fat">SQL Query</div>
+              <div class="fac">→</div>
+              <div class="fat">Data Result</div>
+            </div>
+            <div class="fnd bl">
+              <i class="fas fa-database bl"></i>
+              <div class="nl bl">Database</div>
+              <div class="ns">MySQL / phpMyAdmin</div>
+            </div>
+          </div>
+          <div
+            style="
+              font-size: 12.5px;
+              font-weight: 800;
+              color: var(--acc);
+              text-align: right;
+              margin: 12px 0 8px;
+            "
+          >
+            مسؤوليات مبرمج الـ Backend في كل طلب
+          </div>
+          <div class="tgrid">
+            <div class="tchip">
+              <i class="fas fa-route"></i><span>Routing</span
+              ><span class="ck">توجيه الطلب</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-check-double"></i><span>Validation</span
+              ><span class="ck">التحقق من البيانات</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-shield-alt"></i><span>Auth</span
+              ><span class="ck">هوية المستخدم</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-code"></i><span>Business Logic</span
+              ><span class="ck">المنطق الأساسي</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-database"></i><span>Database</span
+              ><span class="ck">قراءة / كتابة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S5 COMM ══ -->
+      <div class="slide" id="s5">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 1 — Team Sync</span
+          ><span class="pn">05 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            <span class="a">Backend</span> يخدم الجميع —
+            <span class="a2">Frontend</span> و <span class="ag">Mobile</span>
+          </div>
+          <div class="coml" style="flex: 1">
+            <div class="comp fe">
+              <div class="comh gn">🌐 Frontend / Web</div>
+              <div class="comi">
+                <span>يطلب بيانات — Backend يرجع JSON</span>
+                <div
+                  class="comi-icon gn"
+                  style="background: rgba(16, 217, 122, 0.1)"
+                >
+                  <i class="fas fa-arrow-left" style="color: var(--gn)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span
+                  >HTTP: GET لجلب، POST لإضافة، PUT لتعديل، DELETE لحذف</span
+                >
+                <div
+                  class="comi-icon bl"
+                  style="background: rgba(56, 189, 248, 0.1)"
+                >
+                  <i class="fas fa-exchange-alt" style="color: var(--bl)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span>الـ Backend ما يهتم بالـ UI — فقط بالبيانات</span>
+                <div
+                  class="comi-icon"
+                  style="background: rgba(249, 115, 22, 0.1)"
+                >
+                  <i class="fas fa-eye-slash" style="color: var(--acc)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span
+                  >الـ API تُوثَّق قبل البدء بالكود (Postman / Swagger)</span
+                >
+                <div
+                  class="comi-icon"
+                  style="background: rgba(255, 108, 55, 0.1)"
+                >
+                  <i class="fas fa-file-code" style="color: #ff6c37"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span
+                  >اتفاقية الـ API = عقد بين الفريقين لا يتغير بدون تنسيق</span
+                >
+                <div
+                  class="comi-icon"
+                  style="background: rgba(251, 191, 36, 0.1)"
+                >
+                  <i class="fas fa-handshake" style="color: var(--gold)"></i>
+                </div>
+              </div>
+            </div>
+            <div class="apictr">
+              <div class="apib">API</div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: var(--dim);
+                  margin-top: 4px;
+                  font-family: var(--mono);
+                  text-align: center;
+                "
+              >
+                JSON<br />Bridge
+              </div>
+            </div>
+            <div class="comp mob">
+              <div class="comh pu">📱 Mobile App</div>
+              <div class="comi">
+                <span>الجوال زبون ثانٍ — نفس الـ API تماماً</span>
+                <div
+                  class="comi-icon pu"
+                  style="background: rgba(192, 132, 252, 0.1)"
+                >
+                  <i class="fas fa-mobile-alt" style="color: var(--pu)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span>ما في Backend منفصل للموبايل — نفس الـ Endpoints</span>
+                <div
+                  class="comi-icon"
+                  style="background: rgba(192, 132, 252, 0.1)"
+                >
+                  <i class="fas fa-equals" style="color: var(--pu)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span>يستخدم Token (Bearer) للتحقق من الهوية</span>
+                <div
+                  class="comi-icon"
+                  style="background: rgba(249, 115, 22, 0.1)"
+                >
+                  <i class="fas fa-key" style="color: var(--acc)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span>التنسيق المبكر مع مطور الجوال يوفر أسابيع</span>
+                <div
+                  class="comi-icon gn"
+                  style="background: rgba(16, 217, 122, 0.1)"
+                >
+                  <i class="fas fa-calendar-check" style="color: var(--gn)"></i>
+                </div>
+              </div>
+              <div class="comi">
+                <span>Response Format موحّد (status / data / message)</span>
+                <div
+                  class="comi-icon bl"
+                  style="background: rgba(56, 189, 248, 0.1)"
+                >
+                  <i class="fas fa-layer-group" style="color: var(--bl)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S6 BEFORE/AFTER AI ══ -->
+      <div class="slide" id="s6">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 2 — AI Era</span
+          ><span class="pn">06 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">شو تغير في عالم <span class="a">البرمجة؟</span></div>
+          <div class="bal" style="flex: 1">
+            <div class="bac bfr">
+              <div class="bah rd">❌ قبل الـ AI</div>
+              <div class="bai">تكتب كل حرف بإيدك</div>
+              <div class="bai">ساعات بحث في Stack Overflow</div>
+              <div class="bai">تعلم بطيء وإحباط كثير</div>
+              <div class="bai">أخطاء صعبة تلاقي سببها</div>
+            </div>
+            <div class="vsctr">
+              <div class="vsring">VS</div>
+            </div>
+            <div class="bac aftr">
+              <div class="bah gn">✅ مع الـ AI</div>
+              <div class="bai">الـ AI يكمل كودك تلقائياً</div>
+              <div class="bai">تشرح بالعربي ويكتب الكود</div>
+              <div class="bai">تعلم سريع بأمثلة مخصصة</div>
+              <div class="bai">يشرح الأخطاء ويقترح الحل</div>
+            </div>
+          </div>
+          <div class="note" style="margin-top: 11px">
+            ⚡ الـ AI مش بيفكر بدلك — هو بيسرّع شغلك. اللي ما بيفهم البرمجة ما
+            يقدر يستخدمه صح.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S7 AI LEARN ══ -->
+      <div class="slide" id="s7">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 2 — AI for Learning</span
+          ><span class="pn">07 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            كيف تستخدم الـ AI لتتعلم <span class="a">بشكل صحيح؟</span>
+          </div>
+          <div class="qb bad">
+            <div class="ql r">
+              <i class="fas fa-times-circle"></i> سؤال ضعيف
+            </div>
+            <div class="qt dm">"شو هو الـ API؟"</div>
+          </div>
+          <div class="qb good">
+            <div class="ql g">
+              <i class="fas fa-check-circle"></i> سؤال احترافي — قوله في ChatGPT
+              أو Claude
+            </div>
+            <div class="qt">
+              "اشرح لي شو هو الـ API لمبتدئ في البرمجة، اعطيني الفائدة منه ومثال
+              عملي في مشروع حقيقي بثلاثة مستويات: بسيط، متوسط، متقدم"
+            </div>
+          </div>
+          <div class="trow">
+            <div class="tip">
+              <i class="fas fa-lightbulb"></i>
+              <div class="tt">معلم خاص 24/7</div>
+              <div class="td">
+                ChatGPT أو Claude — اسألهم عن أي موضوع بدون حرج
+              </div>
+            </div>
+            <div class="tip">
+              <i class="fas fa-layer-group"></i>
+              <div class="tt">أمثلة بمستويات</div>
+              <div class="td">بسيط → متوسط → متقدم في مشاريع حقيقية</div>
+            </div>
+            <div class="tip">
+              <i class="fas fa-bug"></i>
+              <div class="tt">تفسير الأخطاء</div>
+              <div class="td">الصق الخطأ وقوله: لماذا حصل هذا؟</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S8 AI WORK ══ -->
+      <div class="slide" id="s8">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 2 — AI in Practice</span
+          ><span class="pn">08 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            الـ AI <span class="a">كشريك عمل</span> — مش بديل للمبرمج
+          </div>
+          <div class="wg" style="flex: 1">
+            <div class="wp oa">
+              <div class="wph oa">
+                <i class="fas fa-code"></i> في الشغل اليومي
+              </div>
+              <div class="wpi">
+                إكمال الكود تلقائياً (GitHub Copilot / Cursor)
+              </div>
+              <div class="wpi">كتابة الكود من وصف بالعربي</div>
+              <div class="wpi">مراجعة الكود وإيجاد الأخطاء</div>
+              <div class="wpi">كتابة التوثيق والتعليقات</div>
+            </div>
+            <div class="wp pu">
+              <div class="wph pu"><i class="fas fa-brain"></i> في التخطيط</div>
+              <div class="wpi">خطط الـ Database من فكرة المشروع</div>
+              <div class="wpi">قائمة الـ APIs المطلوبة لأي نظام</div>
+              <div class="wpi">اقتراح أفضل هيكل للكود</div>
+              <div class="wpi">تقدير الوقت والأولويات</div>
+            </div>
+          </div>
+          <div class="coming">
+            ⚡ تنبيه: رح يكون في محاضرة كاملة عن الـ AI مدتها ساعتين — هذا كان
+            مجرد مقدمة سريعة!
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S9 TOOLS 4 ══ -->
+      <div class="slide" id="s9">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 3 — Setup</span
+          ><span class="pn">09 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            الأدوات الأساسية —
+            <span class="a">PHP + Composer + Node.js + VS Code</span>
+          </div>
+          <div class="t4g" style="flex: 1">
+            <div class="t4 php">
+              <div class="t4i php"><i class="fab fa-php"></i></div>
+              <div class="t4info">
+                <div class="t4n php">PHP 8.x</div>
+                <div class="t4s">لغة الـ Backend الأساسية</div>
+                <div class="cmd" style="margin: 5px 0">php -v</div>
+                <div class="t4d">اللغة الرئيسية للكورس كامل</div>
+              </div>
+            </div>
+            <div class="t4 cmp">
+              <div class="t4i cmp"><i class="fas fa-box-open"></i></div>
+              <div class="t4info">
+                <div class="t4n cmp">Composer</div>
+                <div class="t4s">مدير حزم PHP</div>
+                <div class="cmd" style="margin: 5px 0">composer -v</div>
+                <div class="t4d">زي npm لكن لـ PHP</div>
+              </div>
+            </div>
+            <div class="t4 nod">
+              <div class="t4i nod"><i class="fab fa-node-js"></i></div>
+              <div class="t4info">
+                <div class="t4n nod">Node.js LTS</div>
+                <div class="t4s">أدوات مساعدة (Vite, npm)</div>
+                <div class="cmd" style="margin: 5px 0">node -v</div>
+                <div class="t4d">مش للـ Backend — للأدوات بس</div>
+              </div>
+            </div>
+            <div class="t4 vsc">
+              <div class="t4i vsc"><i class="fas fa-code"></i></div>
+              <div class="t4info">
+                <div class="t4n vsc">VS Code / Cursor</div>
+                <div class="t4s">محرر الكود الأشهر + AI مدمج</div>
+                <div class="cmd" style="margin: 5px 0">code --version</div>
+                <div class="t4d">بيئة التطوير الأساسية</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S10 CURSOR ══ -->
+      <div class="slide" id="s10">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 4 — Cursor IDE</span
+          ><span class="pn">10 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            <span class="a">Cursor IDE</span> — البديل الأقوى لـ VS Code
+          </div>
+          <div
+            style="
+              font-size: 12.5px;
+              color: var(--sub);
+              text-align: right;
+              margin-bottom: 13px;
+            "
+          >
+            محرر كود مبني على VS Code — لكن مع AI متقدم مدمج بالكامل داخله
+          </div>
+          <table class="cmpt" style="flex: 1">
+            <thead>
+              <tr>
+                <th>الميزة</th>
+                <th>VS Code</th>
+                <th>Cursor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>مجاني</td>
+                <td>✅ كامل</td>
+                <td class="win">✅ نسخة أساسية</td>
+              </tr>
+              <tr>
+                <td>GitHub Copilot</td>
+                <td>إضافة منفصلة</td>
+                <td class="win">مدمج ومتطور ✨</td>
+              </tr>
+              <tr>
+                <td>فهم سياق المشروع</td>
+                <td>محدود</td>
+                <td class="win">كامل ✨</td>
+              </tr>
+              <tr>
+                <td>كتابة كود من وصف</td>
+                <td>محدود</td>
+                <td class="win">متقدم جداً ✨</td>
+              </tr>
+              <tr>
+                <td>الواجهة</td>
+                <td>مألوفة</td>
+                <td>نفس VS Code</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top: 13px">
+            💡 ليش Cursor؟ بيفهم كامل المشروع مش بس السطر — يوفر وقت حقيقي في
+            الشغل اليومي.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S11 THREE TOOLS — Flyenv/XAMPP + Postman + Git ══ -->
+      <div class="slide" id="s11">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Section 5 — Daily Tools</span
+          ><span class="pn">11 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            <span class="a">Flyenv / XAMPP + Postman + Git</span> — أدوات ما
+            تشتغل بدونها
+          </div>
+          <div class="t3g" style="flex: 1">
+            <div class="t3 tp">
+              <span class="t3bg tp">Local Server</span>
+              <div class="t3i tp"><i class="fas fa-server"></i></div>
+              <div class="t3n tp">Flyenv / XAMPP</div>
+              <div class="t3bl">
+                <div class="t3lb">شو هما</div>
+                <div class="t3tx">
+                  <b style="color: #00c4b4">Flyenv</b> — بيئة تطوير حديثة (PHP +
+                  MySQL + phpMyAdmin بنقرة).
+                  <b style="color: #00c4b4">XAMPP</b> — الكلاسيكي المعروف
+                  (Apache + MySQL + phpMyAdmin)
+                </div>
+              </div>
+              <div class="t3bl">
+                <div class="t3lb">الفائدة</div>
+                <div class="t3tx">
+                  تشغيل PHP ومشاهدة البيانات في phpMyAdmin مباشرة على جهازك
+                </div>
+              </div>
+            </div>
+            <div class="t3 pm">
+              <span class="t3bg pm">API Testing</span>
+              <div class="t3i pm"><i class="fas fa-paper-plane"></i></div>
+              <div class="t3n pm">Postman</div>
+              <div class="t3bl">
+                <div class="t3lb">متى نستخدمه</div>
+                <div class="t3tx">
+                  لاختبار الـ API قبل ما الـ Frontend يكون جاهز
+                </div>
+              </div>
+              <div class="t3bl">
+                <div class="t3lb">الفائدة</div>
+                <div class="t3tx">
+                  أرسل Request وشوف الـ Response بدون واجهة — اكتشف الأخطاء
+                  بسرعة
+                </div>
+              </div>
+            </div>
+            <div class="t3 gt">
+              <span class="t3bg gt">Version Control</span>
+              <div class="t3i gt"><i class="fab fa-git-alt"></i></div>
+              <div class="t3n gt">Git + GitHub</div>
+              <div class="t3bl">
+                <div class="t3lb">متى نستخدمه</div>
+                <div class="t3tx">من أول سطر كود حتى آخر مشروع</div>
+              </div>
+              <div class="t3bl">
+                <div class="t3lb">الفائدة</div>
+                <div class="t3tx">
+                  سجل كامل لكل تغيير — ارجع لأي نسخة قديمة واشتغل مع الفريق
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S12 SUMMARY TABLE — 5 tools only ══ -->
+      <div class="slide" id="s12">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Summary — Tools</span
+          ><span class="pn">12 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">
+            الأدوات الـ <span class="a">5 الأساسية</span> لهذه المحاضرة
+          </div>
+          <table class="stbl" style="flex: 1">
+            <thead>
+              <tr>
+                <th style="width: 38%">الأداة</th>
+                <th>الاستخدام والوظيفة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="trn" style="color: #8892bf">
+                    <i class="fab fa-php"></i> PHP 8.x
+                    <span class="pill">Language</span>
+                  </div>
+                </td>
+                <td>
+                  لغة الـ Backend الأساسية لكتابة المنطق والتعامل مع السيرفر
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="trn" style="color: var(--acc)">
+                    <i class="fas fa-box-open"></i> Composer
+                    <span class="pill">Manager</span>
+                  </div>
+                </td>
+                <td>إدارة مكتبات PHP الخارجية وتثبيت التحديثات — زي npm</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="trn" style="color: #339933">
+                    <i class="fab fa-node-js"></i> Node.js LTS
+                    <span class="pill">Runtime</span>
+                  </div>
+                </td>
+                <td>تشغيل أدوات البناء وإدارة حزم الواجهة الأمامية</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="trn" style="color: #007acc">
+                    <i class="fas fa-code"></i> VS Code / Cursor
+                    <span class="pill">Editor</span>
+                  </div>
+                </td>
+                <td>بيئة التطوير المتكاملة لكتابة وتعديل الكود</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="trn" style="color: #00c4b4">
+                    <i class="fas fa-server"></i> Flyenv / XAMPP
+                    <span class="pill">Local Server</span>
+                  </div>
+                </td>
+                <td>
+                  تشغيل PHP + MySQL محلياً مع واجهة TablePlus / phpMyAdmin
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top: 10px">
+            📌 TablePlus وPostman وGit ستُثبَّت في المحاضرة القادمة — ركّز اليوم
+            على الـ 5 الأساسية.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S13 HOMEWORK ══ -->
+      <div class="slide" id="s13">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Homework</span><span class="pn">13 / 14</span>
+        </div>
+        <div class="sb">
+          <div class="sh">🎯 واجبك بعد <span class="a">المحاضرة</span></div>
+          <div class="hwl">
+            <div class="hwr">
+              <div class="hwn">01</div>
+              <div class="hwb">
+                <div class="hwt">ثبّت الأدوات الأساسية الـ 5</div>
+                <div class="hwd">
+                  PHP + Composer + Node.js + VS Code أو Cursor + Flyenv أو XAMPP
+                </div>
+              </div>
+            </div>
+            <div class="hwr">
+              <div class="hwn">02</div>
+              <div class="hwb">
+                <div class="hwt">تحقق من التثبيت في الـ Terminal</div>
+                <div class="hwcr">
+                  <span class="cmd">php -v</span>
+                  <span class="cmd">composer -v</span>
+                  <span class="cmd">node -v</span>
+                </div>
+              </div>
+            </div>
+            <div class="hwr">
+              <div class="hwn">03</div>
+              <div class="hwb">
+                <div class="hwt">جرب الـ AI — ChatGPT أو Claude</div>
+                <div class="hwd">
+                  اسأل: "اشرح لي شو هو الـ Backend بمثال عملي في موقع متجر
+                  إلكتروني، لمبتدئ في البرمجة"
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S14 CLOSING ══ -->
+      <div class="slide" id="s14">
+        <div class="cll">
+          <div class="clcode">
+            // المحاضرة القادمة...<br /><br />// أساسيات PHP<br />// ومقدمة في
+            OOP<br /><br />class User {<br />&nbsp;&nbsp;private $name;<br /><br />&nbsp;&nbsp;public
+            function<br />&nbsp;&nbsp;&nbsp;&nbsp;__construct(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string
+            $name) {<br />&nbsp;&nbsp;&nbsp;&nbsp;$this->name = $name;<br />&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;public
+            function<br />&nbsp;&nbsp;&nbsp;&nbsp;getName(): string {<br />&nbsp;&nbsp;&nbsp;&nbsp;return
+            $this->name;<br />&nbsp;&nbsp;}<br />}
+          </div>
+          <div class="clft">
+            <i class="fab fa-php" style="color: #8892bf"></i>
+            <i class="fas fa-code" style="color: #007acc"></i>
+            <i class="fas fa-database" style="color: #38bdf8"></i>
+            <i class="fas fa-brain" style="color: #c084fc"></i>
+            <span class="sp"></span><span class="v">v1.0.0</span>
+          </div>
+        </div>
+        <div class="clr">
+          <div class="clbig">
+            <div class="l1">الأسئلة</div>
+            <div class="l2">والنقاش 💬</div>
+          </div>
+          <!-- Instructor info -->
+          <div class="cl-instr">
+            <div class="cl-instr-info">
+              <div class="cl-instr-name">السيد الاخرسي</div>
+              <div class="cl-instr-role">Full Stack Developer & Instructor</div>
+              <div class="cl-instr-company">WebUra</div>
+            </div>
+            <div class="cl-instr-photo">
+              <img src="../assets/photo.jpeg" alt="المدرب" />
+            </div>
+          </div>
+          <!-- Next lecture -->
+          <div class="clnx">
+            <div class="nx-label">// المحاضرة القادمة</div>
+            <div class="nx-title">أساسيات PHP ومقدمة في OOP</div>
+          </div>
+          <div class="clics">
+            <i class="fab fa-php" style="color: #8892bf"></i>
+            <i class="fab fa-node-js" style="color: #339933"></i>
+            <i class="fab fa-git-alt" style="color: #f05032"></i>
+            <i class="fas fa-brain" style="color: #c084fc"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /stage -->
+
+    <!-- NAV ROW -->
+    <div id="nav-row">
+      <div id="instr-card">
+        <div class="iav">
+          <img src="../assets/photo.jpeg" alt="" />
+        </div>
+        <div>
+          <div class="inm">السيد الاخرسي</div>
+          <div class="irl">Full Stack Developer & Instructor</div>
+        </div>
+      </div>
+      <div id="nav">
+        <button class="nb next" id="btnN">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div id="dots"></div>
+        <span id="ctr">1 / 14</span>
+        <button class="nb" id="btnP" disabled>
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const N = 14;
+      let c = 1;
+      const ctr = document.getElementById("ctr");
+      const btnN = document.getElementById("btnN");
+      const btnP = document.getElementById("btnP");
+      const dotsEl = document.getElementById("dots");
+      for (let i = 1; i <= N; i++) {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 1 ? " on" : "");
+        d.onclick = () => go(i);
+        dotsEl.appendChild(d);
+      }
+      function go(n) {
+        if (n < 1 || n > N || n === c) return;
+        document.getElementById("s" + c).classList.remove("active");
+        c = n;
+        document.getElementById("s" + c).classList.add("active");
+        ctr.textContent = c + " / " + N;
+        btnP.disabled = c === 1;
+        btnN.disabled = c === N;
+        dotsEl
+          .querySelectorAll(".dot")
+          .forEach((d, i) => d.classList.toggle("on", i + 1 === c));
+      }
+      btnN.onclick = () => go(c + 1);
+      btnP.onclick = () => go(c - 1);
+      document.addEventListener("keydown", (e) => {
+        if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
+          e.preventDefault();
+          go(c + 1);
+        }
+        if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
+          e.preventDefault();
+          go(c - 1);
+        }
+      });
+    </script>
+  </body>
+</html>
