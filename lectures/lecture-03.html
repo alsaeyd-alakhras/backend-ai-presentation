@@ -1,0 +1,1598 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <title>المحاضرة الثالثة — Laravel Installation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:   #080c14; --surf: #0d1520; --card: #111b2a;
+      --bdr:  #1c2d42; --bdr2: #243650; --acc:  #f97316;
+      --acc2: #fb923c; --wh:   #f0f6ff; --sub:  #7a9bbf;
+      --dim:  #3a5470; --gn:   #10d97a; --bl:   #38bdf8;
+      --pu:   #c084fc; --rd:   #f87171;
+      --mono: "JetBrains Mono", monospace;
+      --sans: "Tajawal", sans-serif;
+      --W: 1060px; --H: 596px; --R: 14px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:#03060b;min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;font-family:var(--sans);
+      overflow:hidden;gap:18px;padding:0 0 8px}
+    #stage{position:relative;width:var(--W);height:var(--H);flex-shrink:0}
+    .slide{position:absolute;inset:0;width:var(--W);height:var(--H);
+      background:var(--bg);border-radius:var(--R);border:1px solid var(--bdr);
+      overflow:hidden;display:none;flex-direction:column;
+      box-shadow:0 28px 70px rgba(0,0,0,.88),0 0 0 1px rgba(249,115,22,.04)}
+    .slide.active{display:flex;animation:fadeUp .38s cubic-bezier(.16,1,.3,1) both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px) scale(.986)}to{opacity:1;transform:none}}
+
+    /* NAV ROW */
+    #nav-row{display:flex;align-items:center;gap:12px;flex-shrink:0}
+    #instr-card{display:flex;align-items:center;gap:10px;background:var(--surf);
+      border:1px solid var(--bdr);border-radius:50px;padding:5px 14px 5px 6px;
+      box-shadow:0 4px 20px rgba(0,0,0,.5)}
+    .iav{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);flex-shrink:0;overflow:hidden}
+    .iav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .inm{font-size:12.5px;font-weight:800;color:var(--wh);white-space:nowrap}
+    .irl{font-size:9.5px;color:var(--sub);font-family:var(--mono);white-space:nowrap}
+    #nav{display:flex;align-items:center;background:var(--surf);border:1px solid var(--bdr);
+      border-radius:50px;padding:5px 6px;box-shadow:0 6px 24px rgba(0,0,0,.6);flex-shrink:0}
+    .nb{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;font-size:13px;
+      display:flex;align-items:center;justify-content:center;transition:all .15s;
+      color:var(--sub);background:transparent}
+    .nb:hover:not(:disabled){background:var(--card);color:var(--wh)}
+    .nb:disabled{opacity:.22;cursor:not-allowed}
+    .nb.next{background:var(--acc);color:#fff;margin-right:4px}
+    .nb.next:hover:not(:disabled){background:var(--acc2)}
+    #ctr{font-family:var(--mono);font-size:11px;color:var(--dim);padding:0 10px;white-space:nowrap}
+    #dots{display:flex;gap:3px;align-items:center;padding:0 4px}
+    .dot{width:5px;height:5px;border-radius:50%;background:var(--bdr2);cursor:pointer;transition:all .22s}
+    .dot.on{background:var(--acc);width:14px;border-radius:3px}
+
+    /* TOPBAR */
+    .tb{height:42px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;border-bottom:1px solid var(--bdr);
+      background:rgba(11,18,32,.88);flex-shrink:0;position:relative;z-index:2}
+    .tb .tag{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
+    .tb .pn{font-family:var(--mono);font-size:10px;color:var(--dim)}
+    .tb .cid{font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:6px}
+    .dlive{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.22}}
+
+    /* SLIDE BODY */
+    .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;overflow-y:auto;
+      position:relative;z-index:1;overflow:hidden}
+    .sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;
+      line-height:1.25;margin-bottom:14px}
+    .sh .a{color:var(--acc)} .sh .a2{color:var(--bl)} .sh .ag{color:var(--gn)}
+
+    /* SHARED */
+    .pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);
+      font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.05);
+      color:var(--sub);border:1px solid var(--bdr)}
+    .cmd{font-family:var(--mono);font-size:11px;color:var(--gn);direction:ltr;display:inline-block;
+      background:rgba(16,217,122,.07);border:1px solid rgba(16,217,122,.18);
+      border-radius:5px;padding:2px 8px;display:inline-block}
+    .note{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.17);
+      border-radius:8px;padding:9px 14px;font-size:12px;color:var(--acc);
+      text-align:right;font-style:italic}
+    .lnote{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);
+      border-radius:8px;padding:8px 13px;font-size:11.5px;color:var(--bl);
+      text-align:right;display:flex;align-items:center;gap:8px;margin-top:8px}
+    .lnote i{flex-shrink:0;font-size:13px}
+    .card{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 15px}
+    .card.c-acc{border-top:2px solid var(--acc)} .card.c-gn{border-top:2px solid var(--gn)}
+    .card.c-bl{border-top:2px solid var(--bl)}   .card.c-pu{border-top:2px solid var(--pu)}
+    .card-lbl{font-size:10px;font-family:var(--mono);color:var(--sub);
+      margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
+    .cb{background:#060b12;border:1px solid var(--bdr);border-radius:8px;
+      padding:12px 14px;font-family:var(--mono);font-size:11.5px;
+      line-height:1.9;color:#7a9bbf;overflow:auto;position:relative;direction:ltr;text-align:left}
+    .cb .kw{color:#c084fc} .cb .fn{color:#38bdf8} .cb .st{color:#10d97a}
+    .cb .cm{color:#3a5470} .cb .ac{color:#f97316} .cb .wht{color:#f0f6ff}
+    .cb .rd{color:#f87171} .cb .dim{color:#3a5470}
+    .cb-label{position:absolute;top:8px;left:10px;font-family:var(--mono);
+      font-size:9px;color:var(--dim);letter-spacing:.05em}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;flex:1}
+
+    /* LINK BUTTON */
+    .link-btn{display:inline-flex;align-items:center;gap:7px;
+      background:var(--card);border:1px solid var(--bdr);border-radius:7px;
+      padding:7px 14px;font-size:12px;font-family:var(--mono);
+      color:var(--sub);text-decoration:none;transition:all .18s;cursor:pointer}
+    .link-btn:hover{border-color:var(--acc);color:var(--acc)}
+    .link-btn i{font-size:12px}
+    .link-btn.lv:hover{border-color:#ff2d20;color:#ff2d20}
+    .link-btn.lv i{color:#ff2d20}
+
+    /* COVER */
+    #s1{flex-direction:row}
+    .cvl{width:310px;background:var(--surf);border-left:1px solid var(--bdr);
+      flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .cvl::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent)}
+    .cvl pre{flex:1;padding:22px 18px;font-family:var(--mono);font-size:11.5px;
+      line-height:2;color:#1e3554;overflow:hidden}
+    .cvl-ft{height:46px;border-top:1px solid var(--bdr);display:flex;
+      align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+    .cvl-ft i{font-size:16px}
+    .cvl-ft .sp{flex:1}
+    .cvl-ft .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+    .cvr{flex:1;display:flex;flex-direction:column;justify-content:center;
+      padding:36px 44px 32px 24px;position:relative}
+    .cvr::before{content:"";position:absolute;top:-60px;left:-60px;width:350px;height:350px;
+      background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 70%);pointer-events:none}
+    .cv-badge{display:inline-flex;align-items:center;gap:8px;
+      background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);
+      border-radius:6px;padding:5px 13px;font-size:12px;font-weight:700;
+      color:var(--acc);align-self:flex-end;margin-bottom:22px}
+    .cv-eye{font-size:13px;color:var(--sub);font-weight:500;text-align:right;margin-bottom:6px}
+    .cv-h{font-size:46px;font-weight:900;line-height:1.1;text-align:right;color:var(--wh);margin-bottom:6px}
+    .cv-h span{color:var(--acc);display:block}
+    .cv-tag{font-size:13.5px;color:var(--sub);text-align:right;margin-bottom:4px}
+    .cv-mono{font-family:var(--mono);font-size:10.5px;color:var(--dim);text-align:right}
+    .cv-chips{display:flex;gap:9px;justify-content:flex-end;margin-top:22px}
+    .chip{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:9px 14px;text-align:center}
+    .chip .cl{font-size:9.5px;color:var(--sub);display:block;margin-bottom:3px}
+    .chip .cv{font-size:12.5px;font-weight:800;color:var(--wh)}
+
+    /* AGENDA */
+    .ag-list{display:flex;flex-direction:column;gap:7px;flex:1}
+    .ag-row{display:flex;align-items:center;background:var(--card);
+      border:1px solid var(--bdr);border-radius:8px;overflow:hidden;flex:1;transition:border-color .2s}
+    .ag-row:hover{border-color:var(--acc)}
+    .ag-n{width:50px;display:flex;align-items:center;justify-content:center;
+      font-family:var(--mono);font-size:15px;font-weight:700;color:var(--acc);
+      background:rgba(249,115,22,.06);border-left:1px solid var(--bdr);align-self:stretch;flex-shrink:0}
+    .ag-ic{width:40px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--sub);flex-shrink:0}
+    .ag-tx{flex:1;font-size:13.5px;font-weight:600;color:var(--wh);text-align:right;padding-right:4px}
+    .ag-tg{margin-left:14px;flex-shrink:0}
+
+    /* TERMINAL BLOCK */
+    .term{background:#030810;border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+    .term-bar{height:34px;background:#0a1220;border-bottom:1px solid var(--bdr);
+      display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0}
+    .t-dot{width:10px;height:10px;border-radius:50%}
+    .t-title{font-family:var(--mono);font-size:10px;color:var(--dim);flex:1;text-align:center}
+    .term-body{padding:14px 18px;font-family:var(--mono);font-size:12px;line-height:2;color:var(--sub);direction:ltr;text-align:left}
+    .term-body .prompt{color:var(--gn)}
+    .term-body .cmd-t{color:var(--wh)}
+    .term-body .out{color:var(--dim);font-size:11px}
+    .term-body .out-gn{color:var(--gn);font-size:11px}
+    .term-body .out-acc{color:var(--acc);font-size:11px}
+
+    /* FOLDER TREE */
+    .ftree{font-family:var(--mono);font-size:12px;line-height:2;color:var(--sub);
+      background:#060b12;border:1px solid var(--bdr);border-radius:9px;padding:14px 18px;overflow:hidden}
+    .ft-dir{color:var(--bl);font-weight:700}
+    .ft-dir-acc{color:var(--acc);font-weight:700}
+    .ft-dir-gn{color:var(--gn);font-weight:700}
+    .ft-dir-pu{color:var(--pu);font-weight:700}
+    .ft-file{color:#4a6a90}
+    .ft-badge{font-size:9px;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.2);
+      color:var(--acc);border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:middle}
+    .ft-badge-bl{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);color:var(--bl)}
+    .ft-badge-gn{background:rgba(16,217,122,.1);border-color:rgba(16,217,122,.2);color:var(--gn)}
+    .ft-badge-pu{background:rgba(192,132,252,.1);border-color:rgba(192,132,252,.2);color:var(--pu)}
+
+    /* TABS for folder detail */
+    .tabs-wrap{display:flex;flex-direction:column;flex:1;gap:0}
+    .tab-btns{display:flex;gap:0;border-bottom:1px solid var(--bdr);flex-shrink:0;margin-bottom:12px}
+    .tab-btn{font-family:var(--mono);font-size:11px;color:var(--dim);
+      padding:7px 16px;cursor:pointer;border-bottom:2px solid transparent;
+      transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;
+      white-space:nowrap}
+    .tab-btn:hover{color:var(--sub)}
+    .tab-btn.on{color:var(--acc);border-bottom-color:var(--acc)}
+    .tab-pane{display:none;flex:1;flex-direction:column;gap:10px}
+    .tab-pane.on{display:flex}
+
+    /* ARTISAN CARDS */
+    .art-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1}
+    .art-group{background:var(--card);border:1px solid var(--bdr);border-radius:9px;
+      padding:11px 13px;display:flex;flex-direction:column;gap:7px}
+    .art-group-title{font-size:10px;font-family:var(--mono);letter-spacing:.07em;
+      text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+    .art-cmd{display:flex;flex-direction:column;gap:1px}
+    .art-cmd .cmd-line{font-family:var(--mono);font-size:11px;color:var(--gn);direction:ltr;text-align:left;
+      background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.14);
+      border-radius:5px;padding:3px 8px;margin-bottom:2px}
+    .art-cmd .desc{font-size:11px;color:var(--dim);text-align:right;padding-right:2px}
+
+    /* ENV */
+    .env-row{display:flex;align-items:baseline;gap:0;direction:ltr;
+      font-family:var(--mono);font-size:11.5px;line-height:2.1;
+      border-bottom:1px solid rgba(28,45,66,.4)}
+    .env-row:last-child{border-bottom:none}
+    .env-key{color:var(--bl);flex-shrink:0;min-width:200px}
+    .env-eq{color:var(--dim);padding:0 4px}
+    .env-val{color:var(--gn)}
+    .env-val.warn{color:var(--acc)}
+    .env-val.red{color:var(--rd)}
+    .env-cm{color:#2a4060;font-size:10.5px;padding-right:10px}
+
+    /* FLOW */
+    .flow-row{display:flex;align-items:center;gap:0;flex:1}
+    .fnode{flex:1;background:var(--card);border:1px solid var(--bdr);
+      border-radius:9px;padding:13px 14px;display:flex;flex-direction:column;
+      align-items:flex-end;gap:5px;height:100%}
+    .fnode.acc-b{border-top:2px solid var(--acc)}
+    .fnode.gn-b{border-top:2px solid var(--gn)}
+    .fnode.bl-b{border-top:2px solid var(--bl)}
+    .fnode.pu-b{border-top:2px solid var(--pu)}
+    .fn-icon{font-size:20px;margin-bottom:2px}
+    .fn-title{font-size:13px;font-weight:800;color:var(--wh)}
+    .fn-sub{font-size:10.5px;color:var(--sub);font-family:var(--mono)}
+    .fn-desc{font-size:11.5px;color:var(--sub);text-align:right;line-height:1.55;margin-top:3px}
+    .farrow{font-size:18px;color:var(--dim);padding:0 4px;flex-shrink:0}
+
+    /* HOMEWORK */
+    .hwl{display:flex;flex-direction:column;gap:10px;flex:1}
+    .hwr{display:flex;align-items:flex-start;gap:14px;background:var(--card);
+      border:1px solid var(--bdr);border-radius:9px;padding:13px 16px;flex:1}
+    .hwn{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--acc);flex-shrink:0;width:32px}
+    .hwb{flex:1} .hwt{font-size:13.5px;font-weight:700;color:var(--wh);margin-bottom:4px}
+    .hwd{font-size:12px;color:var(--sub);line-height:1.5}
+    .hwcr{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+    /* CLOSING */
+    #s14{flex-direction:row}
+    .cll{width:300px;background:var(--surf);border-left:1px solid var(--bdr);
+      flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .cll::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent)}
+    .clcode{flex:1;padding:20px 16px;font-family:var(--mono);font-size:10.5px;
+      line-height:2;color:#1e3554;overflow:hidden}
+    .clft{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;
+      padding:0 16px;gap:12px;flex-shrink:0}
+    .clft i{font-size:16px} .clft .sp{flex:1}
+    .clft .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+    .clr{flex:1;display:flex;flex-direction:column;padding:32px 40px 26px 24px;position:relative}
+    .clbig{font-size:48px;font-weight:900;text-align:right;line-height:1.1;margin-bottom:12px}
+    .clbig .l1{color:var(--wh)} .clbig .l2{color:var(--acc)}
+    .cl-instr{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-bottom:14px}
+    .cl-instr-info{text-align:right}
+    .cl-instr-name{font-size:13.5px;font-weight:800;color:var(--wh)}
+    .cl-instr-role{font-size:10.5px;color:var(--sub);font-family:var(--mono)}
+    .cl-instr-company{font-size:10px;color:var(--acc);font-family:var(--mono)}
+    .cl-instr-photo{width:44px;height:44px;border-radius:50%;border:2px solid var(--acc);overflow:hidden;flex-shrink:0}
+    .cl-instr-photo img{width:100%;height:100%;object-fit:cover}
+    .clnx{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+    .nx-label{font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:4px}
+    .nx-title{font-size:14px;font-weight:700;color:var(--wh)}
+    .clics{display:flex;gap:14px;justify-content:flex-end;font-size:18px}
+
+    /* STBL */
+    .stbl{width:100%;border-collapse:collapse}
+    .stbl th{background:rgba(249,115,22,.08);color:var(--acc);font-family:var(--mono);
+      font-size:11px;padding:8px 14px;border-bottom:1px solid var(--bdr);text-align:right}
+    .stbl td{padding:8px 14px;border-bottom:1px solid rgba(28,45,66,.5);font-size:12.5px;color:var(--wh)}
+    .stbl tr:last-child td{border-bottom:none}
+    .trn{display:flex;align-items:center;gap:8px}
+  </style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ══ S1 COVER ══ -->
+  <div class="slide active" id="s1">
+    <div class="cvl">
+      <pre>
+<span style="color:#1e3554">$ composer create-project</span>
+<span style="color:#1a3050">  laravel/laravel</span>
+<span style="color:#162b46">  SouqPro</span>
+
+<span style="color:#1e3554">$ cd SouqPro</span>
+<span style="color:#1a3050">$ php artisan serve</span>
+
+<span style="color:#162b46">INFO</span>
+<span style="color:#132740">  Server running on</span>
+<span style="color:#102240">  [127.0.0.1:8000]</span>
+
+<span style="color:#1e3554">$ php artisan</span>
+<span style="color:#1a3050">  make:controller</span>
+<span style="color:#162b46">  ProductController</span>
+
+<span style="color:#1e3554">$ php artisan</span>
+<span style="color:#1a3050">  make:model Product</span>
+<span style="color:#162b46">  -m</span>
+      </pre>
+      <div class="cvl-ft">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-terminal" style="color:#f97316"></i>
+        <span class="sp"></span>
+        <span class="v">v3.0.0</span>
+      </div>
+    </div>
+    <div class="cvr">
+      <div class="cv-badge"><i class="fas fa-circle-dot" style="font-size:8px"></i> المحاضرة الثالثة</div>
+      <div class="cv-eye">Laravel Installation & Architecture</div>
+      <div class="cv-h">تثبيت<span>Laravel</span></div>
+      <div class="cv-tag">إنشاء مشروع SouqPro وفهم هيكل المشروع</div>
+      <div class="cv-mono">// Installation · Structure · .env · Artisan CLI</div>
+      <div class="cv-chips">
+        <div class="chip"><span class="cl">المدة</span><span class="cv">60 دقيقة</span></div>
+        <div class="chip"><span class="cl">المشروع</span><span class="cv">SouqPro</span></div>
+        <div class="chip"><span class="cl">المستوى</span><span class="cv">مبتدئ</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S2 AGENDA ══ -->
+  <div class="slide" id="s2">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Agenda</span><span class="pn">2 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">محتوى <span class="a">المحاضرة</span></div>
+      <div class="ag-list">
+        <div class="ag-row">
+          <div class="ag-n">01</div>
+          <div class="ag-ic"><i class="fas fa-wrench" style="color:var(--acc)"></i></div>
+          <div class="ag-tx">متطلبات التثبيت — PHP, Composer, والروابط الرسمية</div>
+          <div class="ag-tg"><span class="pill">Setup</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">02</div>
+          <div class="ag-ic"><i class="fab fa-laravel" style="color:#ff2d20"></i></div>
+          <div class="ag-tx">تثبيت Laravel وإنشاء مشروع SouqPro</div>
+          <div class="ag-tg"><span class="pill">Install</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">03</div>
+          <div class="ag-ic"><i class="fas fa-folder-tree" style="color:var(--bl)"></i></div>
+          <div class="ag-tx">هيكل المشروع — شرح كل مجلد</div>
+          <div class="ag-tg"><span class="pill">Structure</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">04</div>
+          <div class="ag-ic"><i class="fas fa-door-open" style="color:var(--gn)"></i></div>
+          <div class="ag-tx">Entry Point — كيف يبدأ Laravel يعمل</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">05</div>
+          <div class="ag-ic"><i class="fas fa-sliders" style="color:var(--pu)"></i></div>
+          <div class="ag-tx">ملف <code style="font-family:var(--mono);color:var(--acc)">.env</code> وأهم المتغيرات</div>
+          <div class="ag-tg"><span class="pill">Config</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">06</div>
+          <div class="ag-ic"><i class="fas fa-terminal" style="color:var(--acc)"></i></div>
+          <div class="ag-tx">Artisan CLI — أهم الأوامر التي ستستخدمها يومياً</div>
+          <div class="ag-tg"><span class="pill">Artisan</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S3 REQUIREMENTS + LINKS ══ -->
+  <div class="slide" id="s3">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Requirements</span><span class="pn">3 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">متطلبات <span class="a">التثبيت</span></div>
+      <div class="two-col" style="gap:14px;">
+        <!-- Requirements -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما تحتاجه أولاً</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--bdr);">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--dim);">≥ 8.2</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <i class="fab fa-php" style="color:#8892bf;font-size:16px;"></i>
+                  <span style="font-size:13px;font-weight:700;color:var(--wh);">PHP</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--bdr);">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--dim);">≥ 2.x</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <i class="fas fa-box-open" style="color:var(--acc);font-size:14px;"></i>
+                  <span style="font-size:13px;font-weight:700;color:var(--wh);">Composer</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--bdr);">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--gn);">✓ مثبت</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <i class="fab fa-node-js" style="color:#339933;font-size:14px;"></i>
+                  <span style="font-size:13px;font-weight:700;color:var(--wh);">Node.js LTS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- version check -->
+          <div style="background:#030810;border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:11.5px;line-height:2;color:var(--sub);">
+            <span style="color:var(--gn)">$</span> <span style="color:var(--wh)">php -v</span><br>
+            <span style="color:var(--dim)">PHP 8.3.x ...</span><br>
+            <span style="color:var(--gn)">$</span> <span style="color:var(--wh)">composer -V</span><br>
+            <span style="color:var(--dim)">Composer 2.x ...</span>
+          </div>
+        </div>
+        <!-- Links -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-bl">
+            <div class="card-lbl">الروابط الرسمية</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+              <a href="https://laravel.com/docs" target="_blank" class="link-btn lv" style="justify-content:space-between;">
+                <i class="fas fa-external-link-alt"></i>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;font-weight:700;">Laravel Docs</div>
+                  <div style="font-size:10px;color:var(--dim);">laravel.com/docs</div>
+                </div>
+                <i class="fab fa-laravel" style="color:#ff2d20;font-size:16px;"></i>
+              </a>
+              <a href="https://getcomposer.org" target="_blank" class="link-btn" style="justify-content:space-between;">
+                <i class="fas fa-external-link-alt"></i>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;font-weight:700;">Composer</div>
+                  <div style="font-size:10px;color:var(--dim);">getcomposer.org</div>
+                </div>
+                <i class="fas fa-box-open" style="color:var(--acc);font-size:14px;"></i>
+              </a>
+              <a href="https://www.php.net/downloads" target="_blank" class="link-btn" style="justify-content:space-between;">
+                <i class="fas fa-external-link-alt"></i>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;font-weight:700;">PHP Downloads</div>
+                  <div style="font-size:10px;color:var(--dim);">php.net/downloads</div>
+                </div>
+                <i class="fab fa-php" style="color:#8892bf;font-size:16px;"></i>
+              </a>
+              <a href="https://laravel.com/docs/installation#local-installation-using-herd" target="_blank" class="link-btn lv" style="justify-content:space-between;">
+                <i class="fas fa-external-link-alt"></i>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;font-weight:700;">Laravel Herd <span style="color:var(--gn);font-size:10px;">موصى به</span></div>
+                  <div style="font-size:10px;color:var(--dim);">herd.laravel.com</div>
+                </div>
+                <i class="fas fa-horse" style="color:var(--acc);font-size:14px;"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px;">📌 إذا كنت على Windows استخدم Laravel Herd — يثبت PHP + Composer تلقائياً بنقرة واحدة.</div>
+    </div>
+  </div>
+
+  <!-- ══ S4 INSTALLATION + SOUQPRO ══ -->
+  <div class="slide" id="s4">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Installation — SouqPro</span><span class="pn">4 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">إنشاء مشروع <span class="a">SouqPro</span></div>
+      <div class="two-col">
+        <!-- Steps -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;">
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--acc);flex-shrink:0;width:24px;text-align:center;">1</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--wh);margin-bottom:4px;">إنشاء المشروع</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--gn);background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.15);border-radius:5px;padding:3px 9px;display:inline-block;">composer create-project laravel/laravel SouqPro</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;">
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--acc);flex-shrink:0;width:24px;text-align:center;">2</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--wh);margin-bottom:4px;">ادخل المجلد</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--gn);background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.15);border-radius:5px;padding:3px 9px;display:inline-block;">cd SouqPro</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;">
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--acc);flex-shrink:0;width:24px;text-align:center;">3</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--wh);margin-bottom:4px;">شغّل السيرفر المحلي</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--gn);background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.15);border-radius:5px;padding:3px 9px;display:inline-block;">php artisan serve</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;">
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--gn);flex-shrink:0;width:24px;text-align:center;">✓</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--wh);margin-bottom:4px;">افتح المتصفح</div>
+              <a href="http://127.0.0.1:8000" target="_blank" class="link-btn" style="font-size:11px;padding:4px 10px;">
+                <i class="fas fa-external-link-alt"></i> http://127.0.0.1:8000
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- Terminal output -->
+        <div class="term" style="display:flex;flex-direction:column;">
+          <div class="term-bar">
+            <div class="t-dot" style="background:#ff5f57"></div>
+            <div class="t-dot" style="background:#febc2e"></div>
+            <div class="t-dot" style="background:#28c840"></div>
+            <div class="t-title">Terminal — SouqPro</div>
+          </div>
+          <div class="term-body" style="flex:1;">
+            <span class="prompt">~$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
+            <span class="out">Creating a "laravel/laravel" project...</span><br>
+            <span class="out-gn">  - Installing laravel/laravel (v11.x)</span><br>
+            <span class="out">    Downloaded 4.2MB</span><br>
+            <span class="out-gn">✓ Application key set successfully.</span><br>
+            <br>
+            <span class="prompt">~/SouqPro$</span> <span class="cmd-t">php artisan serve</span><br>
+            <br>
+            <span class="out-acc">   INFO</span>  <span class="out">Server running on</span><br>
+            <span class="out-gn">   ➜  Local:   http://127.0.0.1:8000</span><br>
+            <br>
+            <span class="out">Press Ctrl+C to stop the server</span>
+          </div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> يمكنك أيضاً استخدام <span style="font-family:var(--mono);color:var(--acc)">laravel new SouqPro</span> إذا ثبّت Laravel Installer مسبقاً.</div>
+    </div>
+  </div>
+
+  <!-- ══ S5 PROJECT STRUCTURE — TREE ══ -->
+  <div class="slide" id="s5">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Project Structure</span><span class="pn">5 / 16</span>
+    </div>
+    <div class="sb" style="padding-bottom:12px;">
+      <div class="sh">هيكل مشروع <span class="a">SouqPro</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0;">
+        <!-- Tree — LTR always -->
+        <div class="ftree" dir="ltr" style="font-size:11.5px;line-height:2;overflow-y:auto;text-align:left;">
+          <span style="color:var(--acc);font-weight:700;">SouqPro/</span><br>
+          ├── <span class="ft-dir-acc">app/</span> <span class="ft-badge">★ أهم مجلد</span><br>
+          │   ├── <span class="ft-dir">Http/</span><br>
+          │   │   ├── <span class="ft-dir">Controllers/</span><br>
+          │   │   └── <span class="ft-dir">Middleware/</span><br>
+          │   ├── <span class="ft-dir">Models/</span><br>
+          │   └── <span class="ft-dir">Providers/</span><br>
+          ├── <span class="ft-dir-bl">config/</span> <span class="ft-badge ft-badge-bl">إعدادات</span><br>
+          │   ├── <span class="ft-file">app.php</span><br>
+          │   └── <span class="ft-file">database.php</span><br>
+          ├── <span class="ft-dir-gn">database/</span> <span class="ft-badge ft-badge-gn">DB</span><br>
+          │   ├── <span class="ft-dir">migrations/</span><br>
+          │   └── <span class="ft-dir">seeders/</span><br>
+          ├── <span class="ft-dir">public/</span> <span class="ft-badge">Entry Point</span><br>
+          │   └── <span style="color:var(--acc);font-weight:700;">index.php</span> <span style="color:var(--dim);font-size:10px;">← هنا يبدأ كل شيء</span><br>
+          ├── <span class="ft-dir-pu">resources/</span> <span class="ft-badge ft-badge-pu">Views</span><br>
+          │   ├── <span class="ft-dir">views/</span><br>
+          │   └── <span class="ft-dir">css/ &amp; js/</span><br>
+          ├── <span class="ft-dir">routes/</span> <span class="ft-badge">Routing</span><br>
+          │   ├── <span class="ft-file" style="color:var(--gn);">web.php</span><br>
+          │   └── <span class="ft-file" style="color:var(--bl);">api.php</span><br>
+          ├── <span class="ft-dir">storage/</span><br>
+          ├── <span class="ft-dir">tests/</span><br>
+          ├── <span class="ft-dir">vendor/</span> <span style="color:var(--rd);font-size:10px;">← لا تعدّله!</span><br>
+          ├── <span style="color:var(--acc);font-weight:700;">.env</span> <span class="ft-badge">أسرار</span><br>
+          ├── <span class="ft-file">composer.json</span><br>
+          └── <span class="ft-file">artisan</span>
+        </div>
+        <!-- Legend -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--dim);text-align:right;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;">شرح المجلدات</div>
+          <div style="display:flex;flex-direction:column;gap:7px;overflow-y:auto;flex:1;">
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">Business logic كامل — Controllers, Models, Providers</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;">app/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">ملفات الإعداد — DB, Mail, Cache, App</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--bl);flex-shrink:0;">config/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.18);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">Migrations لإنشاء الجداول + Seeders للبيانات</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--gn);flex-shrink:0;">database/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.15);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">نقطة دخول كل الطلبات — index.php فقط</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;">public/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.18);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">Blade templates + CSS + JS</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--pu);flex-shrink:0;">resources/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.15);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">web.php للصفحات — api.php للـ API</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--gn);flex-shrink:0;">routes/</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);border-radius:7px;padding:7px 10px;">
+              <span style="font-size:12px;color:var(--sub);text-align:right;">متغيرات سرية — لا يُرفع على Git أبداً</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;">.env</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S6 FOLDER DETAILS — TABS ══ -->
+  <div class="slide" id="s6">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Folders Detail</span><span class="pn">6 / 16</span>
+    </div>
+    <div class="sb" style="padding-bottom:12px;">
+      <div class="sh">شرح <span class="a">المجلدات</span> — اضغط للتفصيل</div>
+      <div class="tabs-wrap">
+        <div class="tab-btns">
+          <button class="tab-btn on" onclick="showTab('app')">app/</button>
+          <button class="tab-btn" onclick="showTab('routes')">routes/</button>
+          <button class="tab-btn" onclick="showTab('resources')">resources/</button>
+          <button class="tab-btn" onclick="showTab('database')">database/</button>
+          <button class="tab-btn" onclick="showTab('config')">config/</button>
+          <button class="tab-btn" onclick="showTab('storage')">storage/</button>
+        </div>
+        <!-- app/ -->
+        <div class="tab-pane on" id="tab-app">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-acc">
+              <div class="card-lbl">app/ — قلب التطبيق</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                هنا تكتب كل كود تطبيقك. Controllers، Models، Middleware — كل business logic تاعتك هون.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">البرمجة اليومية تكون هنا</span>
+                  <span style="color:var(--acc);">app/Http/Controllers/</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">التعامل مع قاعدة البيانات</span>
+                  <span style="color:var(--bl);">app/Models/</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">فلترة الطلبات</span>
+                  <span style="color:var(--gn);">app/Http/Middleware/</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">PHP — app/Models/Product.php</div>
+              <br>
+              <span class="kw">namespace</span> <span class="fn">App\Models</span>;<br>
+              <span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Model</span>;<br>
+              <br>
+              <span class="kw">class</span> <span class="fn">Product</span> <span class="kw">extends</span> <span class="fn">Model</span> {<br>
+              &nbsp;&nbsp;<span class="kw">protected</span> <span class="ac">$fillable</span> = [<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">'name'</span>, <span class="st">'price'</span>, <span class="st">'stock'</span><br>
+              &nbsp;&nbsp;];<br>
+              }
+            </div>
+          </div>
+        </div>
+        <!-- routes/ -->
+        <div class="tab-pane" id="tab-routes">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-gn">
+              <div class="card-lbl">routes/ — خريطة URL التطبيق</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                كل URL في تطبيقك له تعريف هنا. الزائر يطلب رابط → Route تحدد ماذا يحدث.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">صفحات الويب العادية</span>
+                  <span style="color:var(--gn);">routes/web.php</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">API endpoints</span>
+                  <span style="color:var(--bl);">routes/api.php</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">PHP — routes/web.php</div>
+              <br>
+              <span class="kw">use</span> <span class="fn">App\Http\Controllers\ProductController</span>;<br>
+              <br>
+              <span class="cm">// صفحة عرض المنتجات</span><br>
+              <span class="fn">Route</span>::<span class="fn">get</span>(<span class="st">'/products'</span>,<br>
+              &nbsp;&nbsp;[<span class="fn">ProductController</span>::<span class="kw">class</span>, <span class="st">'index'</span>]);<br>
+              <br>
+              <span class="cm">// تفاصيل منتج واحد</span><br>
+              <span class="fn">Route</span>::<span class="fn">get</span>(<span class="st">'/products/{id}'</span>,<br>
+              &nbsp;&nbsp;[<span class="fn">ProductController</span>::<span class="kw">class</span>, <span class="st">'show'</span>]);
+            </div>
+          </div>
+        </div>
+        <!-- resources/ -->
+        <div class="tab-pane" id="tab-resources">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-pu">
+              <div class="card-lbl">resources/ — الواجهة الأمامية</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                ملفات Blade (HTML + PHP)، CSS، JS. هذا ما يراه المستخدم في المتصفح.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">قوالب HTML الديناميكية</span>
+                  <span style="color:var(--pu);">resources/views/</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">Tailwind / CSS مخصص</span>
+                  <span style="color:var(--bl);">resources/css/</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">Blade — resources/views/products/index.blade.php</div>
+              <br>
+              <span style="color:#3a5470">&lt;!-- Blade Template --&gt;</span><br>
+              <span style="color:#4a6a90">@foreach(</span><span class="ac">$products</span> <span style="color:#4a6a90">as</span> <span class="ac">$product</span><span style="color:#4a6a90">)</span><br>
+              &nbsp;&nbsp;<span style="color:#4a6a90">&lt;div&gt;</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a5470">{{ </span><span class="ac">$product</span>-><span class="fn">name</span> <span style="color:#3a5470">}}</span><br>
+              &nbsp;&nbsp;<span style="color:#4a6a90">&lt;/div&gt;</span><br>
+              <span style="color:#4a6a90">@endforeach</span>
+            </div>
+          </div>
+        </div>
+        <!-- database/ -->
+        <div class="tab-pane" id="tab-database">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-bl">
+              <div class="card-lbl">database/ — إدارة قاعدة البيانات</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                Migrations = تعريف جداول DB بكود PHP. Seeders = بيانات تجريبية.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">إنشاء وتعديل الجداول</span>
+                  <span style="color:var(--bl);">database/migrations/</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+                  <span style="color:var(--sub);">بيانات أولية للاختبار</span>
+                  <span style="color:var(--gn);">database/seeders/</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">PHP — Migration</div>
+              <br>
+              <span class="fn">Schema</span>::<span class="fn">create</span>(<span class="st">'products'</span>, <span class="kw">function</span>(<span class="ac">$t</span>) {<br>
+              &nbsp;&nbsp;<span class="ac">$t</span>-><span class="fn">id</span>();<br>
+              &nbsp;&nbsp;<span class="ac">$t</span>-><span class="fn">string</span>(<span class="st">'name'</span>);<br>
+              &nbsp;&nbsp;<span class="ac">$t</span>-><span class="fn">decimal</span>(<span class="st">'price'</span>, <span class="wht">8</span>, <span class="wht">2</span>);<br>
+              &nbsp;&nbsp;<span class="ac">$t</span>-><span class="fn">integer</span>(<span class="st">'stock'</span>);<br>
+              &nbsp;&nbsp;<span class="ac">$t</span>-><span class="fn">timestamps</span>();<br>
+              });
+            </div>
+          </div>
+        </div>
+        <!-- config/ -->
+        <div class="tab-pane" id="tab-config">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-acc">
+              <div class="card-lbl">config/ — إعدادات التطبيق</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                ملفات PHP تقرأ من <span style="font-family:var(--mono);color:var(--acc)">.env</span>. لا تضع القيم مباشرة هنا — استخدم دائماً <span style="font-family:var(--mono);color:var(--gn)">env()</span>.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;">
+                  <span style="color:var(--sub);">اسم التطبيق، timezone</span>
+                  <span style="color:var(--acc);">config/app.php</span>
+                </div>
+                <div style="font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;">
+                  <span style="color:var(--sub);">نوع DB، host، port</span>
+                  <span style="color:var(--bl);">config/database.php</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">PHP — config/app.php</div>
+              <br>
+              <span class="kw">return</span> [<br>
+              &nbsp;&nbsp;<span class="st">'name'</span> =&gt; <span class="fn">env</span>(<span class="st">'APP_NAME'</span>, <span class="st">'SouqPro'</span>),<br>
+              &nbsp;&nbsp;<span class="st">'env'</span>  =&gt; <span class="fn">env</span>(<span class="st">'APP_ENV'</span>,  <span class="st">'production'</span>),<br>
+              &nbsp;&nbsp;<span class="st">'debug'</span>=&gt; <span class="fn">env</span>(<span class="st">'APP_DEBUG'</span>, <span class="kw">false</span>),<br>
+              &nbsp;&nbsp;<span class="st">'url'</span>  =&gt; <span class="fn">env</span>(<span class="st">'APP_URL'</span>,  <span class="st">'http://localhost'</span>),<br>
+              &nbsp;&nbsp;<span class="cm">// ...</span><br>
+              ];
+            </div>
+          </div>
+        </div>
+        <!-- storage/ -->
+        <div class="tab-pane" id="tab-storage">
+          <div class="two-col" style="gap:11px;">
+            <div class="card c-gn">
+              <div class="card-lbl">storage/ — ملفات التطبيق والـ Logs</div>
+              <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:8px;">
+                كل ما يُنتجه التطبيق يُحفظ هنا: logs، cache، ملفات المستخدمين.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+                <div style="font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;">
+                  <span style="color:var(--sub);">أخطاء التطبيق</span>
+                  <span style="color:var(--rd);">storage/logs/laravel.log</span>
+                </div>
+                <div style="font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;">
+                  <span style="color:var(--sub);">ملفات المستخدمين</span>
+                  <span style="color:var(--gn);">storage/app/public/</span>
+                </div>
+              </div>
+            </div>
+            <div class="cb" style="font-size:11.5px;">
+              <div class="cb-label">Terminal — قراءة الـ log</div>
+              <br>
+              <span class="cm">// عرض آخر 50 سطر من الـ log</span><br>
+              <span class="ac">$</span> <span class="wht">tail -f storage/logs/laravel.log</span><br>
+              <br>
+              <span class="cm">// مسح الـ cache</span><br>
+              <span class="ac">$</span> <span class="wht">php artisan cache:clear</span><br>
+              <span class="ac">$</span> <span class="wht">php artisan config:clear</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S7 ENTRY POINT ══ -->
+  <div class="slide" id="s7">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Entry Point</span><span class="pn">7 / 16</span>
+    </div>
+    <div class="sb" style="padding-bottom:10px;">
+      <div class="sh">Request Lifecycle — <span class="a">كيف يعمل Laravel</span></div>
+      <!-- Horizontal lifecycle flow — based on official Laravel docs -->
+      <div style="display:flex;align-items:stretch;gap:0;flex:1;min-height:0;">
+
+        <!-- Step 1 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--bl);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">🌐</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--bl);font-weight:700;text-align:right;">Browser</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">المستخدم يطلب<br><span style="font-family:var(--mono);color:var(--acc);font-size:10px;">/products</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">① Request</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 2 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--acc);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">🚪</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--acc);font-weight:700;text-align:right;">public/index.php</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Entry Point الوحيد<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">Apache/Nginx يوجّه هنا</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">② Entry</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 3 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--pu);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">📦</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--pu);font-weight:700;text-align:right;">bootstrap/app.php</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">إنشاء App Instance<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">= Service Container</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">③ Bootstrap</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 4 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--gn);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">🔧</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--gn);font-weight:700;text-align:right;">Service Providers</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;"><span style="color:var(--gn)">register()</span> ثم <span style="color:var(--bl)">boot()</span><br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">AppServiceProvider</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">④ Providers</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 5 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--bl);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">🛡️</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--bl);font-weight:700;text-align:right;">Middleware</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Auth, CORS, CSRF<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">فلترة الطلب</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑤ Middleware</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 6 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--acc);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">🗺️</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--acc);font-weight:700;text-align:right;">Router</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">web.php / api.php<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">يطابق الـ URL</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑥ Router</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 7 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--pu);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">⚙️</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--pu);font-weight:700;text-align:right;">Controller</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Business Logic<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">Model + View</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑦ Controller</div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
+
+        <!-- Step 8 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
+          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--gn);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
+            <div style="font-size:18px;">📤</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--gn);font-weight:700;text-align:right;">Response</div>
+            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">HTML أو JSON<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">← Middleware ← Browser</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑧ Response</div>
+        </div>
+
+      </div>
+      <div class="note" style="margin-top:10px;">📌 عند رفع المشروع على السيرفر — وجّه الـ web root إلى <code style="font-family:var(--mono)">public/</code> وليس جذر المشروع — وإلا سيظهر كود PHP للزوار!</div>
+    </div>
+  </div>
+
+  <!-- ══ S8 .ENV ══ -->
+  <div class="slide" id="s8">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">.env File</span><span class="pn">8 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">ملف <span class="a">.env</span> — الإعدادات السرية</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما هو .env ؟</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              ملف يحتوي متغيرات خاصة ببيئتك (local, staging, production).
+              <strong style="color:var(--rd)">لا يُرفع على Git أبداً</strong> — لأنه يحتوي كلمات مرور وأسرار التطبيق.
+            </p>
+          </div>
+          <div class="card c-rd">
+            <div class="card-lbl" style="color:var(--rd)">تحذير مهم</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-times" style="color:var(--rd);font-size:12px;flex-shrink:0;"></i>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لا ترفعه على GitHub أو GitLab</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-check" style="color:var(--gn);font-size:12px;flex-shrink:0;"></i>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">موجود في <span style="font-family:var(--mono);color:var(--dim)">.gitignore</span> تلقائياً</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-check" style="color:var(--gn);font-size:12px;flex-shrink:0;"></i>
+                <span style="font-size:12px;color:var(--sub);text-align:right;"><span style="font-family:var(--mono);color:var(--dim)">.env.example</span> هو النسخة الآمنة للمشاركة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- .env content -->
+        <div dir="ltr" style="background:#030810;border:1px solid var(--bdr);border-radius:9px;padding:14px 16px;overflow:auto;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;">SouqPro/.env</div>
+          <div class="env-row">
+            <span class="env-cm"># التطبيق</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">APP_NAME</span><span class="env-eq">=</span><span class="env-val">SouqPro</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">APP_ENV</span><span class="env-eq">=</span><span class="env-val warn">local</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">APP_DEBUG</span><span class="env-eq">=</span><span class="env-val warn">true</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">APP_URL</span><span class="env-eq">=</span><span class="env-val">http://localhost:8000</span>
+          </div>
+          <div class="env-row" style="margin-top:6px;">
+            <span class="env-cm"># قاعدة البيانات</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_CONNECTION</span><span class="env-eq">=</span><span class="env-val">mysql</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_HOST</span><span class="env-eq">=</span><span class="env-val">127.0.0.1</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_PORT</span><span class="env-eq">=</span><span class="env-val">3306</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_DATABASE</span><span class="env-eq">=</span><span class="env-val warn">souqpro</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_USERNAME</span><span class="env-eq">=</span><span class="env-val">root</span>
+          </div>
+          <div class="env-row">
+            <span class="env-key">DB_PASSWORD</span><span class="env-eq">=</span><span class="env-val red">●●●●●●●</span>
+          </div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> بعد أي تعديل في <span style="font-family:var(--mono);color:var(--acc)">.env</span> نفّذ: <span style="font-family:var(--mono);color:var(--gn)">php artisan config:clear</span> حتى يُطبَّق التغيير.</div>
+    </div>
+  </div>
+
+  <!-- ══ S9 ARTISAN INTRO ══ -->
+  <div class="slide" id="s9">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Artisan CLI</span><span class="pn">9 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Artisan <span class="a">CLI</span> — أداة سطر الأوامر</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما هو Artisan؟</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              أداة سطر أوامر مدمجة في Laravel. تُوفّر عشرات الأوامر الجاهزة لإنشاء ملفات، تشغيل migrations، مسح cache، وأكثر.
+            </p>
+            <p style="font-size:12px;color:var(--dim);text-align:right;margin-top:8px;">
+              بدل ما تنشئ الملفات يدوياً — artisan ينشئها بالبنية الصحيحة فوراً.
+            </p>
+          </div>
+          <div class="term" style="flex:1;">
+            <div class="term-bar">
+              <div class="t-dot" style="background:#ff5f57"></div>
+              <div class="t-dot" style="background:#febc2e"></div>
+              <div class="t-dot" style="background:#28c840"></div>
+              <div class="t-title">Artisan</div>
+            </div>
+            <div class="term-body">
+              <span class="prompt">$</span> <span class="cmd-t">php artisan list</span><br>
+              <span class="out-acc">Laravel Framework 11.x</span><br>
+              <span class="out">Usage: command [options] [args]</span><br>
+              <br>
+              <span class="out-gn">Available commands:</span><br>
+              <span class="out">&nbsp; make:controller</span><br>
+              <span class="out">&nbsp; make:model</span><br>
+              <span class="out">&nbsp; make:migration</span><br>
+              <span class="out">&nbsp; migrate ...</span>
+            </div>
+          </div>
+        </div>
+        <!-- categories -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:12px;color:var(--sub);text-align:right;margin-bottom:2px;">الفئات الأساسية:</div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);border-radius:8px;padding:9px 13px;">
+            <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;">make:</span>
+            <span style="font-size:12px;color:var(--sub);text-align:right;">إنشاء ملفات — controllers, models, migrations, jobs, events</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:9px 13px;">
+            <span style="font-family:var(--mono);font-size:11px;color:var(--bl);flex-shrink:0;">migrate:</span>
+            <span style="font-size:12px;color:var(--sub);text-align:right;">إدارة قاعدة البيانات — run, rollback, fresh, status</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(16,217,122,.07);border:1px solid rgba(16,217,122,.18);border-radius:8px;padding:9px 13px;">
+            <span style="font-family:var(--mono);font-size:11px;color:var(--gn);flex-shrink:0;">cache:</span>
+            <span style="font-size:12px;color:var(--sub);text-align:right;">مسح الـ cache — config:clear, view:clear, route:clear</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.18);border-radius:8px;padding:9px 13px;">
+            <span style="font-family:var(--mono);font-size:11px;color:var(--pu);flex-shrink:0;">serve / tinker:</span>
+            <span style="font-size:12px;color:var(--sub);text-align:right;">تشغيل السيرفر والـ REPL التفاعلي</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S10 ARTISAN MAKE COMMANDS ══ -->
+  <div class="slide" id="s10">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Artisan — make:</span><span class="pn">10 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">أوامر <span class="a">make:</span> — إنشاء الملفات</div>
+      <div class="art-grid">
+        <div class="art-group" style="border-top:2px solid var(--acc);">
+          <div class="art-group-title" style="color:var(--acc)"><i class="fas fa-layer-group"></i> Controller</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:controller ProductController</div>
+            <div class="desc">Controller فارغ بسيط</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:controller ProductController -r</div>
+            <div class="desc">Resource Controller — 7 دوال جاهزة</div>
+          </div>
+        </div>
+        <div class="art-group" style="border-top:2px solid var(--bl);">
+          <div class="art-group-title" style="color:var(--bl)"><i class="fas fa-database"></i> Model</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:model Product</div>
+            <div class="desc">Model فقط</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:model Product -m</div>
+            <div class="desc">Model + Migration معاً</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:model Product -mcr</div>
+            <div class="desc">Model + Migration + Controller</div>
+          </div>
+        </div>
+        <div class="art-group" style="border-top:2px solid var(--gn);">
+          <div class="art-group-title" style="color:var(--gn)"><i class="fas fa-table"></i> Migration & Seeder</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:migration create_products_table</div>
+            <div class="desc">ملف migration جديد</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan make:seeder ProductSeeder</div>
+            <div class="desc">بيانات تجريبية</div>
+          </div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> نصيحة: استخدم <span style="font-family:var(--mono);color:var(--acc)">make:model Product -mcr</span> دائماً — يوفر وقتك وينشئ كل شيء بأمر واحد.</div>
+    </div>
+  </div>
+
+  <!-- ══ S11 ARTISAN MIGRATE + UTILS ══ -->
+  <div class="slide" id="s11">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Artisan — migrate + utils</span><span class="pn">11 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">أوامر <span class="a">migrate</span> والأدوات</div>
+      <div class="art-grid">
+        <div class="art-group" style="border-top:2px solid var(--bl);">
+          <div class="art-group-title" style="color:var(--bl)"><i class="fas fa-database"></i> Migrations</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan migrate</div>
+            <div class="desc">تشغيل كل migrations جديدة</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan migrate:rollback</div>
+            <div class="desc">التراجع عن آخر migration</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan migrate:fresh --seed</div>
+            <div class="desc">مسح كل شيء وإعادة البناء + بيانات</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan migrate:status</div>
+            <div class="desc">عرض حالة كل migration</div>
+          </div>
+        </div>
+        <div class="art-group" style="border-top:2px solid var(--rd);">
+          <div class="art-group-title" style="color:var(--rd)"><i class="fas fa-broom"></i> Cache & Clear</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan cache:clear</div>
+            <div class="desc">مسح application cache</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan config:clear</div>
+            <div class="desc">مسح config cache</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan route:clear</div>
+            <div class="desc">مسح route cache</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan view:clear</div>
+            <div class="desc">مسح compiled views</div>
+          </div>
+        </div>
+        <div class="art-group" style="border-top:2px solid var(--pu);">
+          <div class="art-group-title" style="color:var(--pu)"><i class="fas fa-tools"></i> أدوات يومية</div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan serve</div>
+            <div class="desc">تشغيل السيرفر المحلي :8000</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan tinker</div>
+            <div class="desc">REPL تفاعلي — جرّب كودك مباشرة</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan route:list</div>
+            <div class="desc">عرض كل routes المعرّفة</div>
+          </div>
+          <div class="art-cmd" dir="ltr">
+            <div class="cmd-line">php artisan key:generate</div>
+            <div class="desc">توليد APP_KEY جديد</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S12 SOUQPRO SETUP CHECKLIST ══ -->
+  <div class="slide" id="s12">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">SouqPro — Setup</span><span class="pn">12 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">إعداد مشروع <span class="a">SouqPro</span> كاملاً</div>
+      <div class="two-col" style="gap:14px;">
+        <div class="term" style="display:flex;flex-direction:column;flex:1;">
+          <div class="term-bar">
+            <div class="t-dot" style="background:#ff5f57"></div>
+            <div class="t-dot" style="background:#febc2e"></div>
+            <div class="t-dot" style="background:#28c840"></div>
+            <div class="t-title">SouqPro — Full Setup</div>
+          </div>
+          <div class="term-body" style="flex:1;font-size:11.5px;">
+            <span class="out-acc"># 1. إنشاء المشروع</span><br>
+            <span class="prompt">$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
+            <span class="prompt">$</span> <span class="cmd-t">cd SouqPro</span><br>
+            <br>
+            <span class="out-acc"># 2. ضبط .env</span><br>
+            <span class="out">APP_NAME=SouqPro</span><br>
+            <span class="out">DB_DATABASE=souqpro</span><br>
+            <span class="out">DB_USERNAME=root</span><br>
+            <br>
+            <span class="out-acc"># 3. إنشاء قاعدة البيانات + migrate</span><br>
+            <span class="prompt">$</span> <span class="cmd-t">php artisan migrate</span><br>
+            <span class="out-gn">✓ Migrations ran successfully.</span><br>
+            <br>
+            <span class="out-acc"># 4. إنشاء أول Model</span><br>
+            <span class="prompt">$</span> <span class="cmd-t">php artisan make:model Product -mcr</span><br>
+            <span class="out-gn">✓ Model, Migration, Controller created.</span><br>
+            <br>
+            <span class="out-acc"># 5. تشغيل السيرفر</span><br>
+            <span class="prompt">$</span> <span class="cmd-t">php artisan serve</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-gn">
+            <div class="card-lbl">الملفات التي أنشأناها</div>
+            <div class="ftree" style="font-size:11.5px;line-height:2;background:transparent;border:none;padding:8px 0 0;">
+              <span class="ft-dir-acc">SouqPro/</span><br>
+              ├── <span class="ft-file" style="color:var(--gn);">app/Models/Product.php</span> ✓<br>
+              ├── <span class="ft-file" style="color:var(--bl);">app/Http/Controllers/ProductController.php</span> ✓<br>
+              └── <span class="ft-file" style="color:var(--pu);">database/migrations/..._create_products_table.php</span> ✓
+            </div>
+          </div>
+          <div class="note">
+            📌 هذه هي الخطوات التي ستكررها في كل مشروع Laravel جديد — احفظها!
+          </div>
+          <a href="https://laravel.com/docs/installation" target="_blank" class="link-btn lv" style="justify-content:space-between;">
+            <i class="fas fa-external-link-alt"></i>
+            <div style="text-align:right;">
+              <div style="font-size:12px;font-weight:700;">Laravel Installation Docs</div>
+              <div style="font-size:10px;color:var(--dim);">laravel.com/docs/installation</div>
+            </div>
+            <i class="fab fa-laravel" style="color:#ff2d20;font-size:16px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S13 SERVICE CONTAINER ══ -->
+  <div class="slide" id="s13">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Service Container</span><span class="pn">13 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Service <span class="a">Container</span> — أداة Dependency Injection</div>
+      <div class="two-col">
+        <!-- Concept column -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div class="card c-pu">
+            <div class="card-lbl">التعريف الرسمي — Laravel Docs</div>
+            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:6px;">
+              أداة قوية لـ <strong style="color:var(--wh)">إدارة dependencies الكلاسات وحقنها تلقائياً</strong>.
+              بدل ما تكتب <span dir="ltr" style="font-family:var(--mono);color:var(--rd)">new Mailer(new SmtpTransport())</span> في كل مكان — تكتب اسم الكلاس فقط وLaravel ينشئه لك.
+            </p>
+          </div>
+          <!-- Zero config resolution -->
+          <div class="card c-gn">
+            <div class="card-lbl" style="color:var(--gn)">✨ Zero Configuration Resolution</div>
+            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:6px;">
+              إذا الكلاس ما عنده dependencies معقدة — Laravel يحلّه تلقائياً <strong style="color:var(--wh)">بدون أي تسجيل</strong>.
+              أغلب وقتك ما رح تحتاج تتعامل مع Container مباشرة — هو يشتغل في الخلفية.
+            </p>
+          </div>
+          <!-- When you need it manually -->
+          <div class="card c-acc" style="flex:1;">
+            <div class="card-lbl">متى تتعامل معه يدوياً؟</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--acc);flex-shrink:0;font-size:13px;">→</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تربط Interface بـ implementation معين</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--acc);flex-shrink:0;font-size:13px;">→</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى خدمة واحدة فقط طول عمر الطلب (singleton)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Code column -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <!-- Auto injection example -->
+          <div class="cb" dir="ltr" style="font-size:11.5px;">
+            <div class="cb-label">// Automatic Injection — الأكثر استخداماً</div>
+            <br>
+            <span class="cm">// Laravel يحقن Request تلقائياً</span><br>
+            <span class="kw">use</span> <span class="fn">Illuminate\Http\Request</span>;<br>
+            <br>
+            <span class="fn">Route</span>::<span class="fn">get</span>(<span class="st">'/search'</span>, <span class="kw">function</span> (<span class="fn">Request</span> <span class="ac">$request</span>) {<br>
+            &nbsp;&nbsp;<span class="cm">// Container حقن Request تلقائياً هنا</span><br>
+            &nbsp;&nbsp;<span class="kw">return</span> <span class="ac">$request</span>-><span class="fn">input</span>(<span class="st">'q'</span>);<br>
+            });<br>
+            <br>
+            <span class="cm">// نفس الشيء في Controller</span><br>
+            <span class="kw">class</span> <span class="fn">ProductController</span> {<br>
+            &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">store</span>(<span class="fn">Request</span> <span class="ac">$request</span>) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// $request جاهز — لم تكتب new Request()</span><br>
+            &nbsp;&nbsp;}<br>
+            }
+          </div>
+          <!-- bind example -->
+          <div class="cb" dir="ltr" style="font-size:11.5px;flex:1;">
+            <div class="cb-label">// Manual bind — في AppServiceProvider</div>
+            <br>
+            <span class="cm">// ربط Interface بـ Implementation</span><br>
+            <span class="ac">$this</span>-><span class="fn">app</span>-><span class="fn">bind</span>(<br>
+            &nbsp;&nbsp;<span class="fn">PaymentInterface</span>::<span class="kw">class</span>,<br>
+            &nbsp;&nbsp;<span class="fn">StripePayment</span>::<span class="kw">class</span><br>
+            );<br>
+            <br>
+            <span class="cm">// الآن كل مكان يطلب PaymentInterface</span><br>
+            <span class="cm">// يحصل تلقائياً على StripePayment</span>
+          </div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> حسب الـ docs الرسمية: <em>"في أغلب الأحيان لن تحتاج للتعامل مع Container مباشرة — هو يعمل في الخلفية تلقائياً."</em></div>
+    </div>
+  </div>
+
+  <!-- ══ S14 APP SERVICE PROVIDER (Laravel 12) ══ -->
+  <div class="slide" id="s14">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">AppServiceProvider — Laravel 12</span><span class="pn">14 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh"><span class="a">AppServiceProvider</span> — بوابة تهيئة التطبيق</div>
+      <div class="two-col" style="gap:13px;">
+        <!-- Left: concept + two method cards -->
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما هو؟</div>
+            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              يعمل <strong style="color:var(--wh)">مرة واحدة عند تحميل التطبيق</strong> — قبل أي طلب.<br>
+              هنا تسجّل الخدمات وتضع إعدادات Bootstrap.
+            </p>
+          </div>
+          <!-- register vs boot — clear side-by-side -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;">
+            <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.22);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--bl);text-align:right;">register()</div>
+              <div style="width:100%;height:1px;background:var(--bdr);"></div>
+              <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.6;">سجّل الخدمات في Container</div>
+              <div style="font-size:11px;color:var(--dim);text-align:right;line-height:1.5;">يعمل <em>أول</em> — قبل boot<br>لا تستدعي خدمات هنا</div>
+              <div dir="ltr" style="font-family:var(--mono);font-size:10px;color:var(--bl);background:rgba(56,189,248,.06);border-radius:4px;padding:3px 6px;margin-top:2px;">$this->app->bind(...)</div>
+            </div>
+            <div style="background:rgba(16,217,122,.07);border:1px solid rgba(16,217,122,.22);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gn);text-align:right;">boot()</div>
+              <div style="width:100%;height:1px;background:var(--bdr);"></div>
+              <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.6;">إعدادات بعد تسجيل كل الخدمات</div>
+              <div style="font-size:11px;color:var(--dim);text-align:right;line-height:1.5;">يعمل <em>بعد</em> register الكل<br>يمكن استدعاء أي خدمة</div>
+              <div dir="ltr" style="font-family:var(--mono);font-size:10px;color:var(--gn);background:rgba(16,217,122,.06);border-radius:4px;padding:3px 6px;margin-top:2px;">Model::preventLazyLoading()</div>
+            </div>
+          </div>
+          <!-- Laravel 12 note -->
+          <div style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:9px 12px;">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--acc);margin-bottom:6px;">🆕 Laravel 12 — تغيّر مهم</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;">
+                <span style="font-family:var(--mono);color:var(--rd);">RouteServiceProvider</span>
+                <span style="color:var(--dim);">حُذف ← Routes في bootstrap/app.php</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;">
+                <span style="font-family:var(--mono);color:var(--acc);">AppServiceProvider</span>
+                <span style="color:var(--gn);">أصبح المكان الوحيد ✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right: full code -->
+        <div class="cb" dir="ltr" style="font-size:11px;flex:1;overflow-y:auto;">
+          <div class="cb-label">app/Providers/AppServiceProvider.php</div>
+          <br>
+          <span class="kw">namespace</span> <span class="fn">App\Providers</span>;<br>
+          <br>
+          <span class="kw">use</span> <span class="fn">Illuminate\Support\ServiceProvider</span>;<br>
+          <span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Model</span>;<br>
+          <span class="kw">use</span> <span class="fn">App\Services\PaymentService</span>;<br>
+          <span class="kw">use</span> <span class="fn">App\Contracts\PaymentInterface</span>;<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">AppServiceProvider</span> <span class="kw">extends</span> <span class="fn">ServiceProvider</span><br>
+          {<br>
+          &nbsp;&nbsp;<span class="cm">/**</span><br>
+          &nbsp;&nbsp;<span class="cm"> * 1️⃣ register() — يعمل أولاً</span><br>
+          &nbsp;&nbsp;<span class="cm"> * سجّل الخدمات في Container هنا</span><br>
+          &nbsp;&nbsp;<span class="cm"> */</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">register</span>(): <span class="kw">void</span><br>
+          &nbsp;&nbsp;{<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">app</span>-><span class="fn">bind</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">PaymentInterface</span>::<span class="kw">class</span>,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">PaymentService</span>::<span class="kw">class</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;);<br>
+          &nbsp;&nbsp;}<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">/**</span><br>
+          &nbsp;&nbsp;<span class="cm"> * 2️⃣ boot() — يعمل بعد register الكل</span><br>
+          &nbsp;&nbsp;<span class="cm"> * ضع إعدادات التطبيق هنا</span><br>
+          &nbsp;&nbsp;<span class="cm"> */</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">boot</span>(): <span class="kw">void</span><br>
+          &nbsp;&nbsp;{<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// منع lazy loading في dev</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Model</span>::<span class="fn">preventLazyLoading</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! <span class="fn">app</span>()-><span class="fn">isProduction</span>()<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;);<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S15 HOMEWORK ══ -->
+  <div class="slide" id="s15">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Homework</span><span class="pn">15 / 16</span>
+    </div>
+    <div class="sb">
+      <div class="sh">🎯 واجبك بعد <span class="a">المحاضرة</span></div>
+      <div class="hwl">
+        <div class="hwr">
+          <div class="hwn">01</div>
+          <div class="hwb">
+            <div class="hwt">ثبّت Laravel وأنشئ مشروع SouqPro</div>
+            <div class="hwd">نفّذ الخطوات الـ 5 التي شرحناها — تأكد أن السيرفر يعمل على المنفذ 8000</div>
+            <div class="hwcr" dir="ltr">
+              <span class="cmd">composer create-project laravel/laravel SouqPro</span>
+              <span class="cmd">php artisan serve</span>
+            </div>
+          </div>
+        </div>
+        <div class="hwr">
+          <div class="hwn">02</div>
+          <div class="hwb">
+            <div class="hwt">اضبط ملف .env واربطه بقاعدة بيانات محلية</div>
+            <div class="hwd">أنشئ قاعدة بيانات <code style="font-family:var(--mono);color:var(--acc)">souqpro</code> في MySQL ثم نفّذ الـ migrations</div>
+            <div class="hwcr" dir="ltr">
+              <span class="cmd">php artisan migrate</span>
+            </div>
+          </div>
+        </div>
+        <div class="hwr">
+          <div class="hwn">03</div>
+          <div class="hwb">
+            <div class="hwt">افتح <code style="font-family:var(--mono);color:var(--acc)">AppServiceProvider.php</code> وافهم بنيته</div>
+            <div class="hwd">افتح الملف واقرأ التعليقات — لا تحتاج تعدل شيئاً الآن، فقط تعرّف عليه. هذا الملف ستستخدمه كثيراً لاحقاً.</div>
+            <div dir="ltr" class="hwcr">
+              <span class="cmd">code app/Providers/AppServiceProvider.php</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S16 CLOSING ══ -->
+  <div class="slide" id="s16">
+    <div class="cll">
+      <div class="clcode">
+        // المحاضرة القادمة...<br><br>
+        // Routing &amp; Controllers<br>
+        // MVC Pattern<br><br>
+        <span style="color:#1e4060">Route</span>::<span style="color:#1a3a58">get</span>(<br>
+        &nbsp;<span style="color:#193550">'/products'</span>,<br>
+        &nbsp;[<span style="color:#1a3a58">ProductController</span><br>
+        &nbsp;::class,<br>
+        &nbsp;<span style="color:#193550">'index'</span>]);<br><br>
+        <span style="color:#172e4a">class</span>
+        <span style="color:#1a3a58">ProductController</span><br>
+        &nbsp;<span style="color:#172e4a">extends</span>
+        <span style="color:#18375a">Controller</span> {<br>
+        &nbsp;&nbsp;<span style="color:#172e4a">public function</span><br>
+        &nbsp;&nbsp;<span style="color:#1a3a58">index</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#172e4a">return</span>
+        <span style="color:#1a3a58">Product</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;::<span style="color:#1e4060">all</span>();<br>
+        &nbsp;&nbsp;}<br>
+        }
+      </div>
+      <div class="clft">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-route" style="color:#f97316"></i>
+        <span class="sp"></span>
+        <span class="v">v3.0.0</span>
+      </div>
+    </div>
+    <div class="clr">
+      <div class="clbig">
+        <div class="l1">الأسئلة</div>
+        <div class="l2">والنقاش 💬</div>
+      </div>
+      <div class="cl-instr">
+        <div class="cl-instr-info">
+          <div class="cl-instr-name">السيد الاخرسي</div>
+          <div class="cl-instr-role">Full Stack Developer & Instructor</div>
+          <div class="cl-instr-company">WebUra</div>
+        </div>
+        <div class="cl-instr-photo">
+          <img src="../assets/alsaeyd.png" alt="المدرب"/>
+        </div>
+      </div>
+      <div class="clnx">
+        <div class="nx-label">// المحاضرة القادمة</div>
+        <div class="nx-title">Routing, Controllers وMVC Pattern</div>
+      </div>
+      <div class="clics">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-route" style="color:#38bdf8"></i>
+        <i class="fas fa-layer-group" style="color:#c084fc"></i>
+        <i class="fas fa-database" style="color:#10d97a"></i>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- NAV ROW -->
+<div id="nav-row">
+  <div id="instr-card">
+    <div class="iav">
+      <img src="../assets/alsaeyd.png" alt=""/>
+    </div>
+    <div>
+      <div class="inm">السيد الاخرسي</div>
+      <div class="irl">Full Stack Developer & Instructor</div>
+    </div>
+  </div>
+  <div id="nav">
+    <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
+    <div id="dots"></div>
+    <span id="ctr">1 / 16</span>
+    <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<script>
+  const N=16; let c=1;
+  const ctr=document.getElementById("ctr"),btnN=document.getElementById("btnN"),
+        btnP=document.getElementById("btnP"),dotsEl=document.getElementById("dots");
+  for(let i=1;i<=N;i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i===1?" on":"");
+    d.onclick=()=>go(i);
+    dotsEl.appendChild(d);
+  }
+  function go(n){
+    if(n<1||n>N||n===c)return;
+    document.getElementById("s"+c).classList.remove("active");
+    c=n;
+    document.getElementById("s"+c).classList.add("active");
+    ctr.textContent=c+" / "+N;
+    btnP.disabled=c===1; btnN.disabled=c===N;
+    dotsEl.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("on",i+1===c));
+  }
+  btnN.onclick=()=>go(c+1);
+  btnP.onclick=()=>go(c-1);
+  document.addEventListener("keydown",e=>{
+    if(["ArrowRight","ArrowDown"," "].includes(e.key)){e.preventDefault();go(c+1);}
+    if(["ArrowLeft","ArrowUp"].includes(e.key)){e.preventDefault();go(c-1);}
+  });
+
+  // Tabs for S6
+  function showTab(name){
+    document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("on"));
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("on"));
+    document.getElementById("tab-"+name).classList.add("on");
+    event.target.classList.add("on");
+  }
+</script>
+</body>
+</html>

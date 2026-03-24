@@ -1,0 +1,1286 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <title>المحاضرة الثانية — PHP OOP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:   #080c14;
+      --surf: #0d1520;
+      --card: #111b2a;
+      --bdr:  #1c2d42;
+      --bdr2: #243650;
+      --acc:  #f97316;
+      --acc2: #fb923c;
+      --wh:   #f0f6ff;
+      --sub:  #7a9bbf;
+      --dim:  #3a5470;
+      --gn:   #10d97a;
+      --bl:   #38bdf8;
+      --pu:   #c084fc;
+      --rd:   #f87171;
+      --mono: "JetBrains Mono", monospace;
+      --sans: "Tajawal", sans-serif;
+      --W: 1060px;
+      --H: 596px;
+      --R: 14px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:#03060b; min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; font-family:var(--sans);
+      overflow:hidden; gap:18px; padding:0 0 8px;
+    }
+    #stage { position:relative; width:var(--W); height:var(--H); flex-shrink:0; }
+    .slide {
+      position:absolute; inset:0; width:var(--W); height:var(--H);
+      background:var(--bg); border-radius:var(--R); border:1px solid var(--bdr);
+      overflow:hidden; display:none; flex-direction:column;
+      box-shadow:0 28px 70px rgba(0,0,0,.88), 0 0 0 1px rgba(249,115,22,.04);
+    }
+    .slide.active { display:flex; animation:fadeUp .38s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px) scale(.986); }
+      to   { opacity:1; transform:none; }
+    }
+
+    /* ── NAV ROW ── */
+    #nav-row { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+    #instr-card {
+      display:flex; align-items:center; gap:10px;
+      background:var(--surf); border:1px solid var(--bdr);
+      border-radius:50px; padding:5px 14px 5px 6px;
+      box-shadow:0 4px 20px rgba(0,0,0,.5);
+    }
+    .iav { width:34px; height:34px; border-radius:50%; border:2px solid var(--acc); flex-shrink:0; overflow:hidden; }
+    .iav img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .inm { font-size:12.5px; font-weight:800; color:var(--wh); white-space:nowrap; }
+    .irl { font-size:9.5px; color:var(--sub); font-family:var(--mono); white-space:nowrap; }
+    #nav {
+      display:flex; align-items:center; gap:0;
+      background:var(--surf); border:1px solid var(--bdr);
+      border-radius:50px; padding:5px 6px;
+      box-shadow:0 6px 24px rgba(0,0,0,.6); flex-shrink:0;
+    }
+    .nb {
+      width:36px; height:36px; border-radius:50%; border:none; cursor:pointer;
+      font-size:13px; display:flex; align-items:center; justify-content:center;
+      transition:all .15s; color:var(--sub); background:transparent;
+    }
+    .nb:hover:not(:disabled) { background:var(--card); color:var(--wh); }
+    .nb:disabled { opacity:.22; cursor:not-allowed; }
+    .nb.next { background:var(--acc); color:#fff; margin-right:4px; }
+    .nb.next:hover:not(:disabled) { background:var(--acc2); }
+    #ctr { font-family:var(--mono); font-size:11px; color:var(--dim); padding:0 10px; white-space:nowrap; }
+    #dots { display:flex; gap:3px; align-items:center; padding:0 4px; }
+    .dot { width:5px; height:5px; border-radius:50%; background:var(--bdr2); cursor:pointer; transition:all .22s; }
+    .dot.on { background:var(--acc); width:14px; border-radius:3px; }
+
+    /* ── TOPBAR ── */
+    .tb {
+      height:42px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 32px; border-bottom:1px solid var(--bdr);
+      background:rgba(11,18,32,.88); flex-shrink:0; position:relative; z-index:2;
+    }
+    .tb .tag { font-family:var(--mono); font-size:10px; color:var(--acc); letter-spacing:.08em; text-transform:uppercase; }
+    .tb .pn  { font-family:var(--mono); font-size:10px; color:var(--dim); }
+    .tb .cid { font-size:10.5px; color:var(--dim); display:flex; align-items:center; gap:6px; }
+    .dlive { width:6px; height:6px; border-radius:50%; background:var(--acc); animation:pulse 2s infinite; display:inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.22} }
+
+    /* ── SLIDE BODY ── */
+    .sb { flex:1; padding:20px 32px 16px; display:flex; flex-direction:column; position:relative; z-index:1; overflow:auto; }
+    .sh { font-size:23px; font-weight:900; color:var(--wh); text-align:right; line-height:1.25; margin-bottom:14px; }
+    .sh .a  { color:var(--acc); }
+    .sh .a2 { color:var(--bl); }
+    .sh .ag { color:var(--gn); }
+
+    /* SHARED COMPONENTS */
+    .pill {
+      display:inline-flex; align-items:center; gap:4px;
+      font-family:var(--mono); font-size:10px; padding:2px 8px;
+      border-radius:4px; background:rgba(255,255,255,.05);
+      color:var(--sub); border:1px solid var(--bdr);
+    }
+    .cmd {
+      font-family:var(--mono); font-size:11px; color:var(--gn);
+      background:rgba(16,217,122,.07); border:1px solid rgba(16,217,122,.18);
+      border-radius:5px; padding:2px 8px; display:inline-block;
+    }
+    .note {
+      background:rgba(249,115,22,.07); border:1px solid rgba(249,115,22,.17);
+      border-radius:8px; padding:9px 14px; font-size:12px;
+      color:var(--acc); text-align:right; font-style:italic;
+    }
+    .lnote {
+      background:rgba(56,189,248,.07); border:1px solid rgba(56,189,248,.2);
+      border-radius:8px; padding:8px 13px; font-size:11.5px;
+      color:var(--bl); text-align:right; display:flex; align-items:center; gap:8px; margin-top:8px;
+    }
+    .lnote i { flex-shrink:0; font-size:13px; }
+
+    /* ── CARD ── */
+    .card {
+      background:var(--card); border:1px solid var(--bdr);
+      border-radius:9px; padding:12px 15px;
+    }
+    .card.c-acc { border-top:2px solid var(--acc); }
+    .card.c-gn  { border-top:2px solid var(--gn); }
+    .card.c-bl  { border-top:2px solid var(--bl); }
+    .card.c-pu  { border-top:2px solid var(--pu); }
+    .card.c-rd  { border-top:2px solid var(--rd); }
+    .card-lbl { font-size:10px; font-family:var(--mono); color:var(--sub); margin-bottom:6px; text-transform:uppercase; letter-spacing:.07em; }
+
+    /* ── CODE BLOCK ── */
+    .cb {
+      background:#060b12; border:1px solid var(--bdr);
+      border-radius:8px; padding:12px 14px;
+      font-family:var(--mono); font-size:12px; line-height:1.75;
+      color:#7a9bbf; overflow:hidden; position:relative;
+    }
+    .cb .kw  { color:#c084fc; }
+    .cb .fn  { color:#38bdf8; }
+    .cb .st  { color:#10d97a; }
+    .cb .cm  { color:#3a5470; }
+    .cb .ac  { color:#f97316; }
+    .cb .wht { color:#f0f6ff; }
+    .cb .rd  { color:#f87171; }
+    .cb-label {
+      position:absolute; top:8px; left:10px;
+      font-family:var(--mono); font-size:9px;
+      color:var(--dim); letter-spacing:.05em;
+    }
+
+    /* ── COVER (S1) ── */
+    #s1 { flex-direction:row; }
+    .cvl {
+      width:310px; background:var(--surf); border-left:1px solid var(--bdr);
+      flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
+    }
+    .cvl::before {
+      content:""; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent);
+    }
+    .cvl pre {
+      flex:1; padding:22px 18px;
+      font-family:var(--mono); font-size:11.5px;
+      line-height:2; color:#1e3554; overflow:hidden;
+    }
+    .cvl-ft {
+      height:46px; border-top:1px solid var(--bdr);
+      display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0;
+    }
+    .cvl-ft i { font-size:16px; }
+    .cvl-ft .sp { flex:1; }
+    .cvl-ft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
+    .cvr {
+      flex:1; display:flex; flex-direction:column; justify-content:center;
+      padding:36px 44px 32px 24px; position:relative;
+    }
+    .cvr::before {
+      content:""; position:absolute; top:-60px; left:-60px;
+      width:350px; height:350px;
+      background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .cv-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(249,115,22,.1); border:1px solid rgba(249,115,22,.22);
+      border-radius:6px; padding:5px 13px;
+      font-size:12px; font-weight:700; color:var(--acc);
+      align-self:flex-end; margin-bottom:22px;
+    }
+    .cv-eye { font-size:13px; color:var(--sub); font-weight:500; text-align:right; margin-bottom:6px; }
+    .cv-h { font-size:46px; font-weight:900; line-height:1.1; text-align:right; color:var(--wh); margin-bottom:6px; }
+    .cv-h span { color:var(--acc); display:block; }
+    .cv-tag { font-size:13.5px; color:var(--sub); text-align:right; margin-bottom:4px; }
+    .cv-mono { font-family:var(--mono); font-size:10.5px; color:var(--dim); text-align:right; }
+    .cv-chips { display:flex; gap:9px; justify-content:flex-end; margin-top:22px; }
+    .chip { background:var(--card); border:1px solid var(--bdr); border-radius:7px; padding:9px 14px; text-align:center; }
+    .chip .cl { font-size:9.5px; color:var(--sub); display:block; margin-bottom:3px; }
+    .chip .cv { font-size:12.5px; font-weight:800; color:var(--wh); }
+
+    /* ── AGENDA (S2) ── */
+    .ag-list { display:flex; flex-direction:column; gap:7px; flex:1; }
+    .ag-row {
+      display:flex; align-items:center;
+      background:var(--card); border:1px solid var(--bdr);
+      border-radius:8px; overflow:hidden; flex:1;
+      transition:border-color .2s;
+    }
+    .ag-row:hover { border-color:var(--acc); }
+    .ag-n {
+      width:50px; display:flex; align-items:center; justify-content:center;
+      font-family:var(--mono); font-size:15px; font-weight:700; color:var(--acc);
+      background:rgba(249,115,22,.06); border-left:1px solid var(--bdr);
+      align-self:stretch; flex-shrink:0;
+    }
+    .ag-ic { width:40px; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--sub); flex-shrink:0; }
+    .ag-tx { flex:1; font-size:13.5px; font-weight:600; color:var(--wh); text-align:right; padding-right:4px; }
+    .ag-tg { margin-left:14px; flex-shrink:0; }
+    .ag-skip { opacity:.45; }
+
+    /* ── TWO COL ── */
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; }
+    .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; flex:1; }
+
+    /* ── VISIBILITY TABLE (S6) ── */
+    .vis-table { width:100%; border-collapse:collapse; flex:1; }
+    .vis-table th {
+      background:rgba(249,115,22,.08); color:var(--acc);
+      font-family:var(--mono); font-size:11px; padding:10px 14px;
+      border-bottom:1px solid var(--bdr); text-align:right; font-weight:700;
+    }
+    .vis-table td {
+      padding:9px 14px; border-bottom:1px solid rgba(28,45,66,.6);
+      font-size:12.5px; color:var(--wh); vertical-align:middle;
+    }
+    .vis-table tr:last-child td { border-bottom:none; }
+    .vis-table tr:hover td { background:rgba(255,255,255,.02); }
+    .vis-kw { font-family:var(--mono); font-size:12px; font-weight:700; padding:3px 10px; border-radius:5px; }
+    .vis-pub { background:rgba(16,217,122,.12); color:var(--gn); border:1px solid rgba(16,217,122,.25); }
+    .vis-pro { background:rgba(249,115,22,.12); color:var(--acc); border:1px solid rgba(249,115,22,.25); }
+    .vis-prv { background:rgba(248,113,113,.12); color:var(--rd); border:1px solid rgba(248,113,113,.25); }
+    .check { color:var(--gn); font-size:14px; }
+    .cross { color:var(--rd); font-size:14px; }
+
+    /* ── STBL (Summary table) ── */
+    .stbl { width:100%; border-collapse:collapse; }
+    .stbl th {
+      background:rgba(249,115,22,.08); color:var(--acc);
+      font-family:var(--mono); font-size:11px; padding:8px 14px;
+      border-bottom:1px solid var(--bdr); text-align:right;
+    }
+    .stbl td { padding:8px 14px; border-bottom:1px solid rgba(28,45,66,.5); font-size:12.5px; color:var(--wh); }
+    .stbl tr:last-child td { border-bottom:none; }
+    .trn { display:flex; align-items:center; gap:8px; }
+
+    /* ── FLOW NODES ── */
+    .flow-row { display:flex; align-items:center; gap:0; flex:1; }
+    .fnode {
+      flex:1; background:var(--card); border:1px solid var(--bdr);
+      border-radius:9px; padding:14px 16px; display:flex; flex-direction:column;
+      align-items:flex-end; gap:6px; height:100%;
+    }
+    .fnode.acc-b { border-top:2px solid var(--acc); }
+    .fnode.gn-b  { border-top:2px solid var(--gn); }
+    .fnode.bl-b  { border-top:2px solid var(--bl); }
+    .fnode.pu-b  { border-top:2px solid var(--pu); }
+    .fn-icon { font-size:22px; margin-bottom:2px; }
+    .fn-title { font-size:13.5px; font-weight:800; color:var(--wh); }
+    .fn-sub { font-size:11px; color:var(--sub); font-family:var(--mono); }
+    .fn-desc { font-size:12px; color:var(--sub); text-align:right; line-height:1.55; margin-top:4px; }
+    .farrow { font-size:20px; color:var(--dim); padding:0 6px; flex-shrink:0; }
+
+    /* ── HOMEWORK ── */
+    .hwl { display:flex; flex-direction:column; gap:10px; flex:1; }
+    .hwr {
+      display:flex; align-items:flex-start; gap:14px;
+      background:var(--card); border:1px solid var(--bdr);
+      border-radius:9px; padding:13px 16px; flex:1;
+    }
+    .hwn {
+      font-family:var(--mono); font-size:18px; font-weight:700;
+      color:var(--acc); flex-shrink:0; width:32px;
+    }
+    .hwb { flex:1; }
+    .hwt { font-size:13.5px; font-weight:700; color:var(--wh); margin-bottom:4px; }
+    .hwd { font-size:12px; color:var(--sub); line-height:1.5; }
+    .hwcr { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+
+    /* ── CLOSING (S14) ── */
+    #s14 { flex-direction:row; }
+    .cll {
+      width:300px; background:var(--surf); border-left:1px solid var(--bdr);
+      flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
+    }
+    .cll::before {
+      content:""; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent);
+    }
+    .clcode {
+      flex:1; padding:20px 16px;
+      font-family:var(--mono); font-size:11px; line-height:2;
+      color:#1e3554; overflow:hidden;
+    }
+    .clft {
+      height:46px; border-top:1px solid var(--bdr);
+      display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0;
+    }
+    .clft i { font-size:16px; }
+    .clft .sp { flex:1; }
+    .clft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
+    .clr {
+      flex:1; display:flex; flex-direction:column;
+      padding:32px 40px 26px 24px; position:relative;
+    }
+    .clbig { font-size:48px; font-weight:900; text-align:right; line-height:1.1; margin-bottom:12px; }
+    .clbig .l1 { color:var(--wh); }
+    .clbig .l2 { color:var(--acc); }
+    .cl-instr {
+      display:flex; align-items:center; justify-content:flex-end; gap:14px;
+      margin-bottom:14px;
+    }
+    .cl-instr-info { text-align:right; }
+    .cl-instr-name { font-size:13.5px; font-weight:800; color:var(--wh); }
+    .cl-instr-role { font-size:10.5px; color:var(--sub); font-family:var(--mono); }
+    .cl-instr-company { font-size:10px; color:var(--acc); font-family:var(--mono); }
+    .cl-instr-photo { width:44px; height:44px; border-radius:50%; border:2px solid var(--acc); overflow:hidden; flex-shrink:0; }
+    .cl-instr-photo img { width:100%; height:100%; object-fit:cover; }
+    .clnx {
+      background:var(--card); border:1px solid var(--bdr); border-radius:8px;
+      padding:10px 14px; margin-bottom:14px;
+    }
+    .nx-label { font-family:var(--mono); font-size:10px; color:var(--dim); margin-bottom:4px; }
+    .nx-title { font-size:14px; font-weight:700; color:var(--wh); }
+    .clics { display:flex; gap:14px; justify-content:flex-end; font-size:18px; }
+  </style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ══ S1 COVER ══ -->
+  <div class="slide active" id="s1">
+    <div class="cvl">
+      <pre>
+<span style="color:#1d3450">&lt;?php</span>
+
+<span style="color:#2a4870">class</span> <span style="color:#1e4878">User</span> {
+
+  <span style="color:#243d58">private</span>
+    <span style="color:#1a3450">string</span>
+    <span style="color:#162e48">$name;</span>
+
+  <span style="color:#243d58">public function</span>
+  <span style="color:#1e4878">__construct</span>(
+    <span style="color:#162e48">string $n</span>
+  ) {
+    <span style="color:#1a3450">$this</span>
+    <span style="color:#162e48">->name = $n;</span>
+  }
+
+  <span style="color:#243d58">public function</span>
+  <span style="color:#1e4878">getName</span>()
+  <span style="color:#162e48">: string {</span>
+    <span style="color:#1a3450">return</span>
+    <span style="color:#162e48">$this->name;</span>
+  }
+}
+      </pre>
+      <div class="cvl-ft">
+        <i class="fab fa-php" style="color:#8892bf"></i>
+        <i class="fas fa-cubes" style="color:#f97316"></i>
+        <span class="sp"></span>
+        <span class="v">v2.0.0</span>
+      </div>
+    </div>
+    <div class="cvr">
+      <div class="cv-badge"><i class="fas fa-circle-dot" style="font-size:8px"></i> المحاضرة الثانية</div>
+      <div class="cv-eye">PHP Object-Oriented Programming</div>
+      <div class="cv-h">البرمجة<span>الكائنية</span></div>
+      <div class="cv-tag">الأساسيات التي يحتاجها كل مطوّر Laravel</div>
+      <div class="cv-mono">// Classes · Methods · Inheritance · Interfaces · Traits</div>
+      <div class="cv-chips">
+        <div class="chip"><span class="cl">المدة</span><span class="cv">60 دقيقة</span></div>
+        <div class="chip"><span class="cl">المواضيع</span><span class="cv">10 مفاهيم</span></div>
+        <div class="chip"><span class="cl">المستوى</span><span class="cv">مبتدئ</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S2 AGENDA ══ -->
+  <div class="slide" id="s2">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Agenda</span><span class="pn">2 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">محتوى <span class="a">المحاضرة</span></div>
+      <div class="ag-list">
+        <div class="ag-row">
+          <div class="ag-n">01</div>
+          <div class="ag-ic"><i class="fas fa-cube" style="color:var(--acc)"></i></div>
+          <div class="ag-tx">Class · Properties · Methods</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">02</div>
+          <div class="ag-ic"><i class="fas fa-hammer" style="color:var(--bl)"></i></div>
+          <div class="ag-tx">Constructor و <code style="font-family:var(--mono);color:var(--acc)">$this</code> وإنشاء Objects</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">03</div>
+          <div class="ag-ic"><i class="fas fa-shield-halved" style="color:var(--gn)"></i></div>
+          <div class="ag-tx">Visibility: public · protected · private</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">04</div>
+          <div class="ag-ic"><i class="fas fa-sitemap" style="color:var(--pu)"></i></div>
+          <div class="ag-tx">Inheritance و <code style="font-family:var(--mono);color:var(--acc)">parent::</code></div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">05</div>
+          <div class="ag-ic"><i class="fas fa-file-code" style="color:var(--bl)"></i></div>
+          <div class="ag-tx">Abstract Classes و Interfaces</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+        <div class="ag-row">
+          <div class="ag-n">06</div>
+          <div class="ag-ic"><i class="fas fa-puzzle-piece" style="color:var(--acc)"></i></div>
+          <div class="ag-tx">Traits · Static · Namespaces · PSR-4</div>
+          <div class="ag-tg"><span class="pill">Core</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S3 WHAT IS OOP ══ -->
+  <div class="slide" id="s3">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Intro — OOP</span><span class="pn">3 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">لماذا نحتاج <span class="a">OOP</span>؟</div>
+      <div style="display:grid; grid-template-columns:1fr 46px 1fr; gap:0; flex:1; align-items:stretch;">
+        <!-- Procedural -->
+        <div class="card c-rd" style="display:flex;flex-direction:column;gap:9px;">
+          <div class="card-lbl" style="color:var(--rd)">❌ Procedural — بدون Classes</div>
+          <div class="cb" style="flex:1;font-size:11.5px;">
+            <span class="cm">// دالة منفصلة لكل عملية</span><br>
+            <span class="kw">function</span> <span class="fn">getUser</span>(<span class="ac">$id</span>) { ... }<br>
+            <span class="kw">function</span> <span class="fn">saveUser</span>(<span class="ac">$data</span>) { ... }<br>
+            <span class="kw">function</span> <span class="fn">deleteUser</span>(<span class="ac">$id</span>) { ... }<br>
+            <br>
+            <span class="cm">// بيانات مبعثرة في كل مكان</span><br>
+            <span class="ac">$userName</span> = <span class="st">"Ahmad"</span>;<br>
+            <span class="ac">$userAge</span>  = <span class="wht">25</span>;<br>
+            <span class="ac">$userRole</span> = <span class="st">"admin"</span>;<br>
+            <br>
+            <span class="cm">// الكود يكبر ويصعب صيانته</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--rd);text-align:right;">الكود متشتت — صعب القراءة والصيانة</div>
+        </div>
+        <!-- Arrow -->
+        <div style="display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px;">→</div>
+        <!-- OOP -->
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:9px;">
+          <div class="card-lbl" style="color:var(--gn)">✅ OOP — مع Classes</div>
+          <div class="cb" style="flex:1;font-size:11.5px;">
+            <span class="cm">// كل شيء داخل كلاس واحد منظّم</span><br>
+            <span class="kw">class</span> <span class="fn">User</span> {<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$name</span>;<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">int</span>    <span class="ac">$age</span>;<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$role</span>;<br>
+            <br>
+            &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">save</span>() { ... }<br>
+            &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">delete</span>() { ... }<br>
+            }<br>
+            <br>
+            <span class="cm">// استخدام نظيف وواضح</span><br>
+            <span class="ac">$user</span> = <span class="kw">new</span> <span class="fn">User</span>();
+          </div>
+          <div style="font-size:11.5px;color:var(--gn);text-align:right;">بيانات + دوال = وحدة واحدة منظمة</div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel كل شيء مبني على OOP — Models, Controllers, Middleware, كلها Classes.</div>
+    </div>
+  </div>
+
+  <!-- ══ S4 CLASS + PROPERTIES + METHODS ══ -->
+  <div class="slide" id="s4">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Class · Properties · Methods</span><span class="pn">4 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Class · Properties · <span class="a">Methods</span></div>
+      <div class="two-col">
+        <!-- Theory -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">المفهوم</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;margin-top:2px;">Class</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">القالب / المخطط — مثل رسمة البناء قبل ما تبني البيت</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--bl);flex-shrink:0;margin-top:2px;">Property</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">متغيرات داخل الكلاس — تصف خصائص الكائن</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--gn);flex-shrink:0;margin-top:2px;">Method</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">دوال داخل الكلاس — تصف ما يستطيع الكائن فعله</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--pu);flex-shrink:0;margin-top:2px;">Object</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">النسخة الفعلية من الكلاس — البيت المبني من الرسمة</span>
+              </div>
+            </div>
+          </div>
+          <div class="card c-bl">
+            <div class="card-lbl">تشبيه</div>
+            <div style="display:flex;gap:10px;align-items:center;margin-top:6px;">
+              <div style="text-align:center;flex:1;">
+                <div style="font-size:24px;">📐</div>
+                <div style="font-size:11px;color:var(--sub);margin-top:4px;">Class</div>
+                <div style="font-size:11px;color:var(--dim);">رسمة السيارة</div>
+              </div>
+              <div style="color:var(--dim);font-size:18px;">→</div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-size:24px;">🚗</div>
+                <div style="font-size:11px;color:var(--sub);margin-top:4px;">Object</div>
+                <div style="font-size:11px;color:var(--dim);">السيارة الفعلية</div>
+              </div>
+              <div style="color:var(--dim);font-size:18px;">×100</div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-size:24px;">🚗🚗🚗</div>
+                <div style="font-size:11px;color:var(--sub);margin-top:4px;">Objects</div>
+                <div style="font-size:11px;color:var(--dim);">نسخ متعددة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="flex:1;font-size:12px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="kw">class</span> <span class="fn">Product</span> {<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// Properties — خصائص المنتج</span><br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$name</span>;<br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">float</span>  <span class="ac">$price</span>;<br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">int</span>    <span class="ac">$stock</span>;<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// Method — ما يفعله المنتج</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">isAvailable</span>(): <span class="kw">bool</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="ac">$this</span>-><span class="fn">stock</span> > <span class="wht">0</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="cm">// إنشاء Object من الكلاس</span><br>
+          <span class="ac">$p</span> = <span class="kw">new</span> <span class="fn">Product</span>();<br>
+          <span class="ac">$p</span>-><span class="fn">name</span>  = <span class="st">"Laptop"</span>;<br>
+          <span class="ac">$p</span>-><span class="fn">price</span> = <span class="wht">999.99</span>;<br>
+          <span class="ac">$p</span>-><span class="fn">stock</span> = <span class="wht">15</span>;<br>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel كل Model هو Class — <span style="font-family:var(--mono);color:var(--acc)">User</span>, <span style="font-family:var(--mono);color:var(--acc)">Post</span>, <span style="font-family:var(--mono);color:var(--acc)">Order</span> كلها classes ترث من <span style="font-family:var(--mono);color:var(--sub)">Model</span>.</div>
+    </div>
+  </div>
+
+  <!-- ══ S5 CONSTRUCTOR + $this ══ -->
+  <div class="slide" id="s5">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Constructor · $this</span><span class="pn">5 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Constructor <span class="a">&amp;</span> <span style="font-family:var(--mono)">$this</span></div>
+      <div class="two-col">
+        <!-- Theory -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">Constructor</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              دالة خاصة اسمها <span style="font-family:var(--mono);color:var(--acc)">__construct</span> — تُنفَّذ <strong style="color:var(--wh)">تلقائياً</strong> فور ما تكتب <span style="font-family:var(--mono);color:var(--gn)">new</span>.
+              استخدامها لضبط القيم الأولية عند إنشاء الـ Object.
+            </p>
+          </div>
+          <div class="card c-bl">
+            <div class="card-lbl">$this</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              مرجع للـ <strong style="color:var(--wh)">Object الحالي</strong> نفسه.
+              بتستخدمه داخل الكلاس للوصول لـ properties ودوال الكلاس الحالي.
+            </p>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:8px;text-align:right;">
+              <span style="color:var(--acc)">$this</span>->name &nbsp;=&nbsp; <span style="color:var(--gn)">"Ahmad"</span>
+            </div>
+          </div>
+          <div class="card c-gn">
+            <div class="card-lbl">Destructor — ذكر سريع</div>
+            <p style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.55;margin-top:4px;">
+              <span style="font-family:var(--mono);color:var(--dim)">__destruct</span> تُنفَّذ عند تدمير الـ Object.
+              <span style="color:var(--dim)">نادر الاستخدام في Laravel — اذكره وكمّل.</span>
+            </p>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="kw">class</span> <span class="fn">Order</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$product</span>;<br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">int</span>    <span class="ac">$qty</span>;<br>
+          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">float</span>  <span class="ac">$total</span>;<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// يعمل تلقائياً عند new Order()</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">string</span> <span class="ac">$product</span>,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span>    <span class="ac">$qty</span>,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">float</span>  <span class="ac">$price</span><br>
+          &nbsp;&nbsp;) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// $this = هذا الـ object</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">product</span> = <span class="ac">$product</span>;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">qty</span>     = <span class="ac">$qty</span>;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">total</span>   = <span class="ac">$qty</span> * <span class="ac">$price</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="cm">// إنشاء Object مع قيم فورية</span><br>
+          <span class="ac">$o</span> = <span class="kw">new</span> <span class="fn">Order</span>(<span class="st">"Laptop"</span>, <span class="wht">2</span>, <span class="wht">999</span>);<br>
+          <span class="cm">// $o->total = 1998</span>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel Constructor يُستخدم كثيراً في <strong>Dependency Injection</strong> داخل Controllers.</div>
+    </div>
+  </div>
+
+  <!-- ══ S6 VISIBILITY ══ -->
+  <div class="slide" id="s6">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Visibility</span><span class="pn">6 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Visibility: <span class="ag">public</span> · <span class="a">protected</span> · <span style="color:var(--rd)">private</span></div>
+      <table class="vis-table" style="flex:1;">
+        <thead>
+          <tr>
+            <th style="width:22%">الكلمة</th>
+            <th style="width:22%">الوصف</th>
+            <th style="width:19%;text-align:center;">نفس الكلاس</th>
+            <th style="width:19%;text-align:center;">الكلاس الوارث</th>
+            <th style="width:18%;text-align:center;">من خارج الكلاس</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="vis-kw vis-pub">public</span></td>
+            <td style="color:var(--sub);font-size:12px;">مفتوح للكل</td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+          </tr>
+          <tr>
+            <td><span class="vis-kw vis-pro">protected</span></td>
+            <td style="color:var(--sub);font-size:12px;">للكلاس والورثة</td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+            <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+          </tr>
+          <tr>
+            <td><span class="vis-kw vis-prv">private</span></td>
+            <td style="color:var(--sub);font-size:12px;">للكلاس فقط</td>
+            <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+            <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+            <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="cb" style="font-size:11.5px;">
+          <span class="kw">class</span> <span class="fn">BankAccount</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public</span>    <span class="ac">$owner</span>;  <span class="cm">// الكل يراه</span><br>
+          &nbsp;&nbsp;<span class="kw">protected</span> <span class="ac">$balance</span>; <span class="cm">// الورثة فقط</span><br>
+          &nbsp;&nbsp;<span class="kw">private</span>   <span class="ac">$pin</span>;     <span class="cm">// أنا فقط</span><br>
+          }
+        </div>
+        <div class="lnote" style="margin-top:0;">
+          <i class="fab fa-laravel" style="color:#ff2d20"></i>
+          في Eloquent Model كل الـ properties عادةً <span style="font-family:var(--mono);color:var(--gn)">protected</span>  مثل
+          <span style="font-family:var(--mono);color:var(--acc)">$fillable</span> و <span style="font-family:var(--mono);color:var(--acc)">$guarded</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S7 INHERITANCE ══ -->
+  <div class="slide" id="s7">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Inheritance</span><span class="pn">7 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Inheritance <span class="a">&amp;</span> <span style="font-family:var(--mono)">parent::</span></div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-pu">
+            <div class="card-lbl">المفهوم</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              الكلاس الابن يرث كل خصائص ودوال الكلاس الأب باستخدام <span style="font-family:var(--mono);color:var(--pu)">extends</span>.<br>
+              <span style="font-family:var(--mono);color:var(--acc)">parent::</span> للوصول لدوال الأب من الابن.
+            </p>
+          </div>
+          <!-- Visual diagram -->
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0;">
+            <div style="background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.25);border-radius:8px;padding:9px 16px;font-family:var(--mono);font-size:12px;color:var(--pu);width:200px;text-align:right;">
+              Animal <span style="font-size:10px;color:var(--dim)">// الأب</span>
+              <div style="font-size:11px;color:var(--dim);margin-top:4px;">+ name, age<br>+ speak()</div>
+            </div>
+            <div style="color:var(--dim);font-size:11px;margin-right:46px;padding:2px 0;">extends ↓</div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;width:100%;">
+              <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--acc);flex:1;text-align:right;">
+                Dog<br><span style="color:var(--dim)">+ breed<br>+ fetch()</span>
+              </div>
+              <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.22);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--bl);flex:1;text-align:right;">
+                Cat<br><span style="color:var(--dim)">+ indoor<br>+ purr()</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="kw">class</span> <span class="fn">Animal</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$name</span><br>
+          &nbsp;&nbsp;) {}<br>
+          <br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">speak</span>(): <span class="kw">string</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="st">"{$this->name} makes a sound"</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">Dog</span> <span class="kw">extends</span> <span class="fn">Animal</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">speak</span>(): <span class="kw">string</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// parent:: لاستدعاء الأب</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$base</span> = <span class="fn">parent</span>::<span class="fn">speak</span>();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="ac">$base</span> . <span class="st">" — Woof!"</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="ac">$dog</span> = <span class="kw">new</span> <span class="fn">Dog</span>(<span class="st">"Rex"</span>);<br>
+          <span class="cm">// "Rex makes a sound — Woof!"</span>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel كل Controller يرث من <span style="font-family:var(--mono);color:var(--acc)">BaseController</span> — وكل Model يرث من <span style="font-family:var(--mono);color:var(--acc)">Eloquent\Model</span>.</div>
+    </div>
+  </div>
+
+  <!-- ══ S8 ABSTRACT CLASSES ══ -->
+  <div class="slide" id="s8">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Abstract Classes</span><span class="pn">8 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Abstract <span class="a">Classes</span></div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما هي؟</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              كلاس <strong style="color:var(--wh)">لا يمكن إنشاء Object منه مباشرة</strong>.
+              يحدد هيكل الكلاسات الأبناء ويجبرها على تطبيق دوال معينة.
+            </p>
+          </div>
+          <div class="card c-bl" style="flex:1;">
+            <div class="card-lbl">متى نستخدمها؟</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تحدد عقد مشترك بين عدة كلاسات</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لما عندك كود مشترك بين الكلاسات — ضعه في الأب</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تجبر الأبناء على تطبيق دالة معينة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="cm">// لا يمكن: new Shape() → خطأ!</span><br>
+          <span class="kw">abstract class</span> <span class="fn">Shape</span> {<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// كود مشترك — يرثه الجميع</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">describe</span>(): <span class="kw">string</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="st">"I am a shape"</span>;<br>
+          &nbsp;&nbsp;}<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// يجب على كل ابن تطبيقه</span><br>
+          &nbsp;&nbsp;<span class="kw">abstract public function</span> <span class="fn">area</span>(): <span class="kw">float</span>;<br>
+          }<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">Circle</span> <span class="kw">extends</span> <span class="fn">Shape</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private float</span> <span class="ac">$r</span>) {}<br>
+          <br>
+          &nbsp;&nbsp;<span class="cm">// إلزامي التطبيق هنا</span><br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">area</span>(): <span class="kw">float</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="wht">M_PI</span> * <span class="ac">$this</span>-><span class="fn">r</span> ** <span class="wht">2</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel مثال: <span style="font-family:var(--mono);color:var(--acc)">Mailable</span> هي abstract class — كل mail ترث منها وتطبق <span style="font-family:var(--mono);color:var(--sub)">build()</span>.</div>
+    </div>
+  </div>
+
+  <!-- ══ S9 INTERFACES ══ -->
+  <div class="slide" id="s9">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Interfaces</span><span class="pn">9 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh"><span class="a">Interfaces</span> — العقد البرمجي</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-bl">
+            <div class="card-lbl">الفرق بين Abstract و Interface</div>
+            <table style="width:100%;font-size:11.5px;border-collapse:collapse;margin-top:8px;">
+              <tr style="border-bottom:1px solid var(--bdr);">
+                <th style="color:var(--sub);font-weight:700;padding:5px 6px;text-align:right;width:40%;">الميزة</th>
+                <th style="color:var(--acc);font-weight:700;padding:5px;text-align:center;">Abstract</th>
+                <th style="color:var(--bl);font-weight:700;padding:5px;text-align:center;">Interface</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--bdr);">
+                <td style="color:var(--sub);padding:5px 6px;text-align:right;">كود جاهز</td>
+                <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+                <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--bdr);">
+                <td style="color:var(--sub);padding:5px 6px;text-align:right;">تعدد الوراثة</td>
+                <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+                <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+              </tr>
+              <tr>
+                <td style="color:var(--sub);padding:5px 6px;text-align:right;">Properties</td>
+                <td style="text-align:center;"><i class="fas fa-check check"></i></td>
+                <td style="text-align:center;"><i class="fas fa-times cross"></i></td>
+              </tr>
+            </table>
+          </div>
+          <div class="card c-gn" style="flex:1;">
+            <div class="card-lbl">متى تستخدم Interface؟</div>
+            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              عندما تريد أن تضمن أن أي كلاس <strong style="color:var(--wh)">يطبق مجموعة دوال بعينها</strong> — بغض النظر عن أصل الكلاس.
+            </p>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="cm">// العقد: كل Gateway يجب أن يفعل هذا</span><br>
+          <span class="kw">interface</span> <span class="fn">PaymentGateway</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">charge</span>(<span class="kw">float</span> <span class="ac">$amount</span>): <span class="kw">bool</span>;<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">refund</span>(<span class="kw">string</span> <span class="ac">$id</span>): <span class="kw">bool</span>;<br>
+          }<br>
+          <br>
+          <span class="cm">// Stripe يطبق العقد</span><br>
+          <span class="kw">class</span> <span class="fn">StripeGateway</span> <span class="kw">implements</span> <span class="fn">PaymentGateway</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">charge</span>(<span class="kw">float</span> <span class="ac">$amount</span>): <span class="kw">bool</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Stripe logic هنا</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="kw">true</span>;<br>
+          &nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">refund</span>(<span class="kw">string</span> <span class="ac">$id</span>): <span class="kw">bool</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="kw">true</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="cm">// يمكن استبدال Stripe بـ PayPal</span><br>
+          <span class="cm">// بدون تغيير باقي الكود!</span>
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> Laravel مليان interfaces: <span style="font-family:var(--mono);color:var(--acc)">Authenticatable</span>, <span style="font-family:var(--mono);color:var(--acc)">ShouldQueue</span>, <span style="font-family:var(--mono);color:var(--acc)">Renderable</span> — كل job ترث من <span style="font-family:var(--mono);color:var(--sub)">ShouldQueue</span>.</div>
+    </div>
+  </div>
+
+  <!-- ══ S10 TRAITS ══ -->
+  <div class="slide" id="s10">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Traits</span><span class="pn">10 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh"><span class="a">Traits</span> — أكواد قابلة للمشاركة</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">ما هي؟</div>
+            <p style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
+              مجموعة دوال تستطيع <strong style="color:var(--wh)">مشاركتها بين كلاسات متعددة</strong> بدون وراثة.
+              تحل مشكلة عدم إمكانية الوراثة من أكثر من كلاس.
+            </p>
+          </div>
+          <!-- Visual -->
+          <div style="background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;flex:1;">
+            <div class="card-lbl" style="margin-bottom:8px;">مثال بصري</div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+              <div style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:6px;padding:6px 12px;font-family:var(--mono);font-size:11px;color:var(--acc);width:fit-content;">
+                trait Loggable { log() }
+              </div>
+              <div style="display:flex;gap:6px;justify-content:flex-end;">
+                <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:5px;padding:5px 10px;font-family:var(--mono);font-size:10px;color:var(--bl);">User</div>
+                <div style="background:rgba(16,217,122,.08);border:1px solid rgba(16,217,122,.2);border-radius:5px;padding:5px 10px;font-family:var(--mono);font-size:10px;color:var(--gn);">Order</div>
+                <div style="background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);border-radius:5px;padding:5px 10px;font-family:var(--mono);font-size:10px;color:var(--pu);">Product</div>
+              </div>
+              <div style="font-size:11px;color:var(--dim);text-align:right;">كل الكلاسات تستخدم نفس trait الـ log</div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="cm">// trait = كود مشترك قابل لإعادة الاستخدام</span><br>
+          <span class="kw">trait</span> <span class="fn">HasTimestamps</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">createdAt</span>(): <span class="kw">string</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">date</span>(<span class="st">"Y-m-d H:i:s"</span>);<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="kw">trait</span> <span class="fn">SoftDeletes</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">softDelete</span>(): <span class="kw">void</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">deleted_at</span> = <span class="fn">now</span>();<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">Post</span> <span class="kw">extends</span> <span class="fn">Model</span> {<br>
+          &nbsp;&nbsp;<span class="cm">// استخدام أكثر من trait معاً!</span><br>
+          &nbsp;&nbsp;<span class="kw">use</span> <span class="fn">HasTimestamps</span>, <span class="fn">SoftDeletes</span>;<br>
+          }
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Laravel: <span style="font-family:var(--mono);color:var(--acc)">use SoftDeletes</span> و <span style="font-family:var(--mono);color:var(--acc)">use HasFactory</span> و <span style="font-family:var(--mono);color:var(--acc)">use Notifiable</span> — كلها traits جاهزة.</div>
+    </div>
+  </div>
+
+  <!-- ══ S11 STATIC ══ -->
+  <div class="slide" id="s11">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Static Methods</span><span class="pn">11 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Static <span class="a">Methods</span></div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-gn">
+            <div class="card-lbl">ما الفرق؟</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+              <div style="text-align:center;">
+                <div style="font-family:var(--mono);font-size:11px;color:var(--sub);margin-bottom:6px;">العادي</div>
+                <div style="font-size:24px;margin-bottom:4px;">🏠</div>
+                <div style="font-size:11px;color:var(--dim);">تحتاج <strong style="color:var(--wh)">new</strong> أولاً</div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:4px;">$obj->method()</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-family:var(--mono);font-size:11px;color:var(--gn);margin-bottom:6px;">Static</div>
+                <div style="font-size:24px;margin-bottom:4px;">🏭</div>
+                <div style="font-size:11px;color:var(--dim);">لا تحتاج <strong style="color:var(--wh)">new</strong></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--gn);margin-top:4px;">Class::method()</div>
+              </div>
+            </div>
+          </div>
+          <div class="card c-bl" style="flex:1;">
+            <div class="card-lbl">متى تستخدم static؟</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">Helper functions مشتركة</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">Factory methods لإنشاء Objects</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
+                <span style="font-size:12px;color:var(--sub);text-align:right;">Counters أو cache مشترك بين الـ Objects</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="kw">class</span> <span class="fn">Math</span> {<br>
+          &nbsp;&nbsp;<span class="cm">// static = لا تحتاج new Math()</span><br>
+          &nbsp;&nbsp;<span class="kw">public static function</span> <span class="fn">square</span>(<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">float</span> <span class="ac">$n</span><br>
+          &nbsp;&nbsp;): <span class="kw">float</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="ac">$n</span> ** <span class="wht">2</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }<br>
+          <br>
+          <span class="cm">// استدعاء مباشر بدون new</span><br>
+          <span class="fn">Math</span>::<span class="fn">square</span>(<span class="wht">5</span>); <span class="cm">// 25</span><br>
+          <br>
+          <span class="cm">// مثال أكثر واقعية</span><br>
+          <span class="kw">class</span> <span class="fn">DB</span> {<br>
+          &nbsp;&nbsp;<span class="kw">private static</span> <span class="ac">$instance</span>;<br>
+          <br>
+          &nbsp;&nbsp;<span class="kw">public static function</span> <span class="fn">connect</span>(): <span class="kw">static</span> {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (!<span class="kw">static</span>::<span class="ac">$instance</span>) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">static</span>::<span class="ac">$instance</span> = <span class="kw">new static</span>();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="kw">static</span>::<span class="ac">$instance</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> في Eloquent: <span style="font-family:var(--mono);color:var(--acc)">User::find(1)</span>, <span style="font-family:var(--mono);color:var(--acc)">User::where(...)</span>, <span style="font-family:var(--mono);color:var(--acc)">User::create()</span> — كلها static methods!</div>
+    </div>
+  </div>
+
+  <!-- ══ S12 NAMESPACES + PSR-4 ══ -->
+  <div class="slide" id="s12">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Namespaces · PSR-4</span><span class="pn">12 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Namespaces <span class="a">&amp;</span> PSR-4</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card c-acc">
+            <div class="card-lbl">لماذا Namespaces؟</div>
+            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.6;margin-top:6px;">
+              تخيل ملفين مختلفين فيهم كلاس اسمه <span style="font-family:var(--mono);color:var(--acc)">User</span> —
+              الـ Namespace يحدد <strong style="color:var(--wh)">أي User</strong> تقصد.
+              مثل مجلدات الملفات: اسم الملف واحد لكن المسار مختلف.
+            </p>
+          </div>
+          <div class="card c-gn" style="flex:1;">
+            <div class="card-lbl">PSR-4 — القاعدة الرسمية</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;">
+                <span style="color:var(--dim);">المجلد:</span>
+                <span style="color:var(--gn);">app/Models/User.php</span>
+              </div>
+              <div style="color:var(--dim);font-size:18px;text-align:right;margin-right:60px;">↕</div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;">
+                <span style="color:var(--dim);">Namespace:</span>
+                <span style="color:var(--acc);">App\Models\User</span>
+              </div>
+              <div style="font-size:11.5px;color:var(--dim);text-align:right;margin-top:4px;">المجلد = Namespace بشكل تلقائي</div>
+            </div>
+          </div>
+        </div>
+        <!-- Code -->
+        <div class="cb" style="font-size:11.5px;">
+          <div class="cb-label">PHP</div>
+          <br>
+          <span class="cm">// ملف: app/Models/User.php</span><br>
+          <span class="kw">namespace</span> <span class="fn">App\Models</span>;<br>
+          <br>
+          <span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Model</span>;<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">User</span> <span class="kw">extends</span> <span class="fn">Model</span> {<br>
+          &nbsp;&nbsp;<span class="cm">// ...</span><br>
+          }<br>
+          <br>
+          <span class="cm">// ──────────────────────────────</span><br>
+          <span class="cm">// ملف: app/Http/Controllers/UserController.php</span><br>
+          <span class="kw">namespace</span> <span class="fn">App\Http\Controllers</span>;<br>
+          <br>
+          <span class="cm">// استيراد الـ User من مكانه</span><br>
+          <span class="kw">use</span> <span class="fn">App\Models\User</span>;<br>
+          <br>
+          <span class="kw">class</span> <span class="fn">UserController</span> {<br>
+          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">index</span>() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">User</span>::<span class="fn">all</span>();<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> Laravel يتبع PSR-4 تلقائياً — عندما تصنع ملف في <span style="font-family:var(--mono);color:var(--acc)">app/</span> يُضاف <span style="font-family:var(--mono);color:var(--sub)">App\</span> كـ prefix تلقائياً عبر Composer.</div>
+    </div>
+  </div>
+
+  <!-- ══ S13 SUMMARY TABLE ══ -->
+  <div class="slide" id="s13">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Summary</span><span class="pn">13 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">ملخص <span class="a">المفاهيم الأساسية</span></div>
+      <table class="stbl" style="flex:1;">
+        <thead>
+          <tr>
+            <th style="width:24%">المفهوم</th>
+            <th style="width:38%">الشرح المختصر</th>
+            <th>في Laravel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--acc);">Class</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">القالب الذي تُنشأ منه الـ Objects</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">Model, Controller, Job…</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--bl);">Constructor</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">يعمل تلقائياً عند <code style="font-family:var(--mono);color:var(--gn);">new</code></td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">Dependency Injection</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--gn);">Visibility</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">تحكم في الوصول للـ properties</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">$fillable, $guarded</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--pu);">Inheritance</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">الابن يرث كل شيء من الأب</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">extends Model</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--acc);">Abstract</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">قالب لا يُنشأ منه object مباشرة</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">Mailable, Notification</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--bl);">Interface</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">عقد — يجبر الكلاس على تطبيق دوال</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">ShouldQueue, Renderable</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--gn);">Traits</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">مشاركة كود بين كلاسات متعددة</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">SoftDeletes, HasFactory</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--acc);">Static</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">استدعاء مباشر بدون new</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">User::find(), DB::table()</td>
+          </tr>
+          <tr>
+            <td><div class="trn"><span style="font-family:var(--mono);color:var(--pu);">Namespaces</span><span class="pill">Core</span></div></td>
+            <td style="color:var(--sub);font-size:12px;">تنظيم الكلاسات وتجنب التعارض</td>
+            <td style="color:var(--sub);font-size:12px;font-family:var(--mono);">App\Models\User</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ S14 CLOSING ══ -->
+  <div class="slide" id="s14">
+    <div class="cll">
+      <div class="clcode">
+        // المحاضرة القادمة...<br><br>
+        // Laravel Setup<br>
+        // &amp; MVC Pattern<br><br>
+        Route::<span style="color:#1e4060">get</span>(<span style="color:#193550">'/users'</span>,<br>
+        &nbsp;[<span style="color:#1a3a58">UserController</span><br>
+        &nbsp;::class,<br>
+        &nbsp;<span style="color:#193550">'index'</span>]);<br><br>
+        <span style="color:#172e4a">class</span>
+        <span style="color:#1a3a58">UserController</span><br>
+        &nbsp;<span style="color:#172e4a">extends</span><br>
+        &nbsp;<span style="color:#18375a">Controller</span> {<br>
+        &nbsp;&nbsp;<span style="color:#172e4a">public function</span><br>
+        &nbsp;&nbsp;<span style="color:#1a3a58">index</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#172e4a">return</span>
+        <span style="color:#1a3a58">User</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;::<span style="color:#1e4060">all</span>();<br>
+        &nbsp;&nbsp;}<br>
+        }
+      </div>
+      <div class="clft">
+        <i class="fab fa-php" style="color:#8892bf"></i>
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <span class="sp"></span>
+        <span class="v">v2.0.0</span>
+      </div>
+    </div>
+    <div class="clr">
+      <div class="clbig">
+        <div class="l1">الأسئلة</div>
+        <div class="l2">والنقاش 💬</div>
+      </div>
+      <div class="cl-instr">
+        <div class="cl-instr-info">
+          <div class="cl-instr-name">السيد الاخرسي</div>
+          <div class="cl-instr-role">Full Stack Developer & Instructor</div>
+          <div class="cl-instr-company">WebUra</div>
+        </div>
+        <div class="cl-instr-photo">
+          <img src="../assets/alsaeyd.png" alt="المدرب"/>
+        </div>
+      </div>
+      <div class="clnx">
+        <div class="nx-label">// المحاضرة القادمة</div>
+        <div class="nx-title">تثبيت Laravel وفهم MVC</div>
+      </div>
+      <div class="clics">
+        <i class="fab fa-php" style="color:#8892bf"></i>
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-database" style="color:#38bdf8"></i>
+        <i class="fas fa-route" style="color:#c084fc"></i>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- NAV ROW -->
+<div id="nav-row">
+  <div id="instr-card">
+    <div class="iav">
+      <img src="../assets/alsaeyd.png" alt=""/>
+    </div>
+    <div>
+      <div class="inm">السيد الاخرسي</div>
+      <div class="irl">Full Stack Developer & Instructor</div>
+    </div>
+  </div>
+  <div id="nav">
+    <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
+    <div id="dots"></div>
+    <span id="ctr">1 / 14</span>
+    <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<script>
+  const N = 14;
+  let c = 1;
+  const ctr   = document.getElementById("ctr");
+  const btnN  = document.getElementById("btnN");
+  const btnP  = document.getElementById("btnP");
+  const dotsEl= document.getElementById("dots");
+  for (let i = 1; i <= N; i++) {
+    const d = document.createElement("div");
+    d.className = "dot" + (i === 1 ? " on" : "");
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  }
+  function go(n) {
+    if (n < 1 || n > N || n === c) return;
+    document.getElementById("s" + c).classList.remove("active");
+    c = n;
+    document.getElementById("s" + c).classList.add("active");
+    ctr.textContent = c + " / " + N;
+    btnP.disabled = c === 1;
+    btnN.disabled = c === N;
+    dotsEl.querySelectorAll(".dot").forEach((d,i) => d.classList.toggle("on", i+1 === c));
+  }
+  btnN.onclick = () => go(c + 1);
+  btnP.onclick = () => go(c - 1);
+  document.addEventListener("keydown", e => {
+    if (["ArrowRight","ArrowDown"," "].includes(e.key)) { e.preventDefault(); go(c+1); }
+    if (["ArrowLeft","ArrowUp"].includes(e.key))        { e.preventDefault(); go(c-1); }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,886 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <title>المحاضرة الخامسة — Blade Templates وLayouts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080c14;
+      --surf: #0d1520;
+      --card: #111b2a;
+      --bdr: #1c2d42;
+      --bdr2: #243650;
+      --acc: #f97316;
+      --acc2: #fb923c;
+      --wh: #f0f6ff;
+      --sub: #7a9bbf;
+      --dim: #3a5470;
+      --gn: #10d97a;
+      --bl: #38bdf8;
+      --pu: #c084fc;
+      --rd: #f87171;
+      --yl: #fbbf24;
+      --mono: "JetBrains Mono", monospace;
+      --sans: "Tajawal", sans-serif;
+      --W: 1060px;
+      --H: 596px;
+      --R: 14px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html, body { width:100%; height:100%; }
+    body {
+      background:#03060b;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:var(--sans); gap:18px; padding:0 0 8px; overflow:hidden;
+    }
+    #scale-wrap { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    #stage { position:relative; width:var(--W); height:var(--H); transform-origin:center center; }
+    .slide {
+      position:absolute; inset:0; width:var(--W); height:var(--H);
+      background:var(--bg); border-radius:var(--R); border:1px solid var(--bdr);
+      overflow:hidden; display:none; flex-direction:column;
+      box-shadow:0 28px 70px rgba(0,0,0,.88), 0 0 0 1px rgba(249,115,22,.04);
+    }
+    .slide.active { display:flex; animation:fadeUp .38s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px) scale(.986); }
+      to   { opacity:1; transform:none; }
+    }
+
+    #nav-row { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+    #instr-card {
+      display:flex; align-items:center; gap:10px;
+      background:var(--surf); border:1px solid var(--bdr); border-radius:50px;
+      padding:5px 14px 5px 6px; box-shadow:0 4px 20px rgba(0,0,0,.5);
+    }
+    .iav { width:34px; height:34px; border-radius:50%; border:2px solid var(--acc); flex-shrink:0; overflow:hidden; }
+    .iav img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .inm { font-size:12.5px; font-weight:800; color:var(--wh); white-space:nowrap; }
+    .irl { font-size:9.5px; color:var(--sub); font-family:var(--mono); white-space:nowrap; }
+    #nav {
+      display:flex; align-items:center; gap:0; background:var(--surf);
+      border:1px solid var(--bdr); border-radius:50px; padding:5px 6px;
+      box-shadow:0 6px 24px rgba(0,0,0,.6); flex-shrink:0;
+    }
+    .nb {
+      width:36px; height:36px; border-radius:50%; border:none; cursor:pointer;
+      font-size:13px; display:flex; align-items:center; justify-content:center;
+      transition:all .15s; color:var(--sub); background:transparent;
+    }
+    .nb:hover:not(:disabled) { background:var(--card); color:var(--wh); }
+    .nb:disabled { opacity:.22; cursor:not-allowed; }
+    .nb.next { background:var(--acc); color:#fff; margin-right:4px; }
+    .nb.next:hover:not(:disabled) { background:var(--acc2); }
+    #ctr { font-family:var(--mono); font-size:11px; color:var(--dim); padding:0 10px; white-space:nowrap; }
+    #dots { display:flex; gap:3px; align-items:center; padding:0 4px; }
+    .dot { width:5px; height:5px; border-radius:50%; background:var(--bdr2); cursor:pointer; transition:all .22s; }
+    .dot.on { background:var(--acc); width:14px; border-radius:3px; }
+
+    .tb {
+      height:42px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 32px; border-bottom:1px solid var(--bdr); background:rgba(11,18,32,.88);
+      flex-shrink:0; position:relative; z-index:2;
+    }
+    .tb .tag { font-family:var(--mono); font-size:10px; color:var(--acc); letter-spacing:.08em; text-transform:uppercase; }
+    .tb .pn  { font-family:var(--mono); font-size:10px; color:var(--dim); }
+    .tb .cid { font-size:10.5px; color:var(--dim); display:flex; align-items:center; gap:6px; }
+    .dlive { width:6px; height:6px; border-radius:50%; background:var(--acc); animation:pulse 2s infinite; display:inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.22} }
+
+    .sb {
+      flex:1; padding:20px 32px 16px; display:flex; flex-direction:column;
+      position:relative; z-index:1; overflow-y:auto; scrollbar-width:thin;
+      scrollbar-color:var(--bdr2) transparent;
+    }
+    .sb::-webkit-scrollbar { width:4px; }
+    .sb::-webkit-scrollbar-track { background:transparent; }
+    .sb::-webkit-scrollbar-thumb { background:var(--bdr2); border-radius:2px; }
+
+    .sh { font-size:23px; font-weight:900; color:var(--wh); text-align:right; line-height:1.25; margin-bottom:14px; flex-shrink:0; }
+    .sh .a { color:var(--acc); }
+    .sh .a2 { color:var(--bl); }
+    .sh .ag { color:var(--gn); }
+
+    .pill {
+      display:inline-flex; align-items:center; gap:4px;
+      font-family:var(--mono); font-size:10px; padding:2px 8px;
+      border-radius:4px; background:rgba(255,255,255,.05); color:var(--sub); border:1px solid var(--bdr);
+    }
+    .pill.gn { color:var(--gn); border-color:rgba(16,217,122,.3); background:rgba(16,217,122,.07); }
+    .pill.acc { color:var(--acc); border-color:rgba(249,115,22,.3); background:rgba(249,115,22,.07); }
+    .pill.bl { color:var(--bl); border-color:rgba(56,189,248,.3); background:rgba(56,189,248,.07); }
+    .pill.pu { color:var(--pu); border-color:rgba(192,132,252,.3); background:rgba(192,132,252,.07); }
+    .pill.rd { color:var(--rd); border-color:rgba(248,113,113,.3); background:rgba(248,113,113,.07); }
+    .cmd {
+      font-family:var(--mono); font-size:11px; color:var(--gn);
+      background:rgba(16,217,122,.07); border:1px solid rgba(16,217,122,.18);
+      border-radius:5px; padding:2px 8px; display:inline-block;
+    }
+    .note {
+      background:rgba(249,115,22,.07); border:1px solid rgba(249,115,22,.17);
+      border-radius:8px; padding:9px 14px; font-size:12px; color:var(--acc);
+      text-align:right; font-style:italic; flex-shrink:0;
+    }
+    .lnote, .gnote {
+      border-radius:8px; padding:8px 13px; font-size:11.5px; text-align:right;
+      display:flex; align-items:center; gap:8px; margin-top:8px; flex-shrink:0;
+    }
+    .lnote {
+      background:rgba(56,189,248,.07); border:1px solid rgba(56,189,248,.2); color:var(--bl);
+    }
+    .gnote {
+      background:rgba(16,217,122,.07); border:1px solid rgba(16,217,122,.2); color:var(--gn);
+    }
+    .lnote i, .gnote i { flex-shrink:0; font-size:13px; }
+
+    .card { background:var(--card); border:1px solid var(--bdr); border-radius:9px; padding:12px 15px; }
+    .card.c-acc { border-top:2px solid var(--acc); }
+    .card.c-gn  { border-top:2px solid var(--gn); }
+    .card.c-bl  { border-top:2px solid var(--bl); }
+    .card.c-pu  { border-top:2px solid var(--pu); }
+    .card.c-rd  { border-top:2px solid var(--rd); }
+    .card-lbl { font-size:10px; font-family:var(--mono); color:var(--sub); margin-bottom:6px; text-transform:uppercase; letter-spacing:.07em; }
+
+    .cb {
+      background:#060b12; border:1px solid var(--bdr); border-radius:8px;
+      padding:12px 14px; font-family:var(--mono); font-size:12px; line-height:1.75;
+      color:#7a9bbf; position:relative; direction:ltr; text-align:left;
+    }
+    .cb .kw  { color:#c084fc; }
+    .cb .fn  { color:#38bdf8; }
+    .cb .st  { color:#10d97a; }
+    .cb .cm  { color:#3a5470; }
+    .cb .ac  { color:#f97316; }
+    .cb .wht { color:#f0f6ff; }
+    .cb .rd  { color:#f87171; }
+    .cb .yl  { color:#fbbf24; }
+
+    #s1 { flex-direction:row; }
+    .cvl {
+      width:310px; background:var(--surf); border-left:1px solid var(--bdr);
+      flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
+    }
+    .cvl::before {
+      content:""; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent);
+    }
+    .cvl pre {
+      flex:1; padding:22px 18px; font-family:var(--mono); font-size:11.2px;
+      line-height:1.95; color:#1e3554; overflow:hidden; direction:ltr; text-align:left;
+    }
+    .cvl-ft {
+      height:46px; border-top:1px solid var(--bdr); display:flex; align-items:center;
+      padding:0 16px; gap:12px; flex-shrink:0;
+    }
+    .cvl-ft i { font-size:16px; }
+    .cvl-ft .sp { flex:1; }
+    .cvl-ft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
+    .cvr { flex:1; display:flex; flex-direction:column; justify-content:center; padding:36px 44px 32px 24px; position:relative; }
+    .cvr::before {
+      content:""; position:absolute; top:-60px; left:-60px; width:350px; height:350px;
+      background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 70%); pointer-events:none;
+    }
+    .cv-badge {
+      display:inline-flex; align-items:center; gap:8px; background:rgba(249,115,22,.1);
+      border:1px solid rgba(249,115,22,.22); border-radius:6px; padding:5px 13px;
+      font-size:12px; font-weight:700; color:var(--acc); align-self:flex-end; margin-bottom:22px;
+    }
+    .cv-eye { font-size:13px; color:var(--sub); font-weight:500; text-align:right; margin-bottom:6px; }
+    .cv-h { font-size:44px; font-weight:900; line-height:1.1; text-align:right; color:var(--wh); margin-bottom:6px; }
+    .cv-h span { color:var(--acc); display:block; }
+    .cv-tag { font-size:13.5px; color:var(--sub); text-align:right; margin-bottom:4px; }
+    .cv-mono { font-family:var(--mono); font-size:10.5px; color:var(--dim); text-align:right; }
+    .cv-chips { display:flex; gap:9px; justify-content:flex-end; margin-top:22px; }
+    .chip { background:var(--card); border:1px solid var(--bdr); border-radius:7px; padding:9px 14px; text-align:center; }
+    .chip .cl { font-size:9.5px; color:var(--sub); display:block; margin-bottom:3px; }
+    .chip .cv { font-size:12.5px; font-weight:800; color:var(--wh); }
+
+    .ag-list { display:flex; flex-direction:column; gap:7px; flex:1; }
+    .ag-row {
+      display:flex; align-items:center; background:var(--card); border:1px solid var(--bdr);
+      border-radius:8px; overflow:hidden; flex:1; transition:border-color .2s;
+    }
+    .ag-row:hover { border-color:var(--acc); }
+    .ag-n {
+      width:50px; display:flex; align-items:center; justify-content:center;
+      font-family:var(--mono); font-size:15px; font-weight:700; color:var(--acc);
+      background:rgba(249,115,22,.06); border-left:1px solid var(--bdr); align-self:stretch; flex-shrink:0;
+    }
+    .ag-ic { width:40px; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--sub); flex-shrink:0; }
+    .ag-tx { flex:1; font-size:13.5px; font-weight:600; color:var(--wh); text-align:right; padding-right:4px; }
+    .ag-tg { margin-left:14px; flex-shrink:0; }
+
+    .flow-row { display:flex; align-items:center; gap:0; flex:1; }
+    .fnode {
+      flex:1; background:var(--card); border:1px solid var(--bdr); border-radius:9px;
+      padding:14px 16px; display:flex; flex-direction:column; align-items:flex-end; gap:6px; height:100%;
+    }
+    .fnode.acc-b { border-top:2px solid var(--acc); }
+    .fnode.gn-b  { border-top:2px solid var(--gn); }
+    .fnode.bl-b  { border-top:2px solid var(--bl); }
+    .fnode.pu-b  { border-top:2px solid var(--pu); }
+    .fn-icon { font-size:22px; margin-bottom:2px; }
+    .fn-title { font-size:13.5px; font-weight:800; color:var(--wh); }
+    .fn-sub { font-size:11px; color:var(--sub); font-family:var(--mono); direction:ltr; text-align:left; width:100%; }
+    .fn-desc { font-size:12px; color:var(--sub); text-align:right; line-height:1.55; margin-top:4px; }
+    .farrow { font-size:20px; color:var(--dim); padding:0 6px; flex-shrink:0; }
+
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; flex:1; }
+    .compare { display:grid; grid-template-columns:1fr 44px 1fr; gap:0; flex:1; align-items:stretch; }
+    .vs { display:flex; align-items:center; justify-content:center; color:var(--dim); font-size:22px; }
+
+    .mini-list { display:flex; flex-direction:column; gap:8px; }
+    .mini-item {
+      background:rgba(255,255,255,.025); border:1px solid rgba(28,45,66,.7); border-radius:8px;
+      padding:9px 11px; display:flex; align-items:flex-start; gap:8px;
+    }
+    .mini-item i { margin-top:2px; color:var(--acc); }
+    .mini-item div { font-size:11.5px; color:var(--sub); line-height:1.55; text-align:right; }
+
+    .tree {
+      background:#07111d; border:1px solid var(--bdr); border-radius:8px; padding:12px 14px;
+      font-family:var(--mono); font-size:11.2px; color:#7a9bbf; line-height:1.8; direction:ltr; text-align:left;
+    }
+    .tree .dir { color:#38bdf8; }
+    .tree .file { color:#f0f6ff; }
+    .tree .accent { color:#f97316; }
+    .tree .ok { color:#10d97a; }
+
+    .stbl { width:100%; border-collapse:collapse; }
+    .stbl th {
+      background:rgba(249,115,22,.08); color:var(--acc); font-family:var(--mono); font-size:11px;
+      padding:8px 14px; border-bottom:1px solid var(--bdr); text-align:right; font-weight:700;
+    }
+    .stbl td { padding:8px 14px; border-bottom:1px solid rgba(28,45,66,.5); font-size:12px; color:var(--wh); vertical-align:top; }
+    .stbl tr:last-child td { border-bottom:none; }
+    .stbl tr:hover td { background:rgba(255,255,255,.015); }
+
+    .hwl { display:flex; flex-direction:column; gap:10px; flex:1; }
+    .hwr {
+      display:flex; align-items:flex-start; gap:14px; background:var(--card); border:1px solid var(--bdr);
+      border-radius:9px; padding:13px 16px; flex:1;
+    }
+    .hwn { font-family:var(--mono); font-size:18px; font-weight:700; color:var(--acc); flex-shrink:0; width:32px; }
+    .hwb { flex:1; }
+    .hwt { font-size:13.5px; font-weight:700; color:var(--wh); margin-bottom:4px; }
+    .hwd { font-size:12px; color:var(--sub); line-height:1.5; }
+    .hwcr { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+
+    .sp-badge {
+      display:inline-flex; align-items:center; gap:6px; background:rgba(16,217,122,.07);
+      border:1px solid rgba(16,217,122,.2); border-radius:6px; padding:4px 10px;
+      font-family:var(--mono); font-size:10px; color:var(--gn); flex-shrink:0;
+    }
+    ic { font-family:var(--mono); font-size:11.5px; color:var(--acc); background:rgba(249,115,22,.08); padding:1px 6px; border-radius:3px; }
+    ic.bl { color:var(--bl); background:rgba(56,189,248,.08); }
+
+    #s14 { flex-direction:row; }
+    .cll {
+      width:300px; background:var(--surf); border-left:1px solid var(--bdr); flex-shrink:0;
+      display:flex; flex-direction:column; overflow:hidden; position:relative;
+    }
+    .cll::before {
+      content:""; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg,var(--acc),transparent);
+    }
+    .clcode {
+      flex:1; padding:20px 16px; font-family:var(--mono); font-size:11px; line-height:2;
+      color:#1e3554; overflow:hidden; direction:ltr; text-align:left;
+    }
+    .clft {
+      height:46px; border-top:1px solid var(--bdr); display:flex; align-items:center;
+      padding:0 16px; gap:12px; flex-shrink:0;
+    }
+    .clft i { font-size:16px; }
+    .clft .sp { flex:1; }
+    .clft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
+    .clr { flex:1; display:flex; flex-direction:column; padding:32px 40px 26px 24px; position:relative; }
+    .clbig { font-size:48px; font-weight:900; text-align:right; line-height:1.1; margin-bottom:12px; }
+    .clbig .l1 { color:var(--wh); }
+    .clbig .l2 { color:var(--acc); }
+    .cl-instr { display:flex; align-items:center; justify-content:flex-end; gap:14px; margin-bottom:14px; }
+    .cl-instr-info { text-align:right; }
+    .cl-instr-name { font-size:13.5px; font-weight:800; color:var(--wh); }
+    .cl-instr-role { font-size:10.5px; color:var(--sub); font-family:var(--mono); }
+    .cl-instr-company { font-size:10px; color:var(--acc); font-family:var(--mono); }
+    .cl-instr-photo { width:44px; height:44px; border-radius:50%; border:2px solid var(--acc); overflow:hidden; flex-shrink:0; }
+    .cl-instr-photo img { width:100%; height:100%; object-fit:cover; }
+    .clnx { background:var(--card); border:1px solid var(--bdr); border-radius:8px; padding:10px 14px; margin-bottom:14px; }
+    .nx-label { font-family:var(--mono); font-size:10px; color:var(--dim); margin-bottom:4px; }
+    .nx-title { font-size:14px; font-weight:700; color:var(--wh); }
+    .clics { display:flex; gap:14px; justify-content:flex-end; font-size:18px; }
+  </style>
+</head>
+<body>
+
+<div id="scale-wrap">
+<div id="stage">
+
+  <div class="slide active" id="s1">
+    <div class="cvl">
+      <pre>
+<span style="color:#1d3450">// layouts/app.blade.php</span>
+
+&lt;<span style="color:#1a3a58">body</span>&gt;
+  <span style="color:#243d58">@include</span>(<span style="color:#193550">'partials.header'</span>)
+  <span style="color:#243d58">@include</span>(<span style="color:#193550">'partials.nav'</span>)
+
+  &lt;<span style="color:#1a3a58">main</span>&gt;
+    <span style="color:#243d58">@yield</span>(<span style="color:#193550">'content'</span>)
+  &lt;/<span style="color:#1a3a58">main</span>&gt;
+
+  &lt;<span style="color:#1a3a58">x-alert</span>&gt;
+    Saved!
+  &lt;/<span style="color:#1a3a58">x-alert</span>&gt;
+&lt;/<span style="color:#1a3a58">body</span>&gt;
+      </pre>
+      <div class="cvl-ft">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-layer-group" style="color:#f97316"></i>
+        <span class="sp"></span>
+        <span class="v">v5.0.0</span>
+      </div>
+    </div>
+    <div class="cvr">
+      <div class="cv-badge"><i class="fas fa-circle-dot" style="font-size:8px"></i> المحاضرة الخامسة</div>
+      <div class="cv-eye">Laravel Blade · Layouts · Partials · Components</div>
+      <div class="cv-h">Blade<span>Templates</span></div>
+      <div class="cv-tag">كيف نبني واجهات SouqPro بشكل مرتب وقابل لإعادة الاستخدام</div>
+      <div class="cv-mono">// @extends · @yield · @include · @if · @foreach · &lt;x-component /&gt;</div>
+      <div class="cv-chips">
+        <div class="chip"><span class="cl">المدة</span><span class="cv">90 دقيقة</span></div>
+        <div class="chip"><span class="cl">المواضيع</span><span class="cv">6 محاور</span></div>
+        <div class="chip"><span class="cl">المشروع</span><span class="cv">SouqPro</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s2">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Agenda</span><span class="pn">2 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">محتوى <span class="a">المحاضرة</span></div>
+      <div class="ag-list">
+        <div class="ag-row"><div class="ag-n">01</div><div class="ag-ic"><i class="fas fa-code" style="color:var(--acc)"></i></div><div class="ag-tx">ما هو Blade؟ ولماذا نحتاجه داخل Laravel</div><div class="ag-tg"><span class="pill acc">Core</span></div></div>
+        <div class="ag-row"><div class="ag-n">02</div><div class="ag-ic"><i class="fas fa-layer-group" style="color:var(--gn)"></i></div><div class="ag-tx">Layouts: `@extends` و`@section` و`@yield`</div><div class="ag-tg"><span class="pill gn">Core</span></div></div>
+        <div class="ag-row"><div class="ag-n">03</div><div class="ag-ic"><i class="fas fa-puzzle-piece" style="color:var(--bl)"></i></div><div class="ag-tx">Partials وDirectives: `@include` و`@if` و`@foreach` و`@forelse`</div><div class="ag-tg"><span class="pill bl">Core</span></div></div>
+        <div class="ag-row"><div class="ag-n">04</div><div class="ag-ic"><i class="fas fa-cubes" style="color:var(--pu)"></i></div><div class="ag-tx">Components وSlots: متى نستخدم `<x-component />` بدل `@include`</div><div class="ag-tg"><span class="pill pu">Core</span></div></div>
+        <div class="ag-row"><div class="ag-n">05</div><div class="ag-ic"><i class="fas fa-store" style="color:var(--acc)"></i></div><div class="ag-tx">بناء Layout كامل لـ SouqPro: Header · Nav · Footer</div><div class="ag-tg"><span class="pill acc">Project</span></div></div>
+        <div class="ag-row"><div class="ag-n">06</div><div class="ag-ic"><i class="fas fa-triangle-exclamation" style="color:var(--rd)"></i></div><div class="ag-tx">Best Practices وأخطاء متكررة داخل Blade</div><div class="ag-tg"><span class="pill rd">Notes</span></div></div>
+      </div>
+      <div class="gnote"><i class="fas fa-book-open"></i> اعتمدت المحاضرة على Laravel Blade Docs وربطتها مباشرة مع هيكل SouqPro</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s3">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Blade — Intro</span><span class="pn">3 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">ما هو <span class="a">Blade</span> فعلياً؟</div>
+      <div class="flow-row">
+        <div class="fnode gn-b"><div class="fn-icon">⚙️</div><div class="fn-title">Controller</div><div class="fn-sub">return view('products.index')</div><div class="fn-desc">يرسل البيانات للواجهة: منتجات، فئات، رسائل session...</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode acc-b"><div class="fn-icon">🧩</div><div class="fn-title">Blade Template</div><div class="fn-sub">resources/views/*.blade.php</div><div class="fn-desc">يجمع Layout + Sections + Includes + Components</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode bl-b"><div class="fn-icon">📄</div><div class="fn-title">Compiled PHP</div><div class="fn-sub">cached view</div><div class="fn-desc">Laravel يحول Blade إلى PHP عادي ثم يعمل له cache</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode pu-b"><div class="fn-icon">🌐</div><div class="fn-title">HTML النهائي</div><div class="fn-sub">Browser Output</div><div class="fn-desc">المستخدم يرى صفحة HTML جاهزة بدون أن يعرف بوجود Blade</div></div>
+      </div>
+      <div class="lnote"><i class="fas fa-lightbulb"></i> Blade ليس بديلاً عن Laravel Views؛ هو محرك القوالب الذي يجعل الـ View منظم وسهل الصيانة</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s4">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Layouts</span><span class="pn">4 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Template Inheritance: <span class="a">`@extends`</span> و`@section` و`@yield`</div>
+      <div class="grid-2">
+        <div class="card c-acc" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">layouts/app.blade.php</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="cm">{{-- القالب الرئيسي --}}</span><br>
+            &lt;<span class="fn">body</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.header'</span>)<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.nav'</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">main</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">@yield</span>(<span class="st">'content'</span>)<br>
+            &nbsp;&nbsp;&lt;/<span class="fn">main</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.footer'</span>)<br>
+            &lt;/<span class="fn">body</span>&gt;
+          </div>
+          <div style="font-size:11.5px;color:var(--sub);text-align:right;">`@yield` = مكان فارغ ينتظر محتوى الصفحة الفرعية</div>
+        </div>
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">products/index.blade.php</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="st">@extends</span>(<span class="st">'layouts.app'</span>)<br><br>
+            <span class="st">@section</span>(<span class="st">'content'</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">h1</span>&gt;All Products&lt;/<span class="fn">h1</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@foreach</span>(<span class="ac">$products</span> <span class="kw">as</span> <span class="ac">$product</span>)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">p</span>&gt;<span class="st">{{ </span><span class="ac">$product</span>-><span class="wht">name</span><span class="st"> }}</span>&lt;/<span class="fn">p</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@endforeach</span><br>
+            <span class="st">@endsection</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--gn);text-align:right;">`@extends` = الصفحة لا تعيد بناء الرأس والتذييل من الصفر كل مرة</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px;">لو كررت Header وFooter في كل صفحة، أي تعديل تصميمي لاحق سيتحول إلى فوضى. الـ Layout يحل هذه المشكلة من أول يوم.</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s5">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Partials</span><span class="pn">5 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Partials مع <span class="a">`@include`</span></div>
+      <div class="compare">
+        <div class="card c-rd" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl" style="color:var(--rd);">❌ تكرار مزعج</div>
+          <div class="cb" style="flex:1;font-size:10.8px;line-height:1.78;">
+            &lt;<span class="fn">header</span>&gt;...logo...search...cart...&lt;/<span class="fn">header</span>&gt;<br>
+            &lt;<span class="fn">nav</span>&gt;...links...&lt;/<span class="fn">nav</span>&gt;<br>
+            &lt;<span class="fn">main</span>&gt;Products&lt;/<span class="fn">main</span>&gt;<br>
+            &lt;<span class="fn">footer</span>&gt;...copyright...&lt;/<span class="fn">footer</span>&gt;<br><br>
+            <span class="cm">// نفس الكود يتكرر في home / products / cart / checkout</span>
+          </div>
+        </div>
+        <div class="vs">→</div>
+        <div class="card c-bl" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl" style="color:var(--bl);">✅ فصل الأجزاء الصغيرة</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="cm">{{-- layouts/app.blade.php --}}</span><br>
+            <span class="st">@include</span>(<span class="st">'partials.header'</span>)<br>
+            <span class="st">@include</span>(<span class="st">'partials.nav'</span>)<br>
+            <span class="st">@yield</span>(<span class="st">'content'</span>)<br>
+            <span class="st">@include</span>(<span class="st">'partials.footer'</span>)<br><br>
+            <span class="cm">{{-- تمرير بيانات إضافية عند الحاجة --}}</span><br>
+            <span class="st">@include</span>(<span class="st">'partials.flash'</span>, [<span class="st">'type'</span> => <span class="st">'success'</span>])
+          </div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fas fa-share-nodes"></i> `@include` يرث متغيرات الصفحة الحالية تلقائياً، لذلك هو مناسب للأجزاء الصغيرة والبسيطة</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s6">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Directives — Conditions</span><span class="pn">6 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Directives الشرطية: <span class="a">`@if`</span> ومتى نستخدمها</div>
+      <div class="grid-2">
+        <div class="card c-acc" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">Blade داخل صفحة المنتج</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="st">@if</span>(<span class="ac">$product</span>-><span class="wht">quantity</span> &gt; <span class="wht">0</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">span</span> class=<span class="st">"badge in-stock"</span>&gt;متوفر&lt;/<span class="fn">span</span>&gt;<br>
+            <span class="st">@elseif</span>(<span class="ac">$product</span>-><span class="wht">preorder</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">span</span> class=<span class="st">"badge preorder"</span>&gt;Pre-order&lt;/<span class="fn">span</span>&gt;<br>
+            <span class="st">@else</span><br>
+            &nbsp;&nbsp;&lt;<span class="fn">span</span> class=<span class="st">"badge out"</span>&gt;نفد المخزون&lt;/<span class="fn">span</span>&gt;<br>
+            <span class="st">@endif</span><br><br>
+            <span class="st">@auth</span><br>
+            &nbsp;&nbsp;&lt;<span class="fn">button</span>&gt;Add To Cart&lt;/<span class="fn">button</span>&gt;<br>
+            <span class="st">@endauth</span>
+          </div>
+        </div>
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card-lbl">لماذا هذا مهم في SouqPro؟</div>
+          <div class="mini-list">
+            <div class="mini-item"><i class="fas fa-check"></i><div>تتحكم في ظهور زر الشراء حسب المخزون أو نوع المستخدم.</div></div>
+            <div class="mini-item"><i class="fas fa-check"></i><div>تعرض Banner مختلف للـ Admin والعميل بدون PHP خام.</div></div>
+            <div class="mini-item"><i class="fas fa-check"></i><div>تعرض رسائل session مثل النجاح والخطأ بطريقة نظيفة.</div></div>
+          </div>
+          <div class="gnote" style="margin-top:auto;"><i class="fas fa-shield-halved"></i> Blade يعرض الحالة فقط؛ الحماية الحقيقية تبقى في Middleware وControllers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s7">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Directives — Loops</span><span class="pn">7 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">الحلقات: <span class="a">`@foreach`</span> و`@forelse`</div>
+      <div class="grid-2">
+        <div class="card c-bl" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">عرض المنتجات</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="st">@foreach</span>(<span class="ac">$products</span> <span class="kw">as</span> <span class="ac">$product</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">div</span> class=<span class="st">"product-row"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">span</span>&gt;<span class="st">{{ </span><span class="ac">$loop</span>-><span class="wht">iteration</span><span class="st"> }}</span>&lt;/<span class="fn">span</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">span</span>&gt;<span class="st">{{ </span><span class="ac">$product</span>-><span class="wht">name</span><span class="st"> }}</span>&lt;/<span class="fn">span</span>&gt;<br>
+            &nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+            <span class="st">@endforeach</span><br><br>
+            <span class="cm">// $loop->first / $loop->last / $loop->even متاحة أيضاً</span>
+          </div>
+        </div>
+        <div class="card c-pu" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">الحالة الأفضل للقوائم الفارغة</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="st">@forelse</span>(<span class="ac">$products</span> <span class="kw">as</span> <span class="ac">$product</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">x-product-card</span> :<span class="ac">product</span>=<span class="st">"$product"</span> /&gt;<br>
+            <span class="st">@empty</span><br>
+            &nbsp;&nbsp;&lt;<span class="fn">div</span> class=<span class="st">"empty-state"</span>&gt;لا توجد منتجات حالياً&lt;/<span class="fn">div</span>&gt;<br>
+            <span class="st">@endforelse</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--pu);text-align:right;">`@forelse` ممتازة في صفحات Products وOrders لأنها تغطي حالتي وجود البيانات وعدمها</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s8">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Components</span><span class="pn">8 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Components: متى نستخدم <span class="a">`&lt;x-component /&gt;`</span>؟</div>
+      <div class="compare">
+        <div class="card c-acc" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">`@include` مناسب عندما...</div>
+          <div class="mini-list" style="flex:1;">
+            <div class="mini-item"><i class="fas fa-minus"></i><div>الجزء ثابت تقريباً مثل Header وFooter وSidebar.</div></div>
+            <div class="mini-item"><i class="fas fa-minus"></i><div>لا تحتاج Props كثيرة أو Slot داخلي.</div></div>
+            <div class="mini-item"><i class="fas fa-minus"></i><div>تريد فقط تقسيم ملف طويل إلى ملفات أصغر.</div></div>
+          </div>
+        </div>
+        <div class="vs">vs</div>
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">Component مناسب عندما...</div>
+          <div class="cb" style="flex:1;font-size:11px;line-height:1.82;">
+            <span class="cm">// إنشاء Component</span><br>
+            php <span class="fn">artisan</span> make:component <span class="ac">ProductCard</span><br><br>
+            <span class="cm">// استخدامه</span><br>
+            &lt;<span class="fn">x-product-card</span> :<span class="ac">product</span>=<span class="st">"$product"</span> /&gt;<br><br>
+            <span class="cm">// Anonymous component</span><br>
+            php <span class="fn">artisan</span> make:component <span class="ac">forms.input</span> <span class="yl">--view</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--gn);text-align:right;">عندما تحتاج props وattributes وسلوك reusable في أكثر من صفحة، اذهب إلى Component</div>
+        </div>
+      </div>
+      <div class="lnote"><i class="fas fa-folder-tree"></i> Components class-based توضع في `app/View/Components/`، وواجهاتها في `resources/views/components/`</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s9">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Slots</span><span class="pn">9 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">Slots: كيف نمرر محتوى داخل <span class="a">Component</span>؟</div>
+      <div class="grid-2">
+        <div class="card c-pu" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">resources/views/components/panel.blade.php</div>
+          <div class="cb" style="flex:1;font-size:10.9px;line-height:1.82;">
+            &lt;<span class="fn">div</span> class=<span class="st">"panel"</span>&gt;<br>
+            &nbsp;&nbsp;&lt;<span class="fn">div</span> class=<span class="st">"panel-head"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">{{ </span><span class="ac">$title</span> ?? <span class="st">'بدون عنوان'</span><span class="st"> }}</span><br>
+            &nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+            &nbsp;&nbsp;&lt;<span class="fn">div</span> class=<span class="st">"panel-body"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">{{ </span><span class="ac">$slot</span><span class="st"> }}</span><br>
+            &nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+            &lt;/<span class="fn">div</span>&gt;
+          </div>
+        </div>
+        <div class="card c-bl" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">استخدام الـ Slot داخل الصفحة</div>
+          <div class="cb" style="flex:1;font-size:10.9px;line-height:1.82;">
+            &lt;<span class="fn">x-panel</span>&gt;<br>
+            &nbsp;&nbsp;&lt;<span class="fn">x-slot</span> name=<span class="st">"title"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;أحدث العروض<br>
+            &nbsp;&nbsp;&lt;/<span class="fn">x-slot</span>&gt;<br><br>
+            &nbsp;&nbsp;&lt;<span class="fn">p</span>&gt;خصومات اليوم على الإلكترونيات&lt;/<span class="fn">p</span>&gt;<br>
+            &lt;/<span class="fn">x-panel</span>&gt;
+          </div>
+          <div style="font-size:11.5px;color:var(--bl);text-align:right;">المحتوى بين فتح وإغلاق الـ Component يذهب إلى `{{ $slot }}`، ويمكنك إنشاء named slots مثل `title`</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px;">ملاحظة: الاسم الصحيح هو `&lt;x-slot&gt;` وليس `&lt;x-solt&gt;` — وهذا مهم جداً في Blade Components.</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s10">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">SouqPro Layout</span><span class="pn">10 / 14</span>
+    </div>
+    <div class="sb">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-shrink:0;"><div class="sh" style="margin-bottom:0;">بناء Layout الـ <span class="a">SouqPro</span></div><span class="sp-badge"><i class="fas fa-store"></i> Real Project Mapping</span></div>
+      <div class="grid-2">
+        <div class="card c-acc" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">هيكل الملفات</div>
+          <div class="tree" style="flex:1;">
+<span class="dir">resources/</span><br>
+└── <span class="dir">views/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dir">layouts/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└── <span class="file accent">app.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dir">partials/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├── <span class="file">header.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├── <span class="file">nav.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└── <span class="file">footer.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dir">components/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├── <span class="file ok">product-card.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└── <span class="file">flash-message.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dir">products/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">index.blade.php</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">show.blade.php</span>
+          </div>
+        </div>
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">المنطق المعماري</div>
+          <table class="stbl">
+            <thead><tr><th>الجزء</th><th>وظيفته</th></tr></thead>
+            <tbody>
+              <tr><td><span class="cmd">layouts/app</span></td><td style="color:var(--sub);">الإطار العام: `head` + Header + Footer + `@yield('content')`</td></tr>
+              <tr><td><span class="cmd">partials/header</span></td><td style="color:var(--sub);">اللوجو، البحث، عداد السلة، رابط الحساب</td></tr>
+              <tr><td><span class="cmd">partials/nav</span></td><td style="color:var(--sub);">روابط الأقسام: Home, Products, Categories, Offers</td></tr>
+              <tr><td><span class="cmd">partials/footer</span></td><td style="color:var(--sub);">روابط ثابتة وحقوق النشر والتواصل</td></tr>
+              <tr><td><span class="cmd">x-product-card</span></td><td style="color:var(--sub);">إعادة استخدام بطاقة المنتج في أكثر من صفحة</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s11">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">SouqPro — Assembly</span><span class="pn">11 / 14</span>
+    </div>
+    <div class="sb" style="padding:16px 28px 12px;">
+      <div class="sh">كيف نجمع الصفحة كاملة داخل <span class="a">SouqPro</span>؟</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:10.5px;font-family:var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;">resources/views/layouts/app.blade.php</div>
+          <div class="cb" style="flex:1;font-size:10.35px;line-height:1.82;overflow:auto;">
+            &lt;!doctype <span class="fn">html</span>&gt;<br>
+            &lt;<span class="fn">html</span> lang=<span class="st">"en"</span>&gt;<br>
+            &lt;<span class="fn">head</span>&gt;<br>
+            &nbsp;&nbsp;&lt;<span class="fn">title</span>&gt;<span class="st">{{ </span><span class="ac">$title</span> ?? <span class="st">'SouqPro'</span><span class="st"> }}</span>&lt;/<span class="fn">title</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@vite</span>([<span class="st">'resources/css/app.css'</span>, <span class="st">'resources/js/app.js'</span>])<br>
+            &lt;/<span class="fn">head</span>&gt;<br>
+            &lt;<span class="fn">body</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.header'</span>)<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.nav'</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">main</span> class=<span class="st">"container"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">@yield</span>(<span class="st">'content'</span>)<br>
+            &nbsp;&nbsp;&lt;/<span class="fn">main</span>&gt;<br>
+            &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.footer'</span>)<br>
+            &lt;/<span class="fn">body</span>&gt;<br>
+            &lt;/<span class="fn">html</span>&gt;
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:10.5px;font-family:var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;">resources/views/products/index.blade.php</div>
+          <div class="cb" style="flex:1;font-size:10.35px;line-height:1.82;overflow:auto;">
+            <span class="st">@extends</span>(<span class="st">'layouts.app'</span>)<br><br>
+            <span class="st">@section</span>(<span class="st">'content'</span>)<br>
+            &nbsp;&nbsp;&lt;<span class="fn">section</span> class=<span class="st">"page-head"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">h1</span>&gt;Our Products&lt;/<span class="fn">h1</span>&gt;<br>
+            &nbsp;&nbsp;&lt;/<span class="fn">section</span>&gt;<br><br>
+            &nbsp;&nbsp;&lt;<span class="fn">section</span> class=<span class="st">"grid"</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">@forelse</span>(<span class="ac">$products</span> <span class="kw">as</span> <span class="ac">$product</span>)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">x-product-card</span> :<span class="ac">product</span>=<span class="st">"$product"</span> /&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">@empty</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">p</span>&gt;لا توجد منتجات حالياً&lt;/<span class="fn">p</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="st">@endforelse</span><br>
+            &nbsp;&nbsp;&lt;/<span class="fn">section</span>&gt;<br>
+            <span class="st">@endsection</span>
+          </div>
+        </div>
+      </div>
+      <div class="gnote" style="margin-top:8px;"><i class="fas fa-check-double"></i> بهذه الطريقة: Layout مسؤول عن الإطار العام، الصفحة مسؤولة عن محتواها، والـ Component مسؤول عن الجزء القابل للتكرار</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s12">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Best Practices</span><span class="pn">12 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">أفضل الممارسات و<span class="a">الأخطاء الشائعة</span></div>
+      <div class="grid-3">
+        <div class="card c-gn" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">✅ افعل</div>
+          <div class="mini-list">
+            <div class="mini-item"><i class="fas fa-check"></i><div>اجعل ملفات Blade مسؤولة عن العرض فقط لا عن Business Logic.</div></div>
+            <div class="mini-item"><i class="fas fa-check"></i><div>استخدم `@extends` للهيكل العام وComponents للأجزاء المتكررة.</div></div>
+            <div class="mini-item"><i class="fas fa-check"></i><div>سمّ الملفات بوضوح مثل `products/index.blade.php` و`components/product-card.blade.php`.</div></div>
+          </div>
+        </div>
+        <div class="card c-rd" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">❌ لا تفعل</div>
+          <div class="mini-list">
+            <div class="mini-item"><i class="fas fa-xmark" style="color:var(--rd);"></i><div>لا تكتب Queries داخل Blade مثل `Product::latest()`.</div></div>
+            <div class="mini-item"><i class="fas fa-xmark" style="color:var(--rd);"></i><div>لا تكرر نفس البطاقة في 4 صفحات ثم تعدلها يدوياً لاحقاً.</div></div>
+            <div class="mini-item"><i class="fas fa-xmark" style="color:var(--rd);"></i><div>لا تستخدم `{!! !!}` إلا إذا كنت متأكد أن المحتوى آمن من XSS.</div></div>
+          </div>
+        </div>
+        <div class="card c-bl" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card-lbl">💡 ملاحظات مهمة</div>
+          <div class="mini-list">
+            <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>`{{ }}` تعمل escape تلقائي للبيانات لحمايتك من XSS.</div></div>
+            <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>إذا احتجت Props + Slot + Attributes فغالباً أنت تحتاج Component لا Include.</div></div>
+            <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>Laravel يعمل compile وcache لملفات Blade لذلك الأداء ممتاز.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px;">AI يساعدك في توليد Blade بسرعة، لكن اسأل دائماً: هل الـ logic في مكانه الصحيح؟ هل الجزء فعلاً reusable؟</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s13">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Homework</span><span class="pn">13 / 14</span>
+    </div>
+    <div class="sb">
+      <div class="sh">التطبيق العملي <span class="a">بعد المحاضرة</span></div>
+      <div class="hwl">
+        <div class="hwr"><div class="hwn">01</div><div class="hwb"><div class="hwt">أنشئ Layout رئيسي</div><div class="hwd">أنشئ `layouts/app.blade.php` وضع فيه Header وNav وFooter مع `@yield('content')`.</div><div class="hwcr"><span class="cmd">@extends</span><span class="cmd">@yield</span><span class="cmd">@section</span></div></div></div>
+        <div class="hwr"><div class="hwn">02</div><div class="hwb"><div class="hwt">حوّل الأجزاء المشتركة إلى Partials</div><div class="hwd">افصل `header.blade.php` و`nav.blade.php` و`footer.blade.php` داخل `partials/` ثم استدعها عبر `@include`.</div><div class="hwcr"><span class="cmd">@include</span><span class="cmd">partials.header</span></div></div></div>
+        <div class="hwr"><div class="hwn">03</div><div class="hwb"><div class="hwt">أنشئ Component لبطاقة المنتج</div><div class="hwd">أنشئ `x-product-card` واستخدمه داخل صفحة المنتجات مع `@forelse` لعرض Empty State عند عدم وجود منتجات.</div><div class="hwcr"><span class="cmd">make:component</span><span class="cmd">&lt;x-product-card /&gt;</span><span class="cmd">@forelse</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s14">
+    <div class="cll">
+      <div class="clcode">
+        // Blade recap...<br><br>
+        <span style="color:#243d58">@extends</span>(<span style="color:#193550">'layouts.app'</span>)<br>
+        <span style="color:#243d58">@section</span>(<span style="color:#193550">'content'</span>)<br>
+        &nbsp;&nbsp;<span style="color:#243d58">@forelse</span>(<span style="color:#1a3a58">$products</span> as <span style="color:#1a3a58">$product</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="color:#1a3a58">x-product-card</span> :<span style="color:#1e4060">product</span>=<span style="color:#193550">"$product"</span> /&gt;<br>
+        &nbsp;&nbsp;<span style="color:#243d58">@empty</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;No products<br>
+        &nbsp;&nbsp;<span style="color:#243d58">@endforelse</span><br>
+        <span style="color:#243d58">@endsection</span>
+      </div>
+      <div class="clft">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-layer-group" style="color:#f97316"></i>
+        <span class="sp"></span>
+        <span class="v">v5.0.0</span>
+      </div>
+    </div>
+    <div class="clr">
+      <div class="clbig">
+        <div class="l1">الأسئلة</div>
+        <div class="l2">والنقاش 💬</div>
+      </div>
+      <div class="cl-instr">
+        <div class="cl-instr-info">
+          <div class="cl-instr-name">السيد الاخرسي</div>
+          <div class="cl-instr-role">Full Stack Developer &amp; Instructor</div>
+          <div class="cl-instr-company">WebUra</div>
+        </div>
+        <div class="cl-instr-photo">
+          <img src="../assets/alsaeyd.png" alt="المدرب" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
+        </div>
+      </div>
+      <div class="clnx">
+        <div class="nx-label">// المحاضرة القادمة</div>
+        <div class="nx-title">Forms وValidation داخل Laravel</div>
+      </div>
+      <div class="clics">
+        <i class="fab fa-laravel" style="color:#ff2d20"></i>
+        <i class="fas fa-code" style="color:#c084fc"></i>
+        <i class="fas fa-cubes" style="color:#38bdf8"></i>
+        <i class="fas fa-store" style="color:#10d97a"></i>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="nav-row">
+  <div id="instr-card">
+    <div class="iav">
+      <img src="../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
+    </div>
+    <div>
+      <div class="inm">السيد الاخرسي</div>
+      <div class="irl">Full Stack Developer &amp; Instructor</div>
+    </div>
+  </div>
+  <div id="nav">
+    <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
+    <div id="dots"></div>
+    <span id="ctr">1 / 14</span>
+    <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<script>
+  const N = 14;
+  let c = 1;
+  const ctr = document.getElementById("ctr");
+  const btnN = document.getElementById("btnN");
+  const btnP = document.getElementById("btnP");
+  const dotsEl = document.getElementById("dots");
+
+  for (let i = 1; i <= N; i++) {
+    const d = document.createElement("div");
+    d.className = "dot" + (i === 1 ? " on" : "");
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  }
+
+  function go(n) {
+    if (n < 1 || n > N || n === c) return;
+    document.getElementById("s" + c).classList.remove("active");
+    c = n;
+    document.getElementById("s" + c).classList.add("active");
+    ctr.textContent = c + " / " + N;
+    btnP.disabled = c === 1;
+    btnN.disabled = c === N;
+    dotsEl.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("on", i + 1 === c));
+  }
+
+  btnN.onclick = () => go(c + 1);
+  btnP.onclick = () => go(c - 1);
+  document.addEventListener("keydown", e => {
+    if (["ArrowRight", "ArrowDown", " "].includes(e.key)) { e.preventDefault(); go(c + 1); }
+    if (["ArrowLeft", "ArrowUp"].includes(e.key)) { e.preventDefault(); go(c - 1); }
+  });
+
+  function scaleStage() {
+    const wrap = document.getElementById("scale-wrap");
+    const stage = document.getElementById("stage");
+    const W = 1060, H = 596;
+    const navH = document.getElementById("nav-row").offsetHeight + 18 + 8;
+    const aw = window.innerWidth - 32;
+    const ah = window.innerHeight - navH - 32;
+    const scale = Math.min(1, aw / W, ah / H);
+    stage.style.transform = "scale(" + scale + ")";
+    wrap.style.width = Math.round(W * scale) + "px";
+    wrap.style.height = Math.round(H * scale) + "px";
+  }
+
+  scaleStage();
+  window.addEventListener("resize", scaleStage);
+</script>
+</body>
+</html>
