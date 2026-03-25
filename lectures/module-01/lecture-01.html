@@ -1714,7 +1714,57 @@
       .rd {
         color: var(--rd);
       }
-    </style>
+    
+    /* COPY BUTTONS */
+    .copyable-code {
+      position: relative;
+      padding-top: 38px !important;
+    }
+    .copyable-code .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid var(--bdr2);
+      border-radius: 999px;
+      background: rgba(6, 11, 18, 0.96);
+      color: var(--sub);
+      font-family: var(--sans);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .18s ease;
+      z-index: 3;
+    }
+    .copyable-code .copy-btn:hover {
+      border-color: var(--acc);
+      color: var(--wh);
+      background: rgba(17, 27, 42, 0.98);
+    }
+    .copyable-code .copy-btn i {
+      font-size: 11px;
+      pointer-events: none;
+    }
+    .copyable-code .copy-btn span {
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .copyable-code .copy-btn.copied {
+      color: var(--gn);
+      border-color: rgba(16, 217, 122, .35);
+      background: rgba(16, 217, 122, .1);
+    }
+    .copyable-code .cb-label {
+      left: 12px !important;
+      right: auto !important;
+      max-width: calc(100% - 120px);
+      text-align: left;
+    }
+
+  </style>
   </head>
 
   <body>
@@ -1768,7 +1818,7 @@ class User {
               <span class="cl">المستوى</span><span class="cv">مبتدئ</span>
             </div>
             <div class="chip">
-              <span class="cl">المدة</span><span class="cv">٦٠ دقيقة</span>
+              <span class="cl">المدة</span><span class="cv">٩٠ دقيقة</span>
             </div>
           </div>
         </div>
@@ -1819,7 +1869,7 @@ class User {
               <div class="ag-n">05</div>
               <div class="ag-ic"><i class="fas fa-tools"></i></div>
               <div class="ag-tx">
-                Flyenv / XAMPP + Postman + Git — أدوات العمل اليومية
+                Laravel Herd / Flyenv + Postman + Git — أدوات العمل اليومية
               </div>
               <div class="ag-tg"><span class="pill">Section 5</span></div>
             </div>
@@ -2395,7 +2445,7 @@ class User {
         </div>
       </div>
 
-      <!-- ══ S11 THREE TOOLS — Flyenv/XAMPP + Postman + Git ══ -->
+      <!-- ══ S11 THREE TOOLS — Laravel Herd/Flyenv + Postman + Git ══ -->
       <div class="slide" id="s11">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
@@ -2404,27 +2454,28 @@ class User {
         </div>
         <div class="sb">
           <div class="sh">
-            <span class="a">Flyenv / XAMPP + Postman + Git</span> — أدوات ما
+            <span class="a">Laravel Herd / Flyenv + Postman + Git</span> — أدوات ما
             تشتغل بدونها
           </div>
           <div class="t3g" style="flex: 1">
             <div class="t3 tp">
               <span class="t3bg tp">Local Server</span>
               <div class="t3i tp"><i class="fas fa-server"></i></div>
-              <div class="t3n tp">Flyenv / XAMPP</div>
+              <div class="t3n tp">Laravel Herd / Flyenv</div>
               <div class="t3bl">
                 <div class="t3lb">شو هما</div>
                 <div class="t3tx">
-                  <b style="color: #00c4b4">Flyenv</b> — بيئة تطوير حديثة (PHP +
-                  MySQL + phpMyAdmin بنقرة).
-                  <b style="color: #00c4b4">XAMPP</b> — الكلاسيكي المعروف
-                  (Apache + MySQL + phpMyAdmin)
+                  <b style="color: #00c4b4">Laravel Herd</b> — الخيار الموصى به
+                  على Windows وMac لتجهيز PHP وComposer وبيئة Laravel بسرعة.
+                  <b style="color: #00c4b4">Flyenv</b> — بديل عام مناسب إذا
+                  فضّلت بيئة أخف أو كنت على Linux
                 </div>
               </div>
               <div class="t3bl">
                 <div class="t3lb">الفائدة</div>
                 <div class="t3tx">
-                  تشغيل PHP ومشاهدة البيانات في phpMyAdmin مباشرة على جهازك
+                  تشغيل PHP محلياً لمشاريع Laravel، ثم إدارة قاعدة البيانات
+                  لاحقاً عبر TablePlus أو phpMyAdmin
                 </div>
               </div>
             </div>
@@ -2525,19 +2576,21 @@ class User {
               <tr>
                 <td>
                   <div class="trn" style="color: #00c4b4">
-                    <i class="fas fa-server"></i> Flyenv / XAMPP
+                    <i class="fas fa-server"></i> Laravel Herd / Flyenv
                     <span class="pill">Local Server</span>
                   </div>
                 </td>
                 <td>
-                  تشغيل PHP + MySQL محلياً مع واجهة TablePlus / phpMyAdmin
+                  تشغيل PHP محلياً لمشروع Laravel، ثم ربط MySQL وإدارته عبر
+                  TablePlus أو phpMyAdmin
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="note" style="margin-top: 10px">
-            📌 TablePlus وPostman وGit ستُثبَّت في المحاضرة القادمة — ركّز اليوم
-            على الـ 5 الأساسية.
+            📌 TablePlus وPostman ذُكرا هنا للتعريف فقط — التثبيت والاستخدام
+            العملي سيكونان مع أول مشروع Laravel في المحاضرة 3، وGit سنبدأه مع
+            بداية الشغل الفعلي على المشروع.
           </div>
         </div>
       </div>
@@ -2556,7 +2609,8 @@ class User {
               <div class="hwb">
                 <div class="hwt">ثبّت الأدوات الأساسية الـ 5</div>
                 <div class="hwd">
-                  PHP + Composer + Node.js + VS Code أو Cursor + Flyenv أو XAMPP
+                  PHP + Composer + Node.js + VS Code أو Cursor + Laravel Herd
+                  (لـ Windows) أو Flyenv (لـ Mac/Linux)
                 </div>
               </div>
             </div>
@@ -2617,7 +2671,7 @@ class User {
               <div class="cl-instr-company">WebUra</div>
             </div>
             <div class="cl-instr-photo">
-              <img src="../assets/alsaeyd.png" alt="المدرب" />
+              <img src="../../assets/alsaeyd.png" alt="المدرب" />
             </div>
           </div>
           <!-- Next lecture -->
@@ -2640,7 +2694,7 @@ class User {
     <div id="nav-row">
       <div id="instr-card">
         <div class="iav">
-          <img src="../assets/alsaeyd.png" alt="" />
+          <img src="../../assets/alsaeyd.png" alt="" />
         </div>
         <div>
           <div class="inm">السيد الاخرسي</div>
@@ -2696,6 +2750,88 @@ class User {
           go(c - 1);
         }
       });
-    </script>
+    
+
+  /* Copy code buttons */
+  function copyCodeText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+
+      try {
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        resolve();
+      } catch (error) {
+        document.body.removeChild(ta);
+        reject(error);
+      }
+    });
+  }
+
+  function extractCodeText(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".copy-btn, .cb-label").forEach(node => node.remove());
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function setCopiedState(btn) {
+    clearTimeout(btn._copyTimer);
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="fas fa-check"></i><span>تم النسخ</span>';
+    btn._copyTimer = setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+    }, 1600);
+  }
+
+  function initCopyButtons() {
+    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+      if (el.dataset.copyReady === 'true') return;
+      el.dataset.copyReady = 'true';
+      el.classList.add('copyable-code');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.setAttribute('aria-label', 'نسخ الكود');
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const text = extractCodeText(el);
+        if (!text) return;
+
+        try {
+          await copyCodeText(text);
+          setCopiedState(btn);
+        } catch (error) {
+          console.error('Copy failed:', error);
+        }
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  initCopyButtons();
+
+</script>
   </body>
 </html>

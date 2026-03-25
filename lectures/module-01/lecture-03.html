@@ -63,7 +63,7 @@
 
     /* SLIDE BODY */
     .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;overflow-y:auto;
-      position:relative;z-index:1;overflow:hidden}
+      position:relative;z-index:1;min-height:0}
     .sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;
       line-height:1.25;margin-bottom:14px}
     .sh .a{color:var(--acc)} .sh .a2{color:var(--bl)} .sh .ag{color:var(--gn)}
@@ -95,8 +95,12 @@
     .cb .rd{color:#f87171} .cb .dim{color:#3a5470}
     .cb-label{position:absolute;top:8px;left:10px;font-family:var(--mono);
       font-size:9px;color:var(--dim);letter-spacing:.05em}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
-    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;flex:1}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;flex:1;min-height:0}
+    .two-col > div,
+    .three-col > div,
+    .tabs-wrap,
+    .tab-pane{min-height:0}
 
     /* LINK BUTTON */
     .link-btn{display:inline-flex;align-items:center;gap:7px;
@@ -115,7 +119,7 @@
     .cvl::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
       background:linear-gradient(90deg,var(--acc),transparent)}
     .cvl pre{flex:1;padding:22px 18px;font-family:var(--mono);font-size:11.5px;
-      line-height:2;color:#1e3554;overflow:hidden}
+      line-height:2;color:#1e3554;overflow:auto;direction:ltr;text-align:left}
     .cvl-ft{height:46px;border-top:1px solid var(--bdr);display:flex;
       align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
     .cvl-ft i{font-size:16px}
@@ -238,14 +242,22 @@
     .hwd{font-size:12px;color:var(--sub);line-height:1.5}
     .hwcr{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
+    /* APP SERVICE PROVIDER + CLOSING */
+    #s14 .two-col{min-height:0;align-items:stretch}
+    #s14 .two-col > div{min-height:0}
+    #s14 .two-col > div:first-child,
+    #s14 .two-col > div:last-child{overflow:hidden}
+    #s14 .cb{height:100%}
+    #s14 .card{overflow:hidden}
+
     /* CLOSING */
-    #s14{flex-direction:row}
+    #s16{flex-direction:row}
     .cll{width:300px;background:var(--surf);border-left:1px solid var(--bdr);
       flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
     .cll::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
       background:linear-gradient(90deg,var(--acc),transparent)}
     .clcode{flex:1;padding:20px 16px;font-family:var(--mono);font-size:10.5px;
-      line-height:2;color:#1e3554;overflow:hidden}
+      line-height:2;color:#1e3554;overflow:auto;direction:ltr;text-align:left}
     .clft{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;
       padding:0 16px;gap:12px;flex-shrink:0}
     .clft i{font-size:16px} .clft .sp{flex:1}
@@ -272,6 +284,56 @@
     .stbl td{padding:8px 14px;border-bottom:1px solid rgba(28,45,66,.5);font-size:12.5px;color:var(--wh)}
     .stbl tr:last-child td{border-bottom:none}
     .trn{display:flex;align-items:center;gap:8px}
+  
+    /* COPY BUTTONS */
+    .copyable-code {
+      position: relative;
+      padding-top: 38px !important;
+    }
+    .copyable-code .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid var(--bdr2);
+      border-radius: 999px;
+      background: rgba(6, 11, 18, 0.96);
+      color: var(--sub);
+      font-family: var(--sans);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .18s ease;
+      z-index: 3;
+    }
+    .copyable-code .copy-btn:hover {
+      border-color: var(--acc);
+      color: var(--wh);
+      background: rgba(17, 27, 42, 0.98);
+    }
+    .copyable-code .copy-btn i {
+      font-size: 11px;
+      pointer-events: none;
+    }
+    .copyable-code .copy-btn span {
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .copyable-code .copy-btn.copied {
+      color: var(--gn);
+      border-color: rgba(16, 217, 122, .35);
+      background: rgba(16, 217, 122, .1);
+    }
+    .copyable-code .cb-label {
+      left: 12px !important;
+      right: auto !important;
+      max-width: calc(100% - 120px);
+      text-align: left;
+    }
+
   </style>
 </head>
 <body>
@@ -513,7 +575,7 @@
           <div class="term-body" style="flex:1;">
             <span class="prompt">~$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
             <span class="out">Creating a "laravel/laravel" project...</span><br>
-            <span class="out-gn">  - Installing laravel/laravel (v11.x)</span><br>
+            <span class="out-gn">  - Installing laravel/laravel (v12.x)</span><br>
             <span class="out">    Downloaded 4.2MB</span><br>
             <span class="out-gn">✓ Application key set successfully.</span><br>
             <br>
@@ -526,7 +588,7 @@
           </div>
         </div>
       </div>
-      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> يمكنك أيضاً استخدام <span style="font-family:var(--mono);color:var(--acc)">laravel new SouqPro</span> إذا ثبّت Laravel Installer مسبقاً.</div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> ابدأ دائماً بـ <span style="font-family:var(--mono);color:var(--acc)">composer create-project</span> لأنه لا يحتاج إعداداً إضافياً. ويمكنك استخدام <span style="font-family:var(--mono);color:var(--acc)">laravel new SouqPro</span> كخيار ثانوي فقط إذا ثبّت Laravel Installer مسبقاً، وإذا ظهرت لك نسخة 11 فأضف <span style="font-family:var(--mono);color:var(--gn)">--prefer-dist laravel/laravel:^12</span>.</div>
     </div>
   </div>
 
@@ -1043,7 +1105,7 @@
             </div>
             <div class="term-body">
               <span class="prompt">$</span> <span class="cmd-t">php artisan list</span><br>
-              <span class="out-acc">Laravel Framework 11.x</span><br>
+              <span class="out-acc">Laravel Framework 12.x</span><br>
               <span class="out">Usage: command [options] [args]</span><br>
               <br>
               <span class="out-gn">Available commands:</span><br>
@@ -1340,7 +1402,7 @@
           </div>
         </div>
       </div>
-      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> حسب الـ docs الرسمية: <em>"في أغلب الأحيان لن تحتاج للتعامل مع Container مباشرة — هو يعمل في الخلفية تلقائياً."</em></div>
+      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> حسب الـ docs الرسمية: <em>"في أغلب الأحيان لن تحتاج للتعامل مع Container مباشرة — هو يعمل في الخلفية تلقائياً."</em> هذا المفهوم سيصبح أوضح أكثر عندما نبدأ Controllers وDependency Injection؛ حالياً يكفي أن تفهم أن Laravel يدير إنشاء الكلاسات تلقائياً.</div>
     </div>
   </div>
 
@@ -1523,7 +1585,7 @@
           <div class="cl-instr-company">WebUra</div>
         </div>
         <div class="cl-instr-photo">
-          <img src="../assets/alsaeyd.png" alt="المدرب"/>
+          <img src="../../assets/alsaeyd.png" alt="المدرب"/>
         </div>
       </div>
       <div class="clnx">
@@ -1545,7 +1607,7 @@
 <div id="nav-row">
   <div id="instr-card">
     <div class="iav">
-      <img src="../assets/alsaeyd.png" alt=""/>
+      <img src="../../assets/alsaeyd.png" alt=""/>
     </div>
     <div>
       <div class="inm">السيد الاخرسي</div>
@@ -1593,6 +1655,88 @@
     document.getElementById("tab-"+name).classList.add("on");
     event.target.classList.add("on");
   }
+
+
+  /* Copy code buttons */
+  function copyCodeText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+
+      try {
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        resolve();
+      } catch (error) {
+        document.body.removeChild(ta);
+        reject(error);
+      }
+    });
+  }
+
+  function extractCodeText(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".copy-btn, .cb-label").forEach(node => node.remove());
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function setCopiedState(btn) {
+    clearTimeout(btn._copyTimer);
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="fas fa-check"></i><span>تم النسخ</span>';
+    btn._copyTimer = setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+    }, 1600);
+  }
+
+  function initCopyButtons() {
+    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+      if (el.dataset.copyReady === 'true') return;
+      el.dataset.copyReady = 'true';
+      el.classList.add('copyable-code');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.setAttribute('aria-label', 'نسخ الكود');
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const text = extractCodeText(el);
+        if (!text) return;
+
+        try {
+          await copyCodeText(text);
+          setCopiedState(btn);
+        } catch (error) {
+          console.error('Copy failed:', error);
+        }
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  initCopyButtons();
+
 </script>
 </body>
 </html>

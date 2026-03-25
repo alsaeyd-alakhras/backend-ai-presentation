@@ -263,8 +263,8 @@
     .ag-tg { margin-left:14px; flex-shrink:0; }
 
     /* ── TWO COL / THREE COL ── */
-    .two-col   { display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; }
-    .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; flex:1; }
+    .two-col   { display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; min-height:0; }
+    .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; flex:1; min-height:0; }
 
     /* ── ROUTE METHOD BADGES ── */
     .method {
@@ -331,8 +331,9 @@
     .hwd { font-size:12px; color:var(--sub); line-height:1.5; }
     .hwcr { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
 
-    /* ── CLOSING (S14) ── */
-    #s14 { flex-direction:row; }
+    /* ── HOMEWORK / CLOSING ── */
+    #s14 .hwl { min-height:0; }
+    #s15 { flex-direction:row; }
     .cll {
       width:300px; background:var(--surf); border-left:1px solid var(--bdr);
       flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
@@ -344,7 +345,7 @@
     .clcode {
       flex:1; padding:20px 16px;
       font-family:var(--mono); font-size:11px; line-height:2;
-      color:#1e3554; overflow:hidden; direction:ltr; text-align:left;
+      color:#1e3554; overflow:auto; direction:ltr; text-align:left;
     }
     .clft {
       height:46px; border-top:1px solid var(--bdr);
@@ -402,6 +403,56 @@
     ic.bl { color:var(--bl); background:rgba(56,189,248,.08); }
     ic.gn { color:var(--gn); background:rgba(16,217,122,.08); }
     ic.pu { color:var(--pu); background:rgba(192,132,252,.08); }
+
+  
+    /* COPY BUTTONS */
+    .copyable-code {
+      position: relative;
+      padding-top: 38px !important;
+    }
+    .copyable-code .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid var(--bdr2);
+      border-radius: 999px;
+      background: rgba(6, 11, 18, 0.96);
+      color: var(--sub);
+      font-family: var(--sans);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .18s ease;
+      z-index: 3;
+    }
+    .copyable-code .copy-btn:hover {
+      border-color: var(--acc);
+      color: var(--wh);
+      background: rgba(17, 27, 42, 0.98);
+    }
+    .copyable-code .copy-btn i {
+      font-size: 11px;
+      pointer-events: none;
+    }
+    .copyable-code .copy-btn span {
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .copyable-code .copy-btn.copied {
+      color: var(--gn);
+      border-color: rgba(16, 217, 122, .35);
+      background: rgba(16, 217, 122, .1);
+    }
+    .copyable-code .cb-label {
+      left: 12px !important;
+      right: auto !important;
+      max-width: calc(100% - 120px);
+      text-align: left;
+    }
 
   </style>
 </head>
@@ -468,7 +519,7 @@
   <div class="slide" id="s2">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Agenda</span><span class="pn">2 / 14</span>
+      <span class="tag">Agenda</span><span class="pn">2 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">محتوى <span class="a">المحاضرة</span></div>
@@ -500,7 +551,7 @@
         <div class="ag-row">
           <div class="ag-n">05</div>
           <div class="ag-ic"><i class="fas fa-window-restore" style="color:var(--acc)"></i></div>
-          <div class="ag-tx">Views وBlade — عرض البيانات</div>
+          <div class="ag-tx">Views — ربط Controller بالـ View</div>
           <div class="ag-tg"><span class="pill acc">New</span></div>
         </div>
       </div>
@@ -514,7 +565,7 @@
   <div class="slide" id="s3">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Routing — Intro</span><span class="pn">3 / 14</span>
+      <span class="tag">Routing — Intro</span><span class="pn">3 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">كيف يصل <span class="a">الطلب</span> لكودك؟</div>
@@ -560,7 +611,7 @@
   <div class="slide" id="s4">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Basic Routes</span><span class="pn">4 / 14</span>
+      <span class="tag">Basic Routes</span><span class="pn">4 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">الـ HTTP Methods <span class="a">الأربعة</span></div>
@@ -635,7 +686,7 @@
   <div class="slide" id="s5">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Route Parameters</span><span class="pn">5 / 14</span>
+      <span class="tag">Route Parameters</span><span class="pn">5 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">Route <span class="a">Parameters</span></div>
@@ -686,7 +737,7 @@
       </div>
       <div class="lnote">
         <i class="fas fa-lightbulb"></i>
-        في SouqPro سنستخدم <ic class="bl">Route Model Binding</ic> — بدل <ic>$id</ic> نكتب <ic>Product $product</ic> ويجلب Laravel الـ Record تلقائياً
+        في SouqPro سنستخدم <ic class="bl">Route Model Binding</ic> — لما تكتب <ic>Product $product</ic> داخل الـ Controller يقوم Laravel تلقائياً بما يشبه <ic>Product::findOrFail($id)</ic>. سنشرحه بالتفصيل لاحقاً في محاضرة Eloquent، وهنا فقط نأخذه كمقدمة سريعة
       </div>
     </div>
   </div>
@@ -697,7 +748,7 @@
   <div class="slide" id="s6">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Named Routes</span><span class="pn">6 / 14</span>
+      <span class="tag">Named Routes</span><span class="pn">6 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">Named Routes <span class="a">→ لماذا مهمة؟</span></div>
@@ -753,7 +804,7 @@
   <div class="slide" id="s7">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Route Groups</span><span class="pn">7 / 14</span>
+      <span class="tag">Route Groups</span><span class="pn">7 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">Route <span class="a">Groups</span> — تجميع الـ Routes</div>
@@ -806,7 +857,7 @@
   <div class="slide" id="s8">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Controllers — Intro</span><span class="pn">8 / 14</span>
+      <span class="tag">Controllers — Intro</span><span class="pn">8 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">ما هو <span class="a">Controller</span>؟</div>
@@ -863,7 +914,7 @@
   <div class="slide" id="s9">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Artisan — Controllers</span><span class="pn">9 / 14</span>
+      <span class="tag">Artisan — Controllers</span><span class="pn">9 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">إنشاء <span class="a">Controllers</span> بـ Artisan</div>
@@ -915,7 +966,7 @@
   <div class="slide" id="s10">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Resource Controllers</span><span class="pn">10 / 14</span>
+      <span class="tag">Resource Controllers</span><span class="pn">10 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">الـ 7 Methods في <span class="a">Resource Controller</span></div>
@@ -993,7 +1044,7 @@
   <div class="slide" id="s11">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Route::resource</span><span class="pn">11 / 14</span>
+      <span class="tag">Route::resource</span><span class="pn">11 / 15</span>
     </div>
     <div class="sb">
       <div class="sh"><span class="a">Route::resource()</span> وأوامر مهمة</div>
@@ -1055,7 +1106,7 @@
   <div class="slide" id="s12">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Views — Blade</span><span class="pn">12 / 14</span>
+      <span class="tag">Views — Blade</span><span class="pn">12 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">Views وتمرير <span class="a">البيانات</span></div>
@@ -1064,43 +1115,31 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;">
           <!-- Controller Side -->
           <div class="card c-acc">
-            <div class="card-lbl">📋 Controller — إرسال البيانات</div>
+          <div class="card-lbl">📋 Controller — إرسال البيانات بسرعة</div>
             <div class="cb" style="font-size:11px;line-height:1.85;flex:1;">
               <span class="kw">public function</span> <span class="fn">index</span>() {<br>
-              &nbsp;<span class="cm">// طريقة 1: compact</span><br>
-              &nbsp;<span class="ac">$products</span> = <span class="fn">Product</span>::<span class="fn">all</span>();<br>
+              &nbsp;<span class="ac">$products</span> = <span class="fn">Product</span>::<span class="fn">latest</span>()-><span class="fn">take</span>(<span class="wht">10</span>)-><span class="fn">get</span>();<br>
               &nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="st">'products.index'</span>,<br>
-              &nbsp;&nbsp;<span class="kw">compact</span>(<span class="st">'products'</span>));<br><br>
-              &nbsp;<span class="cm">// طريقة 2: with()</span><br>
-              &nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="st">'products.index'</span>)<br>
-              &nbsp;&nbsp;-><span class="fn">with</span>(<span class="st">'products'</span>, <span class="fn">Product</span>::<span class="fn">all</span>());<br><br>
-              &nbsp;<span class="cm">// طريقة 3: Array مباشر</span><br>
-              &nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="st">'products.index'</span>, [<br>
-              &nbsp;&nbsp;<span class="st">'products'</span> => <span class="fn">Product</span>::<span class="fn">all</span>()<br>
-              &nbsp;]);<br>
+              &nbsp;&nbsp;<span class="kw">compact</span>(<span class="st">'products'</span>));<br>
               }
             </div>
           </div>
 
           <!-- View Side -->
           <div class="card c-bl">
-            <div class="card-lbl">🖼️ View — استخدام البيانات (Blade)</div>
+          <div class="card-lbl">🖼️ View — استقبال البيانات فقط</div>
             <div class="cb" style="font-size:11px;line-height:1.85;flex:1;direction:ltr;text-align:left;">
               <span class="cm">{{-- resources/views/products/index.blade.php --}}</span><br><br>
-              &lt;<span class="fn">h1</span>&gt;<span class="st">{{ </span><span class="wht">__('Products')</span><span class="st"> }}</span>&lt;/<span class="fn">h1</span>&gt;<br><br>
-              <span class="st">@foreach</span>(<span class="ac">$products</span> <span class="kw">as</span> <span class="ac">$product</span>)<br>
-              &lt;<span class="fn">div</span>&gt;<br>
-              &nbsp;&nbsp;<span class="st">{{ </span><span class="ac">$product</span>-><span class="wht">name</span><span class="st"> }}</span><br>
-              &nbsp;&nbsp;<span class="st">{{ </span><span class="ac">$product</span>-><span class="wht">price</span><span class="st"> }}</span><br>
-              &lt;/<span class="fn">div</span>&gt;<br>
-              <span class="st">@endforeach</span>
+              &lt;<span class="fn">h1</span>&gt;<span class="st">Products</span>&lt;/<span class="fn">h1</span>&gt;<br>
+              &lt;<span class="fn">p</span>&gt;عدد المنتجات: <span class="st">{{ </span><span class="fn">count</span>(<span class="ac">$products</span>)<span class="st"> }}</span>&lt;/<span class="fn">p</span>&gt;<br>
+              <span class="cm">{{-- تفاصيل Blade مثل @if و@foreach سنأخذها كاملة في المحاضرة القادمة --}}</span>
             </div>
           </div>
         </div>
 
         <div class="lnote" style="margin-top:0;">
           <i class="fas fa-folder-tree"></i>
-          Views تُحفظ في <ic class="bl">resources/views/</ic> — ملف <ic class="bl">products/index.blade.php</ic> يُستدعى بـ <ic class="bl">view('products.index')</ic> (نقطة بدل /)
+          Views تُحفظ في <ic class="bl">resources/views/</ic> — ملف <ic class="bl">products/index.blade.php</ic> يُستدعى بـ <ic class="bl">view('products.index')</ic> (نقطة بدل /). تفاصيل Blade مثل <ic class="bl">@if</ic> و<ic class="bl">@foreach</ic> سنأخذها كاملة في المحاضرة القادمة
         </div>
       </div>
     </div>
@@ -1112,7 +1151,7 @@
   <div class="slide" id="s13">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">SouqPro — Live Code</span><span class="pn">13 / 14</span>
+      <span class="tag">SouqPro — Live Code</span><span class="pn">13 / 15</span>
     </div>
     <div class="sb" style="padding:16px 28px 12px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-shrink:0;">
@@ -1128,8 +1167,10 @@
             <span class="kw">use</span> <span class="fn">App\Http\Controllers\ProductController</span>;<br>
             <span class="kw">use</span> <span class="fn">App\Http\Controllers\Admin\AdminProductController</span>;<br><br>
             <span class="cm">// 🛒 صفحات العملاء — بدون auth</span><br>
+            <span class="cm">// سننشئ HomeController لاحقاً — الآن نركز على ProductController</span><br>
             <span class="wht">Route</span>::<span class="fn">get</span>(<span class="st">'/'</span>, [<span class="fn">HomeController</span>::<span class="kw">class</span>, <span class="st">'index'</span>])-><span class="fn">name</span>(<span class="st">'home'</span>);<br>
             <span class="wht">Route</span>::<span class="fn">resource</span>(<span class="st">'products'</span>, <span class="fn">ProductController</span>::<span class="kw">class</span>)<br>
+            &nbsp;&nbsp;<span class="cm">// ->only() = نختار فقط بعض الـ methods من الـ 7</span><br>
             &nbsp;&nbsp;-><span class="fn">only</span>([<span class="st">'index'</span>, <span class="st">'show'</span>]);<br><br>
             <span class="cm">// 🔐 صفحات تحتاج تسجيل دخول</span><br>
             <span class="wht">Route</span>::<span class="fn">middleware</span>(<span class="st">'auth'</span>)-><span class="fn">group</span>(<span class="kw">function</span>() {<br>
@@ -1174,9 +1215,27 @@
   </div>
 
   <!-- ══════════════════════════════════════════
-       S14 — CLOSING
+       S14 — HOMEWORK
   ══════════════════════════════════════════ -->
   <div class="slide" id="s14">
+    <div class="tb">
+      <div class="cid"><span class="dlive"></span> Backend Course</div>
+      <span class="tag">Homework</span><span class="pn">14 / 15</span>
+    </div>
+    <div class="sb">
+      <div class="sh">🎯 واجبك بعد <span class="a">المحاضرة</span></div>
+      <div class="hwl">
+        <div class="hwr"><div class="hwn">01</div><div class="hwb"><div class="hwt">أنشئ ProductController كـ Resource</div><div class="hwd">نفّذ <code style="font-family:var(--mono);color:var(--acc)">php artisan make:controller ProductController --resource</code> ثم عرّف <code style="font-family:var(--mono);color:var(--acc)">Route::resource('products', ...)</code>.</div></div></div>
+        <div class="hwr"><div class="hwn">02</div><div class="hwb"><div class="hwt">اطبع route:list وتأكد من الـ 7 routes</div><div class="hwd">راجع أسماء الـ routes والـ URLs حتى تربط بين Resource Controller وRoute::resource().</div><div class="hwcr"><span class="cmd">php artisan route:list</span></div></div></div>
+        <div class="hwr"><div class="hwn">03</div><div class="hwb"><div class="hwt">أضف Route Group للـ Admin</div><div class="hwd">استخدم <code style="font-family:var(--mono);color:var(--acc)">prefix</code> و<code style="font-family:var(--mono);color:var(--acc)">middleware</code> و<code style="font-family:var(--mono);color:var(--acc)">name</code> حتى لو الـ middleware لم نفعّله بعد.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       S15 — CLOSING
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s15">
     <div class="cll">
       <div class="clcode">
         // المحاضرة القادمة...<br><br>
@@ -1212,7 +1271,7 @@
           <div class="cl-instr-company">WebUra</div>
         </div>
         <div class="cl-instr-photo">
-          <img src="../assets/alsaeyd.png" alt="المدرب" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
+          <img src="../../assets/alsaeyd.png" alt="المدرب" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
         </div>
       </div>
       <div class="clnx">
@@ -1235,7 +1294,7 @@
 <div id="nav-row">
   <div id="instr-card">
     <div class="iav">
-      <img src="../assets/alsaeyd.png" alt=""
+      <img src="../../assets/alsaeyd.png" alt=""
            onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
     </div>
     <div>
@@ -1246,13 +1305,13 @@
   <div id="nav">
     <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
     <div id="dots"></div>
-    <span id="ctr">1 / 14</span>
+    <span id="ctr">1 / 15</span>
     <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
   </div>
 </div>
 
 <script>
-  const N = 14;
+  const N = 15;
   let c = 1;
   const ctr    = document.getElementById("ctr");
   const btnN   = document.getElementById("btnN");
@@ -1300,6 +1359,88 @@
 
   scaleStage();
   window.addEventListener("resize", scaleStage);
+
+
+  /* Copy code buttons */
+  function copyCodeText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+
+      try {
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        resolve();
+      } catch (error) {
+        document.body.removeChild(ta);
+        reject(error);
+      }
+    });
+  }
+
+  function extractCodeText(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".copy-btn, .cb-label").forEach(node => node.remove());
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function setCopiedState(btn) {
+    clearTimeout(btn._copyTimer);
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="fas fa-check"></i><span>تم النسخ</span>';
+    btn._copyTimer = setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+    }, 1600);
+  }
+
+  function initCopyButtons() {
+    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+      if (el.dataset.copyReady === 'true') return;
+      el.dataset.copyReady = 'true';
+      el.classList.add('copyable-code');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.setAttribute('aria-label', 'نسخ الكود');
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const text = extractCodeText(el);
+        if (!text) return;
+
+        try {
+          await copyCodeText(text);
+          setCopiedState(btn);
+        } catch (error) {
+          console.error('Copy failed:', error);
+        }
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  initCopyButtons();
+
 </script>
 </body>
 </html>

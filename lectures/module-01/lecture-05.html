@@ -312,6 +312,56 @@
     .nx-label { font-family:var(--mono); font-size:10px; color:var(--dim); margin-bottom:4px; }
     .nx-title { font-size:14px; font-weight:700; color:var(--wh); }
     .clics { display:flex; gap:14px; justify-content:flex-end; font-size:18px; }
+  
+    /* COPY BUTTONS */
+    .copyable-code {
+      position: relative;
+      padding-top: 38px !important;
+    }
+    .copyable-code .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid var(--bdr2);
+      border-radius: 999px;
+      background: rgba(6, 11, 18, 0.96);
+      color: var(--sub);
+      font-family: var(--sans);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .18s ease;
+      z-index: 3;
+    }
+    .copyable-code .copy-btn:hover {
+      border-color: var(--acc);
+      color: var(--wh);
+      background: rgba(17, 27, 42, 0.98);
+    }
+    .copyable-code .copy-btn i {
+      font-size: 11px;
+      pointer-events: none;
+    }
+    .copyable-code .copy-btn span {
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .copyable-code .copy-btn.copied {
+      color: var(--gn);
+      border-color: rgba(16, 217, 122, .35);
+      background: rgba(16, 217, 122, .1);
+    }
+    .copyable-code .cb-label {
+      left: 12px !important;
+      right: auto !important;
+      max-width: calc(100% - 120px);
+      text-align: left;
+    }
+
   </style>
 </head>
 <body>
@@ -419,6 +469,7 @@
             &lt;/<span class="fn">body</span>&gt;
           </div>
           <div style="font-size:11.5px;color:var(--sub);text-align:right;">`@yield` = مكان فارغ ينتظر محتوى الصفحة الفرعية</div>
+          <div style="font-size:11px;color:var(--dim);text-align:right;line-height:1.6;">لاحقاً إذا احتجت JS أو CSS خاص بصفحة معينة استخدم <span style="font-family:var(--mono);color:var(--acc)">@push('scripts')</span> داخل الصفحة مع <span style="font-family:var(--mono);color:var(--gn)">@stack('scripts')</span> داخل الـ Layout.</div>
         </div>
         <div class="card c-gn" style="display:flex;flex-direction:column;gap:8px;">
           <div class="card-lbl">products/index.blade.php</div>
@@ -677,6 +728,7 @@
             &lt;<span class="fn">head</span>&gt;<br>
             &nbsp;&nbsp;&lt;<span class="fn">title</span>&gt;<span class="st">{{ </span><span class="ac">$title</span> ?? <span class="st">'SouqPro'</span><span class="st"> }}</span>&lt;/<span class="fn">title</span>&gt;<br>
             &nbsp;&nbsp;<span class="st">@vite</span>([<span class="st">'resources/css/app.css'</span>, <span class="st">'resources/js/app.js'</span>])<br>
+            &nbsp;&nbsp;<span class="cm">&lt;!-- يتطلب: npm install &amp;&amp; npm run dev --&gt;</span><br>
             &lt;/<span class="fn">head</span>&gt;<br>
             &lt;<span class="fn">body</span>&gt;<br>
             &nbsp;&nbsp;<span class="st">@include</span>(<span class="st">'partials.header'</span>)<br>
@@ -709,6 +761,7 @@
         </div>
       </div>
       <div class="gnote" style="margin-top:8px;"><i class="fas fa-check-double"></i> بهذه الطريقة: Layout مسؤول عن الإطار العام، الصفحة مسؤولة عن محتواها، والـ Component مسؤول عن الجزء القابل للتكرار</div>
+      <div class="note" style="margin-top:8px;">في SouqPro سنستخدم Tailwind CSS مع Blade. في Laravel 12 يأتي بسهولة مع Breeze، أو يمكنك إضافته يدوياً إذا بدأت بمشروع Laravel عادي عبر <code style="font-family:var(--mono);color:var(--acc)">npm install -D tailwindcss @tailwindcss/vite</code>.</div>
     </div>
   </div>
 
@@ -742,6 +795,7 @@
             <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>`{{ }}` تعمل escape تلقائي للبيانات لحمايتك من XSS.</div></div>
             <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>إذا احتجت Props + Slot + Attributes فغالباً أنت تحتاج Component لا Include.</div></div>
             <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>Laravel يعمل compile وcache لملفات Blade لذلك الأداء ممتاز.</div></div>
+            <div class="mini-item"><i class="fas fa-info" style="color:var(--bl);"></i><div>أي <code style="font-family:var(--mono);color:var(--acc)">&lt;form&gt;</code> من نوع POST/PUT/DELETE يحتاج دائماً <code style="font-family:var(--mono);color:var(--acc)">@csrf</code> وإلا ستحصل على خطأ 419.</div></div>
           </div>
         </div>
       </div>
@@ -759,7 +813,7 @@
       <div class="hwl">
         <div class="hwr"><div class="hwn">01</div><div class="hwb"><div class="hwt">أنشئ Layout رئيسي</div><div class="hwd">أنشئ `layouts/app.blade.php` وضع فيه Header وNav وFooter مع `@yield('content')`.</div><div class="hwcr"><span class="cmd">@extends</span><span class="cmd">@yield</span><span class="cmd">@section</span></div></div></div>
         <div class="hwr"><div class="hwn">02</div><div class="hwb"><div class="hwt">حوّل الأجزاء المشتركة إلى Partials</div><div class="hwd">افصل `header.blade.php` و`nav.blade.php` و`footer.blade.php` داخل `partials/` ثم استدعها عبر `@include`.</div><div class="hwcr"><span class="cmd">@include</span><span class="cmd">partials.header</span></div></div></div>
-        <div class="hwr"><div class="hwn">03</div><div class="hwb"><div class="hwt">أنشئ Component لبطاقة المنتج</div><div class="hwd">أنشئ `x-product-card` واستخدمه داخل صفحة المنتجات مع `@forelse` لعرض Empty State عند عدم وجود منتجات.</div><div class="hwcr"><span class="cmd">make:component</span><span class="cmd">&lt;x-product-card /&gt;</span><span class="cmd">@forelse</span></div></div></div>
+        <div class="hwr"><div class="hwn">03</div><div class="hwb"><div class="hwt">أنشئ Component لبطاقة المنتج</div><div class="hwd">أنشئ `x-product-card` واستخدمه داخل صفحة المنتجات مع `@forelse` لعرض Empty State عند عدم وجود منتجات، وإذا أضفت Form تذكّر استخدام `@csrf`.</div><div class="hwcr"><span class="cmd">make:component</span><span class="cmd">&lt;x-product-card /&gt;</span><span class="cmd">@forelse</span><span class="cmd">@csrf</span></div></div></div>
       </div>
     </div>
   </div>
@@ -796,7 +850,7 @@
           <div class="cl-instr-company">WebUra</div>
         </div>
         <div class="cl-instr-photo">
-          <img src="../assets/alsaeyd.png" alt="المدرب" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
+          <img src="../../assets/alsaeyd.png" alt="المدرب" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
         </div>
       </div>
       <div class="clnx">
@@ -818,7 +872,7 @@
 <div id="nav-row">
   <div id="instr-card">
     <div class="iav">
-      <img src="../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
+      <img src="../../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=F97316&size=80&bold=true'"/>
     </div>
     <div>
       <div class="inm">السيد الاخرسي</div>
@@ -881,6 +935,88 @@
 
   scaleStage();
   window.addEventListener("resize", scaleStage);
+
+
+  /* Copy code buttons */
+  function copyCodeText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+
+      try {
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        resolve();
+      } catch (error) {
+        document.body.removeChild(ta);
+        reject(error);
+      }
+    });
+  }
+
+  function extractCodeText(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".copy-btn, .cb-label").forEach(node => node.remove());
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function setCopiedState(btn) {
+    clearTimeout(btn._copyTimer);
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="fas fa-check"></i><span>تم النسخ</span>';
+    btn._copyTimer = setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+    }, 1600);
+  }
+
+  function initCopyButtons() {
+    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+      if (el.dataset.copyReady === 'true') return;
+      el.dataset.copyReady = 'true';
+      el.classList.add('copyable-code');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.setAttribute('aria-label', 'نسخ الكود');
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
+
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const text = extractCodeText(el);
+        if (!text) return;
+
+        try {
+          await copyCodeText(text);
+          setCopiedState(btn);
+        } catch (error) {
+          console.error('Copy failed:', error);
+        }
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  initCopyButtons();
+
 </script>
 </body>
 </html>
