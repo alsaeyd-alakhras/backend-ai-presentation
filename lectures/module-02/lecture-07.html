@@ -1,0 +1,271 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <title>المحاضرة السابعة — Seeders وFactories</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080c14;
+      --surf: #0d1520;
+      --card: #111b2a;
+      --bdr: #1c2d42;
+      --bdr2: #243650;
+      --acc: #38bdf8;
+      --acc2: #7dd3fc;
+      --wh: #f0f6ff;
+      --sub: #7a9bbf;
+      --dim: #3a5470;
+      --gn: #10d97a;
+      --bl: #38bdf8;
+      --pu: #c084fc;
+      --rd: #f87171;
+      --yl: #fbbf24;
+      --mono: "JetBrains Mono", monospace;
+      --sans: "Tajawal", sans-serif;
+      --W: 1060px;
+      --H: 596px;
+      --R: 14px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;height:100%}
+    body{background:#03060b;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--sans);gap:18px;padding:0 0 8px;overflow:hidden}
+    #scale-wrap{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    #stage{position:relative;width:var(--W);height:var(--H);transform-origin:center center}
+    .slide{position:absolute;inset:0;width:var(--W);height:var(--H);background:var(--bg);border-radius:var(--R);border:1px solid var(--bdr);overflow:hidden;display:none;flex-direction:column;box-shadow:0 28px 70px rgba(0,0,0,.88),0 0 0 1px rgba(56,189,248,.05)}
+    .slide.active{display:flex;animation:fadeUp .38s cubic-bezier(.16,1,.3,1) both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px) scale(.986)}to{opacity:1;transform:none}}
+    #nav-row{display:flex;align-items:center;gap:12px;flex-shrink:0}
+    #instr-card{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 14px 5px 6px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+    .iav{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);flex-shrink:0;overflow:hidden}
+    .iav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .inm{font-size:12.5px;font-weight:800;color:var(--wh);white-space:nowrap}
+    .irl{font-size:9.5px;color:var(--sub);font-family:var(--mono);white-space:nowrap}
+    #nav{display:flex;align-items:center;gap:0;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 6px;box-shadow:0 6px 24px rgba(0,0,0,.6);flex-shrink:0}
+    .nb{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--sub);background:transparent}
+    .nb:hover:not(:disabled){background:var(--card);color:var(--wh)}
+    .nb:disabled{opacity:.22;cursor:not-allowed}
+    .nb.next{background:var(--acc);color:#04131b;margin-right:4px}
+    .nb.next:hover:not(:disabled){background:var(--acc2)}
+    #ctr{font-family:var(--mono);font-size:11px;color:var(--dim);padding:0 10px;white-space:nowrap}
+    #dots{display:flex;gap:3px;align-items:center;padding:0 4px}
+    .dot{width:5px;height:5px;border-radius:50%;background:var(--bdr2);cursor:pointer;transition:all .22s}
+    .dot.on{background:var(--acc);width:14px;border-radius:3px}
+    .tb{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--bdr);background:rgba(11,18,32,.88);flex-shrink:0;position:relative;z-index:2}
+    .tb .tag{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
+    .tb .pn{font-family:var(--mono);font-size:10px;color:var(--dim)}
+    .tb .cid{font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:6px}
+    .dlive{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.22}}
+    .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;position:relative;z-index:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+    .sb::-webkit-scrollbar{width:4px}
+    .sb::-webkit-scrollbar-track{background:transparent}
+    .sb::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+    .sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;line-height:1.25;margin-bottom:14px;flex-shrink:0}
+    .sh .a{color:var(--acc)}
+    .sh .ag{color:var(--gn)}
+    .sh .ap{color:var(--pu)}
+    .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--sub);border:1px solid var(--bdr)}
+    .pill.acc{color:var(--acc);border-color:rgba(56,189,248,.28);background:rgba(56,189,248,.08)}
+    .pill.gn{color:var(--gn);border-color:rgba(16,217,122,.28);background:rgba(16,217,122,.08)}
+    .pill.yl{color:var(--yl);border-color:rgba(251,191,36,.28);background:rgba(251,191,36,.08)}
+    .pill.pu{color:var(--pu);border-color:rgba(192,132,252,.28);background:rgba(192,132,252,.08)}
+    .note{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--acc);text-align:right}
+    .card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;min-height:0}
+    .card.c-acc{border-top:2px solid var(--acc)}
+    .card.c-gn{border-top:2px solid var(--gn)}
+    .card.c-pu{border-top:2px solid var(--pu)}
+    .card.c-yl{border-top:2px solid var(--yl)}
+    .card-lbl{font-size:10px;font-family:var(--mono);color:var(--sub);margin-bottom:6px;letter-spacing:.07em;text-transform:uppercase}
+    .cb{background:#07111d;border:1px solid var(--bdr);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.75;color:#88a9cc;direction:ltr;text-align:left;overflow:auto;position:relative;white-space:pre-wrap}
+    .cb-label{position:absolute;top:10px;left:12px;font-size:10px;color:var(--dim);font-family:var(--mono)}
+    .copyable-code{position:relative;padding-top:38px!important}
+    .copyable-code .copy-btn{position:absolute;top:8px;right:10px;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border:1px solid var(--bdr2);border-radius:999px;background:rgba(6,11,18,.96);color:var(--sub);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .18s ease;z-index:3}
+    .copyable-code .copy-btn:hover{border-color:var(--acc);color:var(--wh);background:rgba(17,27,42,.98)}
+    .copyable-code .copy-btn.copied{color:var(--gn);border-color:rgba(16,217,122,.35);background:rgba(16,217,122,.1)}
+    .copyable-code .cb-label{left:12px;right:auto;max-width:calc(100% - 120px);text-align:left}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-height:0}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1;min-height:0}
+    .stack{display:flex;flex-direction:column;gap:10px;min-height:0}
+    .list{display:flex;flex-direction:column;gap:8px}
+    .li{display:flex;align-items:flex-start;gap:8px;color:var(--sub);font-size:12px;line-height:1.65;text-align:right}
+    .li i{color:var(--acc);margin-top:3px;flex-shrink:0}
+    .hero{flex-direction:row}
+    .hero-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column;position:relative}
+    .hero-side::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),transparent)}
+    .hero-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:11.8px;line-height:1.95;color:#204262;direction:ltr;text-align:left;overflow:auto;white-space:pre-wrap}
+    .hero-foot{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:12px;padding:0 16px;flex-shrink:0}
+    .hero-foot .sp{flex:1}
+    .hero-foot .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+    .hero-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:34px 44px 28px 26px;position:relative;overflow:hidden}
+    .hero-main::before{content:"";position:absolute;top:-80px;left:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(56,189,248,.08) 0%,transparent 70%);pointer-events:none}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.22);border-radius:6px;padding:5px 12px;font-size:11.5px;font-weight:700;color:var(--acc);align-self:flex-end;margin-bottom:18px}
+    .hero-eye{font-size:12.5px;color:var(--sub);text-align:right;margin-bottom:6px}
+    .hero-h{font-size:40px;font-weight:900;line-height:1.08;text-align:right;color:var(--wh)}
+    .hero-h span{color:var(--acc);display:block}
+    .hero-desc{font-size:13px;color:var(--sub);text-align:right;margin-top:10px;line-height:1.7;max-width:420px;margin-left:auto}
+    .hero-chips{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+    .chip{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;text-align:center;min-width:100px}
+    .chip .cl{font-size:9.5px;color:var(--sub);display:block;margin-bottom:3px}
+    .chip .cv{font-size:13px;font-weight:800;color:var(--wh)}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;text-align:right}
+    .stat i{font-size:16px;color:var(--acc);margin-bottom:8px}
+    .stat h4{font-size:13px;color:var(--wh);margin-bottom:4px}
+    .stat p{font-size:11.5px;color:var(--sub);line-height:1.55}
+    .rel-card{display:flex;flex-direction:column;gap:7px;align-items:flex-end;text-align:right}
+    .rel-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.18);color:var(--acc);font-size:18px}
+    .rel-card h4{font-size:13px;color:var(--wh)}
+    .rel-card p{font-size:11.5px;color:var(--sub);line-height:1.6}
+    .diagram{background:#07111d;border:1px solid var(--bdr);border-radius:10px;padding:18px 16px;font-family:var(--mono);font-size:13px;line-height:2;color:#88a9cc;direction:ltr;text-align:left;white-space:pre-wrap}
+    .kpi{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.025);border:1px solid rgba(28,45,66,.8);border-radius:8px;padding:9px 11px;gap:10px}
+    .kpi strong{color:var(--wh);font-size:12px}
+    .kpi span{color:var(--sub);font-size:11px;line-height:1.5;text-align:right}
+    .arrow-flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:stretch;flex:1;min-height:0}
+    .arr{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px;transform:scaleX(-1)}
+    .mini-table{width:100%;border-collapse:collapse}
+    .mini-table th{background:rgba(56,189,248,.08);color:var(--acc);font-size:10.5px;font-family:var(--mono);padding:8px 10px;border-bottom:1px solid var(--bdr);text-align:right}
+    .mini-table td{padding:8px 10px;border-bottom:1px solid rgba(28,45,66,.55);font-size:11.5px;color:var(--wh);vertical-align:top}
+    .mini-table tr:last-child td{border-bottom:none}
+    .badge-line{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:12px}
+    .homework{display:flex;flex-direction:column;gap:10px}
+    .hw{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}
+    .hw .n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.22);color:var(--acc);font-family:var(--mono);font-weight:700;flex-shrink:0}
+    .hw h4{font-size:12.5px;color:var(--wh);margin-bottom:3px}
+    .hw p{font-size:11.5px;color:var(--sub);line-height:1.55;text-align:right}
+    .closing{flex-direction:row}
+    .closing-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column;position:relative}
+    .closing-side::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),transparent)}
+    .closing-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:12px;line-height:2;color:#204262;direction:ltr;text-align:left;overflow:auto;white-space:pre-wrap}
+    .closing-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 44px 28px 24px;position:relative;overflow:hidden}
+    .closing-main::before{content:"";position:absolute;top:-80px;left:-80px;width:350px;height:350px;background:radial-gradient(circle,rgba(56,189,248,.08) 0%,transparent 70%);pointer-events:none}
+    .big{font-size:50px;font-weight:900;line-height:1.08;text-align:right}
+    .big .l1{color:var(--wh)}
+    .big .l2{color:var(--acc)}
+    .subt{font-size:13px;color:var(--sub);text-align:right;line-height:1.7;margin-top:12px}
+    .next-box{margin-top:18px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;text-align:right}
+    .next-box .nx1{font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:4px}
+    .next-box .nx2{font-size:14px;font-weight:700;color:var(--wh)}
+  </style>
+</head>
+<body>
+<div id="scale-wrap"><div id="stage">
+<div class="slide active hero" id="s1">
+  <div class="hero-side">
+    <div class="hero-code">public function run(): void
+{
+    $this->call([
+        UserSeeder::class,
+        CategorySeeder::class,
+        ProductSeeder::class,
+    ]);
+}
+
+Product::factory(20)->create();</div>
+    <div class="hero-foot"><i class="fas fa-seedling" style="color:#10d97a"></i><i class="fas fa-wand-magic-sparkles" style="color:#c084fc"></i><i class="fas fa-database" style="color:#38bdf8"></i><span class="sp"></span><span class="v">SouqPro Demo Data</span></div>
+  </div>
+  <div class="hero-main">
+    <div class="hero-badge"><i class="fas fa-seedling"></i> Module 02 - Lecture 07</div>
+    <div class="hero-eye">Seeders و Factories</div>
+    <div class="hero-h">جهّز قاعدة البيانات <span>ببيانات واقعية</span></div>
+    <div class="hero-desc">بدلاً من إدخال البيانات يدوياً في كل مرة، سنبني Seeders منظمة وFactories تجعل SouqPro جاهزاً للتطوير والاختبار بسرعة.</div>
+    <div class="hero-chips">
+      <div class="chip"><span class="cl">المدة</span><span class="cv">60 دقيقة</span></div>
+      <div class="chip"><span class="cl">المخرجات</span><span class="cv">بيانات جاهزة</span></div>
+      <div class="chip"><span class="cl">النتيجة</span><span class="cv">تطوير أسرع</span></div>
+    </div>
+  </div>
+</div>
+<div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Lecture 07</span><span class="pn">02 / 10</span></div><div class="sb"><div class="sh">لماذا نستخدم <span class="a">Seeders</span> و <span class="a">Factories</span>؟</div><div class="grid-3"><div class="card c-acc rel-card"><div class="rel-icon"><i class="fas fa-thumbtack"></i></div><h4>Seeders</h4><p>بيانات ثابتة ومضمونة مثل Admin user، فئات رئيسية، إعدادات أولية.</p></div><div class="card c-gn rel-card"><div class="rel-icon" style="border-color:rgba(16,217,122,.18);background:rgba(16,217,122,.08);color:#10d97a"><i class="fas fa-shuffle"></i></div><h4>Factories</h4><p>بيانات وهمية بكميات كبيرة لكن شكلها مقنع وقابل للتطوير.</p></div><div class="card c-pu rel-card"><div class="rel-icon" style="border-color:rgba(192,132,252,.18);background:rgba(192,132,252,.08);color:#c084fc"><i class="fas fa-bolt"></i></div><h4>النتيجة</h4><p>بعد `migrate:fresh --seed` يصبح المشروع جاهزاً فوراً بدون إدخال يدوي ممل.</p></div></div><div class="note" style="margin-top:12px">هذه المحاضرة ليست رفاهية؛ هي ما يجعل بيئة التطوير لديك قابلة للإعادة بسرعة في كل مرة.</div></div></div>
+<div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">DatabaseSeeder</span><span class="pn">03 / 10</span></div><div class="sb"><div class="sh">ابدأ من <span class="a">DatabaseSeeder</span> والترتيب الصحيح</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">DATABASESEEDER.PHP</div><div class="cb"><div class="cb-label">PHP</div>public function run(): void
+{
+    $this->call([
+        UserSeeder::class,
+        CategorySeeder::class,
+        ProductSeeder::class,
+    ]);
+}</div></div><div class="card c-gn"><div class="card-lbl">WHY ORDER MATTERS</div><div class="stack"><div class="kpi"><strong>UserSeeder</strong><span>ينشئ المستخدم الإداري والمستخدم التجريبي أولاً.</span></div><div class="kpi"><strong>CategorySeeder</strong><span>الفئات يجب أن تكون موجودة قبل المنتجات.</span></div><div class="kpi"><strong>ProductSeeder</strong><span>يعتمد على وجود `category_id` صالح في قاعدة البيانات.</span></div></div></div></div></div></div>
+<div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">UserSeeder</span><span class="pn">04 / 10</span></div><div class="sb"><div class="sh">بناء <span class="a">UserSeeder</span> بشكل واضح</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CREATE SEEDER</div><div class="cb"><div class="cb-label">BASH</div>php artisan make:seeder UserSeeder</div><div class="note" style="margin-top:10px">ابدأ ببيانات ثابتة ومفهومة حتى يسهل عليك تسجيل الدخول والتجربة لاحقاً.</div></div><div class="card c-gn"><div class="card-lbl">USERSEEDER.PHP</div><div class="cb"><div class="cb-label">PHP</div>User::create([
+    'name' => 'Admin SouqPro',
+    'email' => 'admin@souqpro.com',
+    'password' => Hash::make('password'),
+    'role' => 'admin',
+]);
+
+User::create([
+    'name' => 'Test Customer',
+    'email' => 'customer@souqpro.com',
+    'password' => Hash::make('password'),
+    'role' => 'customer',
+]);</div></div></div></div></div>
+<div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">CategorySeeder</span><span class="pn">05 / 10</span></div><div class="sb"><div class="sh">بناء <span class="a">CategorySeeder</span> للفئات الرئيسية</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CREATE SEEDER</div><div class="cb"><div class="cb-label">BASH</div>php artisan make:seeder CategorySeeder</div><div class="list" style="margin-top:10px"><div class="li"><i class="fas fa-check"></i><span>استخدم أسماء واضحة للمتجر الحقيقي.</span></div><div class="li"><i class="fas fa-check"></i><span>أضف `slug` من البداية لأنك ستحتاجه لاحقاً في الروابط.</span></div></div></div><div class="card c-gn"><div class="card-lbl">CATEGORYSEEDER.PHP</div><div class="cb"><div class="cb-label">PHP</div>$categories = [
+    ['name' => 'إلكترونيات', 'slug' => 'electronics'],
+    ['name' => 'ملابس', 'slug' => 'clothing'],
+    ['name' => 'كتب', 'slug' => 'books'],
+    ['name' => 'رياضة', 'slug' => 'sports'],
+    ['name' => 'منزل ومطبخ', 'slug' => 'home-kitchen'],
+];
+
+foreach ($categories as $cat) {
+    Category::create(array_merge($cat, ['is_active' => true]));
+}</div></div></div></div></div>
+<div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Factory</span><span class="pn">06 / 10</span></div><div class="sb"><div class="sh">Factory + Faker لإنتاج <span class="a">منتجات واقعية</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CREATE FACTORY</div><div class="cb"><div class="cb-label">BASH</div>php artisan make:factory ProductFactory --model=Product</div><div class="note" style="margin-top:10px">Factory ليست مجرد بيانات عشوائية؛ الهدف أن تكون منطقية وتخدم واجهات العرض والاختبار.</div></div><div class="card c-gn"><div class="card-lbl">PRODUCTFACTORY.PHP</div><div class="cb"><div class="cb-label">PHP</div>public function definition(): array
+{
+    $name = fake()->words(3, true);
+
+    return [
+        'category_id' => Category::inRandomOrder()->first()->id,
+        'name' => ucwords($name),
+        'slug' => Str::slug($name) . '-' . fake()->unique()->numberBetween(1, 9999),
+        'description' => fake()->paragraphs(2, true),
+        'price' => fake()->randomFloat(2, 10, 999),
+        'sale_price' => fake()->boolean(30) ? fake()->randomFloat(2, 5, 800) : null,
+        'stock' => fake()->numberBetween(0, 100),
+        'is_active' => true,
+        'is_featured' => fake()->boolean(20),
+    ];
+}</div></div></div></div></div>
+<div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">ProductSeeder</span><span class="pn">07 / 10</span></div><div class="sb"><div class="sh">ربط الـ Factory مع <span class="a">ProductSeeder</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">PRODUCTSEEDER.PHP</div><div class="cb"><div class="cb-label">PHP</div>public function run(): void
+{
+    Product::factory(20)->create();
+}</div></div><div class="card c-pu"><div class="card-lbl">BEST PRACTICES</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>ابدأ بعدد قليل مثل 20 منتجاً حتى تبقى الواجهات واضحة أثناء التطوير.</span></div><div class="li"><i class="fas fa-check"></i><span>اجعل بعض المنتجات عليها خصم وبعضها featured حتى ترى حالات مختلفة في الواجهة.</span></div><div class="li"><i class="fas fa-check"></i><span>إذا أضفت أعمدة جديدة لاحقاً، حدّث الـ factory مباشرة.</span></div></div></div></div></div></div>
+<div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Run Seeds</span><span class="pn">08 / 10</span></div><div class="sb"><div class="sh">التشغيل النهائي: <span class="a">migrate:fresh --seed</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">MAIN COMMANDS</div><div class="cb"><div class="cb-label">BASH</div>php artisan migrate:fresh --seed
+php artisan db:seed
+php artisan db:seed --class=ProductSeeder</div></div><div class="card c-gn"><div class="card-lbl">WHEN TO USE EACH</div><div class="stack"><div class="kpi"><strong>`migrate:fresh --seed`</strong><span>عندما تريد بيئة نظيفة بالكامل مع كل الجداول والبيانات.</span></div><div class="kpi"><strong>`db:seed`</strong><span>عندما تكون الجداول موجودة وتريد فقط إعادة تعبئة البيانات.</span></div><div class="kpi"><strong>`--class=...`</strong><span>لتشغيل Seeder واحد محدد أثناء الاختبار أو التطوير.</span></div></div></div></div></div></div>
+<div class="slide" id="s9"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Verification</span><span class="pn">09 / 10</span></div><div class="sb"><div class="sh">كيف تتحقق أن كل شيء <span class="a">تم بشكل صحيح</span>؟</div><div class="grid-3"><div class="card c-acc rel-card"><div class="rel-icon"><i class="fas fa-users"></i></div><h4>users</h4><p>يجب أن ترى سجلين: Admin و Test Customer.</p></div><div class="card c-gn rel-card"><div class="rel-icon" style="border-color:rgba(16,217,122,.18);background:rgba(16,217,122,.08);color:#10d97a"><i class="fas fa-layer-group"></i></div><h4>categories</h4><p>خمسة سجلات رئيسية جاهزة للاستخدام في المنتجات.</p></div><div class="card c-pu rel-card"><div class="rel-icon" style="border-color:rgba(192,132,252,.18);background:rgba(192,132,252,.08);color:#c084fc"><i class="fas fa-box-open"></i></div><h4>products</h4><p>عشرون منتجاً ببيانات متنوعة وأسعار ومخزون وحالة خصم.</p></div></div><div class="note" style="margin-top:12px">افتح الجداول في TablePlus أو أي DB GUI وتأكد بصرياً من القيم، ولا تعتمد فقط على نجاح الأمر في الطرفية.</div></div></div>
+<div class="slide closing" id="s10"><div class="closing-side"><div class="closing-code">php artisan make:seeder UserSeeder
+php artisan make:seeder CategorySeeder
+php artisan make:factory ProductFactory --model=Product
+php artisan migrate:fresh --seed</div><div class="hero-foot"><i class="fas fa-seedling" style="color:#10d97a"></i><i class="fas fa-terminal" style="color:#38bdf8"></i><span class="sp"></span><span class="v">Seed With Confidence</span></div></div><div class="closing-main"><div class="big"><span class="l1">الآن قاعدة البيانات</span><span class="l2">جاهزة للتطوير</span></div><div class="subt">بعد هذه الخطوة ستدخل إلى Eloquent والـ CRUD ولديك بيانات شبه حقيقية تساعدك على بناء الصفحات والتجربة بسرعة كبيرة.</div><div class="next-box"><div class="nx1">QUICK CHECKLIST</div><div class="homework"><div class="hw"><div class="n">1</div><div><h4>ثبّت بيانات الدخول</h4><p>احتفظ بإيميل وكلمة مرور الـ Admin لتستخدمهما في المحاور القادمة.</p></div></div><div class="hw"><div class="n">2</div><div><h4>حدّث الـ Factory عند التوسع</h4><p>كل عمود جديد في المنتجات يحتاج قيمة منطقية داخل `ProductFactory`.</p></div></div><div class="hw"><div class="n">3</div><div><h4>أعد التشغيل متى احتجت</h4><p>عند فساد البيانات أثناء التجربة، `migrate:fresh --seed` يعيدك لبداية نظيفة بسرعة.</p></div></div></div></div></div></div>
+</div></div>
+<div id="nav-row">
+  <div id="instr-card">
+    <div class="iav"><img src="../../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=38BDF8&size=80&bold=true'"/></div>
+    <div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div>
+  </div>
+  <div id="nav">
+    <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
+    <div id="dots"></div>
+    <span id="ctr">1 / 10</span>
+    <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
+  </div>
+</div>
+<script>
+const N=10; let c=1;
+const ctr=document.getElementById('ctr'); const btnN=document.getElementById('btnN'); const btnP=document.getElementById('btnP'); const dotsEl=document.getElementById('dots');
+for(let i=1;i<=N;i++){const d=document.createElement('div'); d.className='dot'+(i===1?' on':''); d.onclick=()=>go(i); dotsEl.appendChild(d);}
+function go(n){if(n<1||n>N||n===c)return; document.getElementById('s'+c).classList.remove('active'); c=n; document.getElementById('s'+c).classList.add('active'); ctr.textContent=c+' / '+N; btnP.disabled=c===1; btnN.disabled=c===N; dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i+1===c));}
+btnN.onclick=()=>go(c+1); btnP.onclick=()=>go(c-1);
+document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault(); go(c+1);} if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault(); go(c-1);}});
+function scaleStage(){const wrap=document.getElementById('scale-wrap'); const stage=document.getElementById('stage'); const W=1060,H=596; const navH=document.getElementById('nav-row').offsetHeight+26; const aw=window.innerWidth-32; const ah=window.innerHeight-navH-24; const scale=Math.min(1,aw/W,ah/H); stage.style.transform='scale('+scale+')'; wrap.style.width=Math.round(W*scale)+'px'; wrap.style.height=Math.round(H*scale)+'px';}
+scaleStage(); window.addEventListener('resize', scaleStage);
+function copyCodeText(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text); return new Promise((resolve,reject)=>{const ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly','readonly'); ta.style.position='fixed'; ta.style.top='-9999px'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,ta.value.length); try{document.execCommand('copy'); document.body.removeChild(ta); resolve();}catch(error){document.body.removeChild(ta); reject(error);}});}
+function extractCodeText(el){const clone=el.cloneNode(true); clone.querySelectorAll('.copy-btn,.cb-label').forEach(node=>node.remove()); return clone.innerText.split('\u00A0').join(' ').trim();}
+function setCopiedState(btn){clearTimeout(btn._copyTimer); btn.classList.add('copied'); btn.innerHTML='<i class="fas fa-check"></i><span>تم النسخ</span>'; btn._copyTimer=setTimeout(()=>{btn.classList.remove('copied'); btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>'; },1600);}
+function initCopyButtons(){document.querySelectorAll('.cb').forEach(el=>{if(el.dataset.copyReady==='true')return; el.dataset.copyReady='true'; el.classList.add('copyable-code'); const btn=document.createElement('button'); btn.type='button'; btn.className='copy-btn'; btn.setAttribute('aria-label','نسخ الكود'); btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>'; btn.addEventListener('click',async event=>{event.preventDefault(); event.stopPropagation(); const text=extractCodeText(el); if(!text)return; try{await copyCodeText(text); setCopiedState(btn);}catch(error){console.error('Copy failed:', error);}}); el.appendChild(btn); });}
+initCopyButtons();
+</script>
+</body>
+</html>

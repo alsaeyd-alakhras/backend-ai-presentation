@@ -205,6 +205,64 @@
       background:rgba(16,217,122,.06);border:1px solid rgba(16,217,122,.14);
       border-radius:5px;padding:3px 8px;margin-bottom:2px}
     .art-cmd .desc{font-size:11px;color:var(--dim);text-align:right;padding-right:2px}
+    .lifecycle-grid{
+      display:grid;
+      grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr;
+      gap:10px 8px;
+      flex:1;
+      min-height:0;
+      align-items:stretch;
+    }
+    .lifecycle-step{
+      background:var(--card);
+      border:1px solid var(--bdr);
+      border-radius:9px;
+      padding:11px 12px 10px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:5px;
+      min-height:0;
+    }
+    .lifecycle-step .num{font-family:var(--mono);font-size:10px;color:var(--dim)}
+    .lifecycle-step .ico{font-size:19px}
+    .lifecycle-step .ttl{font-family:var(--mono);font-size:11px;font-weight:700}
+    .lifecycle-step .sub{font-size:11px;color:var(--sub);text-align:right;line-height:1.5}
+    .lifecycle-turn{
+      grid-column:1 / -1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-family:var(--mono);
+      font-size:11px;
+      color:var(--dim);
+      padding:2px 0;
+    }
+    .lifecycle-link{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--dim);
+      font-size:18px;
+      transform:scaleX(-1);
+    }
+    #s4 .lnote{margin-top:10px;align-self:flex-end;width:48%;background:rgba(56,189,248,.08)}
+    #s6 .card,
+    #s9 .card,
+    #s13 .card,
+    #s14 .card{padding:10px 12px}
+    #s10 .art-grid,
+    #s11 .art-grid{align-items:start}
+    #s10 .art-group,
+    #s11 .art-group{padding:10px 11px;gap:6px}
+    #s13 .two-col{grid-template-columns:.88fr 1.12fr}
+    #s13 .two-col > div:first-child .card:last-child{flex:none}
+    #s13 .lnote{margin-top:0;align-self:stretch}
+    #s14 .two-col{grid-template-columns:.9fr 1.1fr}
+    #s7 .sb > div:nth-child(2){gap:2px !important}
+    #s7 .sb > div:nth-child(2) > div{min-width:0}
+    #s7 .sb > div:nth-child(2) > div > div:first-child{padding:9px 9px 7px !important}
 
     /* ENV */
     .env-row{display:flex;align-items:baseline;gap:0;direction:ltr;
@@ -231,7 +289,7 @@
     .fn-title{font-size:13px;font-weight:800;color:var(--wh)}
     .fn-sub{font-size:10.5px;color:var(--sub);font-family:var(--mono)}
     .fn-desc{font-size:11.5px;color:var(--sub);text-align:right;line-height:1.55;margin-top:3px}
-    .farrow{font-size:18px;color:var(--dim);padding:0 4px;flex-shrink:0}
+    .farrow{font-size:18px;color:var(--dim);padding:0 4px;flex-shrink:0;transform:scaleX(-1)}
 
     /* HOMEWORK */
     .hwl{display:flex;flex-direction:column;gap:10px;flex:1}
@@ -252,18 +310,20 @@
 
     /* CLOSING */
     #s16{flex-direction:row}
-    .cll{width:300px;background:var(--surf);border-left:1px solid var(--bdr);
+    .cll{width:320px;background:var(--surf);border-left:1px solid var(--bdr);
       flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
     .cll::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
       background:linear-gradient(90deg,var(--acc),transparent)}
-    .clcode{flex:1;padding:20px 16px;font-family:var(--mono);font-size:10.5px;
-      line-height:2;color:#1e3554;overflow:auto;direction:ltr;text-align:left}
+    .clcode{flex:1;padding:24px 20px;font-family:var(--mono);font-size:12.5px;
+      line-height:2.05;color:#1d3450;overflow:hidden;direction:ltr;text-align:left}
     .clft{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;
-      padding:0 16px;gap:12px;flex-shrink:0}
+      padding:0 16px;gap:11px;flex-shrink:0}
     .clft i{font-size:16px} .clft .sp{flex:1}
     .clft .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
-    .clr{flex:1;display:flex;flex-direction:column;padding:32px 40px 26px 24px;position:relative}
-    .clbig{font-size:48px;font-weight:900;text-align:right;line-height:1.1;margin-bottom:12px}
+    .clr{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 44px 28px 24px;position:relative;overflow:hidden}
+    .clr::before{content:"";position:absolute;top:-80px;left:-80px;width:340px;height:340px;
+      background:radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%);pointer-events:none}
+    .clbig{font-size:52px;font-weight:900;text-align:right;line-height:1.1}
     .clbig .l1{color:var(--wh)} .clbig .l2{color:var(--acc)}
     .cl-instr{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-bottom:14px}
     .cl-instr-info{text-align:right}
@@ -530,7 +590,7 @@
     </div>
     <div class="sb">
       <div class="sh">إنشاء مشروع <span class="a">SouqPro</span></div>
-      <div class="two-col">
+      <div class="two-col" style="align-items:stretch;">
         <!-- Steps -->
         <div style="display:flex;flex-direction:column;gap:9px;">
           <div style="display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;">
@@ -565,30 +625,37 @@
           </div>
         </div>
         <!-- Terminal output -->
-        <div class="term" style="display:flex;flex-direction:column;">
-          <div class="term-bar">
-            <div class="t-dot" style="background:#ff5f57"></div>
-            <div class="t-dot" style="background:#febc2e"></div>
-            <div class="t-dot" style="background:#28c840"></div>
-            <div class="t-title">Terminal — SouqPro</div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-height:0;">
+          <div class="term" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+            <div class="term-bar">
+              <div class="t-dot" style="background:#ff5f57"></div>
+              <div class="t-dot" style="background:#febc2e"></div>
+              <div class="t-dot" style="background:#28c840"></div>
+              <div class="t-title">Terminal — SouqPro</div>
+            </div>
+            <div class="term-body" style="flex:1;overflow:auto;">
+              <span class="prompt">~$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
+              <span class="out">Creating a "laravel/laravel" project...</span><br>
+              <span class="out-gn">  - Installing laravel/laravel (v12.x)</span><br>
+              <span class="out">    Downloaded 4.2MB</span><br>
+              <span class="out-gn">✓ Application key set successfully.</span><br>
+              <br>
+              <span class="prompt">~/SouqPro$</span> <span class="cmd-t">php artisan serve</span><br>
+              <br>
+              <span class="out-acc">   INFO</span>  <span class="out">Server running on</span><br>
+              <span class="out-gn">   ➜  Local:   http://127.0.0.1:8000</span><br>
+              <br>
+              <span class="out">Press Ctrl+C to stop the server</span>
+            </div>
           </div>
-          <div class="term-body" style="flex:1;">
-            <span class="prompt">~$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
-            <span class="out">Creating a "laravel/laravel" project...</span><br>
-            <span class="out-gn">  - Installing laravel/laravel (v12.x)</span><br>
-            <span class="out">    Downloaded 4.2MB</span><br>
-            <span class="out-gn">✓ Application key set successfully.</span><br>
-            <br>
-            <span class="prompt">~/SouqPro$</span> <span class="cmd-t">php artisan serve</span><br>
-            <br>
-            <span class="out-acc">   INFO</span>  <span class="out">Server running on</span><br>
-            <span class="out-gn">   ➜  Local:   http://127.0.0.1:8000</span><br>
-            <br>
-            <span class="out">Press Ctrl+C to stop the server</span>
+          <div class="card c-bl" style="padding:10px 12px;">
+            <div class="card-lbl" style="color:var(--bl)">ملاحظة مهمة</div>
+            <div style="font-size:11.7px;color:var(--sub);text-align:right;line-height:1.7;">
+              ابدأ دائماً بـ <span style="font-family:var(--mono);color:var(--acc)">composer create-project</span> لأنه لا يحتاج إعداداً إضافياً. ويمكنك استخدام <span style="font-family:var(--mono);color:var(--acc)">laravel new SouqPro</span> كخيار ثانوي فقط إذا ثبّت Laravel Installer مسبقاً، وإذا ظهرت لك نسخة 11 فأضف <span style="font-family:var(--mono);color:var(--gn)">--prefer-dist laravel/laravel:^12</span>.
+            </div>
           </div>
         </div>
       </div>
-      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> ابدأ دائماً بـ <span style="font-family:var(--mono);color:var(--acc)">composer create-project</span> لأنه لا يحتاج إعداداً إضافياً. ويمكنك استخدام <span style="font-family:var(--mono);color:var(--acc)">laravel new SouqPro</span> كخيار ثانوي فقط إذا ثبّت Laravel Installer مسبقاً، وإذا ظهرت لك نسخة 11 فأضف <span style="font-family:var(--mono);color:var(--gn)">--prefer-dist laravel/laravel:^12</span>.</div>
     </div>
   </div>
 
@@ -895,103 +962,62 @@
     </div>
     <div class="sb" style="padding-bottom:10px;">
       <div class="sh">Request Lifecycle — <span class="a">كيف يعمل Laravel</span></div>
-      <!-- Horizontal lifecycle flow — based on official Laravel docs -->
-      <div style="display:flex;align-items:stretch;gap:0;flex:1;min-height:0;">
-
-        <!-- Step 1 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--bl);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">🌐</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--bl);font-weight:700;text-align:right;">Browser</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">المستخدم يطلب<br><span style="font-family:var(--mono);color:var(--acc);font-size:10px;">/products</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">① Request</div>
+      <div class="lifecycle-grid">
+        <div class="lifecycle-step" style="border-top:2px solid var(--bl);">
+          <div class="num">① Request</div>
+          <div class="ico">🌐</div>
+          <div class="ttl" style="color:var(--bl);">Browser</div>
+          <div class="sub">المستخدم يطلب الرابط<br><span style="font-family:var(--mono);color:var(--acc);font-size:10px;">GET /products</span></div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 2 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--acc);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">🚪</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--acc);font-weight:700;text-align:right;">public/index.php</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Entry Point الوحيد<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">Apache/Nginx يوجّه هنا</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">② Entry</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--acc);">
+          <div class="num">② Entry</div>
+          <div class="ico">🚪</div>
+          <div class="ttl" style="color:var(--acc);">public/index.php</div>
+          <div class="sub">نقطة الدخول الوحيدة التي يستقبل منها السيرفر كل الطلبات</div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 3 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--pu);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">📦</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--pu);font-weight:700;text-align:right;">bootstrap/app.php</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">إنشاء App Instance<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">= Service Container</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">③ Bootstrap</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--pu);">
+          <div class="num">③ Bootstrap</div>
+          <div class="ico">📦</div>
+          <div class="ttl" style="color:var(--pu);">bootstrap/app.php</div>
+          <div class="sub">إنشاء التطبيق وتجهيز الـ Container والربط الأساسي</div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 4 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--gn);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">🔧</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--gn);font-weight:700;text-align:right;">Service Providers</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;"><span style="color:var(--gn)">register()</span> ثم <span style="color:var(--bl)">boot()</span><br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">AppServiceProvider</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">④ Providers</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--gn);">
+          <div class="num">④ Providers</div>
+          <div class="ico">🔧</div>
+          <div class="ttl" style="color:var(--gn);">Service Providers</div>
+          <div class="sub">تشغيل <span style="color:var(--gn)">register()</span> ثم <span style="color:var(--bl)">boot()</span> مثل <span style="font-family:var(--mono);color:var(--dim);">AppServiceProvider</span></div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 5 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--bl);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">🛡️</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--bl);font-weight:700;text-align:right;">Middleware</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Auth, CORS, CSRF<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">فلترة الطلب</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑤ Middleware</div>
+        <div class="lifecycle-turn">↓ ثم يكمل الطلب داخل التطبيق ↓</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--bl);">
+          <div class="num">⑤ Middleware</div>
+          <div class="ico">🛡️</div>
+          <div class="ttl" style="color:var(--bl);">Middleware</div>
+          <div class="sub">فلترة الطلب: auth، CORS، CSRF، وسياسات الدخول</div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 6 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--acc);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">🗺️</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--acc);font-weight:700;text-align:right;">Router</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">web.php / api.php<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">يطابق الـ URL</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑥ Router</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--acc);">
+          <div class="num">⑥ Router</div>
+          <div class="ico">🗺️</div>
+          <div class="ttl" style="color:var(--acc);">Router</div>
+          <div class="sub">مطابقة الرابط داخل <span style="font-family:var(--mono);color:var(--dim);">web.php</span> أو <span style="font-family:var(--mono);color:var(--dim);">api.php</span></div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 7 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--pu);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">⚙️</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--pu);font-weight:700;text-align:right;">Controller</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">Business Logic<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">Model + View</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑦ Controller</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--pu);">
+          <div class="num">⑦ Controller</div>
+          <div class="ico">⚙️</div>
+          <div class="ttl" style="color:var(--pu);">Controller</div>
+          <div class="sub">تنفيذ الـ Business Logic والتعامل مع Model وView</div>
         </div>
-
-        <div style="display:flex;align-items:center;padding:0 4px;padding-bottom:20px;color:var(--dim);font-size:16px;">→</div>
-
-        <!-- Step 8 -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;">
-          <div style="flex:1;background:var(--card);border:1px solid var(--bdr);border-top:2px solid var(--gn);border-radius:9px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-            <div style="font-size:18px;">📤</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--gn);font-weight:700;text-align:right;">Response</div>
-            <div style="font-size:11px;color:var(--sub);text-align:right;line-height:1.5;">HTML أو JSON<br><span style="font-family:var(--mono);color:var(--dim);font-size:10px;">← Middleware ← Browser</span></div>
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px;text-align:center;">⑧ Response</div>
+        <div class="lifecycle-link">→</div>
+        <div class="lifecycle-step" style="border-top:2px solid var(--gn);">
+          <div class="num">⑧ Response</div>
+          <div class="ico">📤</div>
+          <div class="ttl" style="color:var(--gn);">Response</div>
+          <div class="sub">إرجاع HTML أو JSON ثم الرجوع للمتصفح عبر الـ Middleware</div>
         </div>
-
       </div>
       <div class="note" style="margin-top:10px;">📌 عند رفع المشروع على السيرفر — وجّه الـ web root إلى <code style="font-family:var(--mono)">public/</code> وليس جذر المشروع — وإلا سيظهر كود PHP للزوار!</div>
     </div>
@@ -1005,7 +1031,7 @@
     </div>
     <div class="sb">
       <div class="sh">ملف <span class="a">.env</span> — الإعدادات السرية</div>
-      <div class="two-col">
+      <div class="two-col" style="grid-template-columns:1fr 1fr;align-items:center;">
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="card c-acc">
             <div class="card-lbl">ما هو .env ؟</div>
@@ -1117,7 +1143,7 @@
           </div>
         </div>
         <!-- categories -->
-        <div style="display:flex;flex-direction:column;gap:9px;">
+        <div style="display:flex;flex-direction:column;gap:9px;justify-content:center;">
           <div style="font-size:12px;color:var(--sub);text-align:right;margin-bottom:2px;">الفئات الأساسية:</div>
           <div style="display:flex;align-items:center;gap:10px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);border-radius:8px;padding:9px 13px;">
             <span style="font-family:var(--mono);font-size:11px;color:var(--acc);flex-shrink:0;">make:</span>
@@ -1277,7 +1303,7 @@
             <div class="t-dot" style="background:#28c840"></div>
             <div class="t-title">SouqPro — Full Setup</div>
           </div>
-          <div class="term-body" style="flex:1;font-size:11.5px;">
+          <div class="term-body" style="flex:1;font-size:11.5px;overflow:auto;">
             <span class="out-acc"># 1. إنشاء المشروع</span><br>
             <span class="prompt">$</span> <span class="cmd-t">composer create-project laravel/laravel SouqPro</span><br>
             <span class="prompt">$</span> <span class="cmd-t">cd SouqPro</span><br>
@@ -1352,7 +1378,7 @@
             </p>
           </div>
           <!-- When you need it manually -->
-          <div class="card c-acc" style="flex:1;">
+          <div class="card c-acc" style="padding:10px 12px;">
             <div class="card-lbl">متى تتعامل معه يدوياً؟</div>
             <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
               <div style="display:flex;align-items:flex-start;gap:8px;">
@@ -1365,11 +1391,17 @@
               </div>
             </div>
           </div>
+          <div class="card c-bl" style="padding:10px 12px;">
+            <div class="card-lbl" style="color:var(--bl)">حسب الـ Docs الرسمية</div>
+            <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.7;">
+              في أغلب الأحيان لن تحتاج للتعامل مع الـ Container مباشرة؛ فقط افهم الآن أن Laravel يدير إنشاء الكلاسات تلقائياً، وسيتضح هذا أكثر مع Controllers وDependency Injection.
+            </div>
+          </div>
         </div>
         <!-- Code column -->
-        <div style="display:flex;flex-direction:column;gap:9px;">
+        <div style="display:flex;flex-direction:column;gap:9px;justify-content:center;min-height:0;">
           <!-- Auto injection example -->
-          <div class="cb" dir="ltr" style="font-size:11.5px;">
+          <div class="cb" dir="ltr" style="font-size:11.1px;flex:1;min-height:0;">
             <div class="cb-label">// Automatic Injection — الأكثر استخداماً</div>
             <br>
             <span class="cm">// Laravel يحقن Request تلقائياً</span><br>
@@ -1388,7 +1420,7 @@
             }
           </div>
           <!-- bind example -->
-          <div class="cb" dir="ltr" style="font-size:11.5px;flex:1;">
+          <div class="cb" dir="ltr" style="font-size:11.1px;flex:1;min-height:0;">
             <div class="cb-label">// Manual bind — في AppServiceProvider</div>
             <br>
             <span class="cm">// ربط Interface بـ Implementation</span><br>
@@ -1402,7 +1434,6 @@
           </div>
         </div>
       </div>
-      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> حسب الـ docs الرسمية: <em>"في أغلب الأحيان لن تحتاج للتعامل مع Container مباشرة — هو يعمل في الخلفية تلقائياً."</em> هذا المفهوم سيصبح أوضح أكثر عندما نبدأ Controllers وDependency Injection؛ حالياً يكفي أن تفهم أن Laravel يدير إنشاء الكلاسات تلقائياً.</div>
     </div>
   </div>
 
@@ -1705,7 +1736,7 @@
   }
 
   function initCopyButtons() {
-    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+    document.querySelectorAll('.cb, .term-body').forEach(el => {
       if (el.dataset.copyReady === 'true') return;
       el.dataset.copyReady = 'true';
       el.classList.add('copyable-code');

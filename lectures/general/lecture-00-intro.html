@@ -1,0 +1,1313 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>المحاضرة التعريفية — Backend with AI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080c14;
+        --surf: #0e1725;
+        --card: #111d2e;
+        --bdr: #1f334d;
+        --bdr2: #2b4464;
+        --acc: #f97316;
+        --acc2: #fb923c;
+        --wh: #f0f6ff;
+        --sub: #8da9ca;
+        --dim: #4d6a8d;
+        --gn: #10d97a;
+        --bl: #38bdf8;
+        --pu: #c084fc;
+        --rd: #f87171;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Tajawal", sans-serif;
+        --W: 1060px;
+        --H: 596px;
+        --R: 16px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 14px;
+        font-family: var(--sans);
+        color: var(--wh);
+        background:
+          radial-gradient(circle at 14% 14%, rgba(56, 189, 248, 0.16), transparent 28%),
+          radial-gradient(circle at 84% 18%, rgba(249, 115, 22, 0.18), transparent 26%),
+          radial-gradient(circle at 50% 110%, rgba(192, 132, 252, 0.09), transparent 40%),
+          linear-gradient(180deg, #03060b 0%, #07101a 45%, #03060b 100%);
+        overflow: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 36px 36px;
+        mask-image: radial-gradient(circle at center, black 44%, transparent 88%);
+        pointer-events: none;
+      }
+
+      #scale-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--W);
+        height: var(--H);
+        transition: width 0.2s ease, height 0.2s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      #stage {
+        width: var(--W);
+        height: var(--H);
+        position: relative;
+        transform-origin: top center;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: var(--W);
+        height: var(--H);
+        border-radius: var(--R);
+        border: 1px solid var(--bdr);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)),
+          linear-gradient(180deg, #0a1421 0%, #08121e 100%);
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.72),
+          0 0 0 1px rgba(249, 115, 22, 0.05),
+          inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+
+      .slide.active {
+        display: flex;
+        animation: slideIn 0.34s cubic-bezier(0.2, 0.95, 0.25, 1) both;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.986);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .tb {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        border-bottom: 1px solid var(--bdr);
+        background: rgba(14, 23, 37, 0.82);
+        flex-shrink: 0;
+      }
+
+      .cid {
+        font-size: 10.5px;
+        color: var(--dim);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dlive {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--acc);
+        box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.16);
+      }
+
+      .tag,
+      .pn {
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      .tag {
+        color: var(--acc);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .pn {
+        color: var(--dim);
+      }
+
+      .sb {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding: 22px 28px;
+        gap: 14px;
+      }
+
+      .sh {
+        font-size: 31px;
+        font-weight: 800;
+        line-height: 1.22;
+        color: var(--wh);
+      }
+
+      .sh .a {
+        color: var(--acc);
+      }
+
+      .lead {
+        color: var(--sub);
+        font-size: 18px;
+        line-height: 1.75;
+      }
+
+      .slide.hero,
+      .slide.closing {
+        flex-direction: row;
+      }
+
+      .hero-main,
+      .hero-side,
+      .closing-main,
+      .closing-side {
+        min-height: 0;
+      }
+
+      .hero-side,
+      .closing-side {
+        width: 320px;
+        border-left: 1px solid var(--bdr);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .hero-main,
+      .closing-main {
+        flex: 1;
+        padding: 26px 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+
+      .hero-main::before,
+      .closing-main::before {
+        content: "";
+        position: absolute;
+        inset: 40px 32px auto auto;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent 65%);
+        pointer-events: none;
+      }
+
+      .hero-badge {
+        width: fit-content;
+        font-family: var(--mono);
+        font-size: 11px;
+        border: 1px solid var(--bdr2);
+        border-radius: 999px;
+        padding: 6px 10px;
+        color: var(--sub);
+      }
+
+      .hero-eye {
+        margin-top: 10px;
+        font-size: 12px;
+        font-family: var(--mono);
+        letter-spacing: 0.08em;
+        color: var(--acc2);
+        text-transform: uppercase;
+      }
+
+      .hero-title {
+        margin-top: 10px;
+        font-size: 38px;
+        font-weight: 900;
+        line-height: 1.26;
+      }
+
+      .hero-title span {
+        color: var(--acc);
+      }
+
+      .hero-desc {
+        margin-top: 8px;
+        color: var(--sub);
+        font-size: 18px;
+        line-height: 1.72;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .chip {
+        border: 1px solid var(--bdr2);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 12px;
+        color: var(--wh);
+        background: rgba(17, 29, 46, 0.75);
+        white-space: nowrap;
+      }
+
+      .hero-code,
+      .clcode,
+      .code-box {
+        direction: ltr;
+        text-align: left;
+        font-family: var(--mono);
+        white-space: pre-wrap;
+      }
+
+      .hero-code,
+      .clcode,
+      .code-box {
+        min-height: 0;
+        border: 1px solid var(--bdr2);
+        border-radius: 14px;
+        background: #05111c;
+        color: #d7e4f6;
+        font-size: 11.5px;
+        line-height: 1.85;
+        overflow: auto;
+        padding: 16px;
+      }
+
+      .hero-foot,
+      .foot-icons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--sub);
+        font-size: 12px;
+        margin-top: 16px;
+      }
+
+      .foot-icons .sp {
+        flex: 1;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        display: grid;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .card {
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+        padding: 12px 14px;
+        min-height: 0;
+      }
+
+      .card h4 {
+        font-size: 17px;
+        margin-bottom: 6px;
+        line-height: 1.45;
+      }
+
+      .card p,
+      .card li {
+        color: var(--sub);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .card ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .card li::before {
+        content: "• ";
+        color: var(--acc2);
+      }
+
+      .c-acc {
+        border-color: rgba(249, 115, 22, 0.44);
+      }
+
+      .c-bl {
+        border-color: rgba(56, 189, 248, 0.44);
+      }
+
+      .c-gn {
+        border-color: rgba(16, 217, 122, 0.4);
+      }
+
+      .c-pu {
+        border-color: rgba(192, 132, 252, 0.44);
+      }
+
+      .note {
+        border: 1px solid rgba(249, 115, 22, 0.42);
+        border-right-width: 4px;
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: rgba(249, 115, 22, 0.09);
+        color: #ffd7bc;
+        font-size: 14px;
+      }
+
+      .lnote {
+        border: 1px solid rgba(56, 189, 248, 0.42);
+        border-right-width: 4px;
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: rgba(56, 189, 248, 0.09);
+        color: #ccefff;
+        font-size: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid var(--bdr);
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--bdr);
+        font-size: 14px;
+        text-align: right;
+      }
+
+      th {
+        background: rgba(56, 189, 248, 0.09);
+        color: #d5e9ff;
+        font-weight: 700;
+      }
+
+      td {
+        color: var(--sub);
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .node {
+        border: 1px solid var(--bdr2);
+        border-radius: 10px;
+        padding: 9px 12px;
+        font-size: 13px;
+        color: #d7e8fc;
+        background: rgba(17, 29, 46, 0.72);
+      }
+
+      .arr {
+        color: var(--acc);
+      }
+
+      .kpi {
+        text-align: center;
+      }
+
+      .kpi .n {
+        font-family: var(--mono);
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--acc);
+      }
+
+      .kpi .t {
+        margin-top: 3px;
+        color: #dbe9fb;
+        font-size: 14px;
+      }
+
+      .kpi .s {
+        margin-top: 4px;
+        color: var(--sub);
+        font-size: 12px;
+      }
+
+      .check {
+        list-style: none;
+        display: grid;
+        gap: 7px;
+      }
+
+      .check li {
+        color: #e2eefc;
+        font-size: 15px;
+        line-height: 1.65;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .check li i {
+        color: var(--gn);
+        margin-top: 4px;
+      }
+
+      .closing-main {
+        justify-content: space-between;
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(56, 189, 248, 0.05));
+      }
+
+      .closing-main h2 {
+        font-size: 42px;
+        line-height: 1.28;
+      }
+
+      .closing-main h2 span {
+        color: var(--acc);
+      }
+
+      .instructor {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--bdr2);
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: rgba(13, 23, 37, 0.62);
+      }
+
+      .instructor .name {
+        font-weight: 800;
+      }
+
+      .instructor .role {
+        color: var(--sub);
+        font-size: 12px;
+      }
+
+      .instructor img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 2px solid var(--acc);
+        object-fit: cover;
+      }
+
+      #nav-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      #instr-card,
+      #nav {
+        border-radius: 999px;
+        border: 1px solid var(--bdr);
+        background: rgba(13, 23, 38, 0.82);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(12px);
+      }
+
+      #instr-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px 14px 5px 6px;
+      }
+
+      .iav {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid var(--acc);
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .iav img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .inm {
+        font-size: 12.5px;
+        font-weight: 800;
+      }
+
+      .irl {
+        font-size: 9.5px;
+        color: var(--sub);
+        font-family: var(--mono);
+      }
+
+      #nav {
+        display: flex;
+        align-items: center;
+        padding: 5px 6px;
+      }
+
+      .nb {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        color: var(--sub);
+        background: transparent;
+        transition: all 0.16s ease;
+      }
+
+      .nb:hover:not(:disabled) {
+        color: var(--wh);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .nb:disabled {
+        opacity: 0.24;
+        cursor: not-allowed;
+      }
+
+      .nb.next {
+        margin-right: 4px;
+        background: linear-gradient(135deg, var(--acc), var(--acc2));
+        color: #fff;
+      }
+
+      #dots {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 8px;
+        max-width: 188px;
+        flex-wrap: wrap;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--bdr2);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .dot.on {
+        width: 14px;
+        background: var(--acc);
+      }
+
+      #ctr {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--dim);
+        white-space: nowrap;
+      }
+
+      @media (max-width: 820px) {
+        body {
+          gap: 10px;
+          padding: 10px;
+        }
+
+        #instr-card {
+          order: 2;
+        }
+
+        #nav {
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="scale-wrap">
+      <div id="stage">
+        <section class="slide active hero" id="s1">
+          <div class="hero-side">
+            <div class="hero-code"><span style="color:#6b7a94;">// backend with ai - intro</span>
+
+<span style="color:var(--bl);">HTTP</span> Request <span style="color:var(--acc);">-&gt;</span> Laravel <span style="color:var(--acc);">-&gt;</span> Logic <span style="color:var(--acc);">-&gt;</span> <span style="color:var(--bl);">DB</span>
+Response <span style="color:var(--acc);">-&gt;</span> HTML / JSON
+
+<span style="color:var(--gn);">SouqPro</span> features:
+- <span style="color:var(--bl);">Auth</span> + 2FA
+- Products + Cart + Orders
+- <span style="color:var(--gn);">Stripe</span> + Coupons
+- <span style="color:var(--bl);">REST API</span>
+- Notifications + Deploy
+
+<span style="color:#6b7a94;">// learn the flow, then ship with confidence</span></div>
+            <div class="hero-foot">
+              <i class="fab fa-php" style="color:#8892bf"></i>
+              <i class="fab fa-laravel" style="color:#f97316"></i>
+              <i class="fas fa-database" style="color:#38bdf8"></i>
+              <i class="fas fa-brain" style="color:#c084fc"></i>
+              <span class="sp"></span>
+              <span class="v">v2026</span>
+            </div>
+          </div>
+          <div class="hero-main" style="direction: rtl;">
+            <div class="hero-badge"><i class="fas fa-graduation-cap"></i> Intro Lecture</div>
+            <div class="hero-eye">Laravel E-commerce Mastery</div>
+            <div class="hero-title">Backend with AI <span>ابن متجر حقيقي من الصفر</span></div>
+            <div class="hero-desc">محاضرة تمهيدية تضع الخريطة الكاملة قبل التنفيذ: كيف يعمل الويب؟ أين يعيش Backend؟ ولماذا Laravel مع AI خيار عملي قوي لبناء مشروع قابل للنشر.</div>
+            <div class="chips">
+              <div class="chip">المدة: 60 دقيقة</div>
+              <div class="chip">المستوى: مبتدئ مع PHP أساسية</div>
+              <div class="chip">المشروع: SouqPro</div>
+              <div class="chip">الهدف: وضوح كامل قبل البداية</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s2">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Instructor</span>
+            <span class="pn">02 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">من أنا؟ <span class="a">ولماذا هذا الكورس</span></div>
+            <div class="grid-2">
+              <div>
+                <div class="card c-acc">
+                  <div style="width:72px;height:72px;border-radius:50%;border:2px solid var(--acc);background:var(--card);display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+                    <img src="../../assets/alsaeyd.png" alt="المدرب" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML+='<i class=\'fas fa-user\' style=\'font-size:28px;color:var(--acc);\'></i>'" />
+                  </div>
+                  <div style="font-size:22px;font-weight:900;color:var(--wh);margin-bottom:8px;">السيد الاخرسي</div>
+                  <ul>
+                    <li>Full Stack Developer & Laravel Instructor</li>
+                    <li>+4 سنوات تجربة في بناء تطبيقات حقيقية</li>
+                    <li>Laravel Instructor — Palgoals Academy (2024-2026)</li>
+                    <li>بنى أنظمة: إدارة مالية، طبية، منصات محتوى، تعليمية</li>
+                    <li>alsaeyd-alakhras.vercel.app | github.com/saeyd-jamal</li>
+                  </ul>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="card c-bl">
+                  <h4>روح الكورس</h4>
+                  <ul>
+                    <li>تطبيق عملي متواصل على مشروع حقيقي واحد من البداية للنهاية</li>
+                    <li>أقل تنظير، أكثر بناء وقرارات Backend فعلية</li>
+                    <li>دمج AI من أول محاضرة بطريقة صحيحة وعملية</li>
+                    <li>تخرج بمشروع Portfolio قابل للعرض في CV</li>
+                  </ul>
+                </div>
+                <div class="note">هذا الكورس تكثيف لتجارب بناء أنظمة حقيقية خلال 4 سنوات. الهدف أن تبني بنفسك وتفهم القرارات، لا أن تحفظ syntax.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s3">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Web Basics</span>
+            <span class="pn">03 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">الإنترنت في ثانية واحدة — <span class="a">كيف يشتغل الويب؟</span></div>
+            <div class="card c-bl">
+              <div class="flow">
+                <span class="node" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="fas fa-globe" style="font-size:16px;"></i><span>Browser</span></span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="fas fa-paper-plane" style="font-size:16px;"></i><span>HTTP Request</span></span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="fas fa-server" style="font-size:16px;"></i><span>Server</span></span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="fas fa-database" style="font-size:16px;"></i><span>Backend + DB</span></span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="fas fa-reply" style="font-size:16px;"></i><span>HTTP Response</span></span>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="card">
+                <h4><i class="fas fa-exchange-alt"></i> ما الذي يحصل فعلياً؟</h4>
+                <ul>
+                  <li>كل صفحة تفتحها = Request</li>
+                  <li>السيرفر يعالج الطلب بمنطق الشغل</li>
+                  <li>يرجع Response: HTML أو JSON أو غيره</li>
+                </ul>
+              </div>
+              <div class="card">
+                <h4><i class="fab fa-amazon"></i> مثال سريع</h4>
+                <p>عند فتح Amazon: يتم جلب منتجاتك، حالتك، والعروض المناسبة لك من قاعدة البيانات في جزء من الثانية.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s4">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Backend</span>
+            <span class="pn">04 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">Backend — <span class="a">الكواليس التي تشغل كل شيء</span></div>
+            <div class="grid-3">
+              <div class="card c-acc"><h4>Business Logic</h4><p>قوانين التطبيق: الخصومات، الصلاحيات، سير الطلبات.</p></div>
+              <div class="card c-bl"><h4>Database</h4><p>تخزين واسترجاع آمن ومنظم للبيانات.</p></div>
+              <div class="card c-gn"><h4>Authentication</h4><p>من أنت؟ وما الذي يحق لك فعله؟</p></div>
+              <div class="card c-pu"><h4>API</h4><p>واجهة تواصل مع الويب والجوال والخدمات الخارجية.</p></div>
+              <div class="card"><h4>Security</h4><p>حماية المستخدم والبيانات والعمليات المالية.</p></div>
+              <div class="card"><h4>Performance</h4><p>Cache, Queue, Optimization لضمان سرعة مستقرة.</p></div>
+            </div>
+            <div class="note">Frontend هو ما يراه المستخدم. Backend هو ما يجعل هذا كله يعمل فعلياً.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s5">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Compare</span>
+            <span class="pn">05 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">Frontend vs Backend — <span class="a">الفرق الحقيقي</span></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>المحور</th>
+                  <th>Frontend</th>
+                  <th>Backend</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>اللغات</td>
+                  <td>HTML, CSS, JS, Vue, React</td>
+                  <td>PHP, Python, Node.js, Java</td>
+                </tr>
+                <tr>
+                  <td>مكان التنفيذ</td>
+                  <td>المتصفح أو الجهاز</td>
+                  <td>السيرفر</td>
+                </tr>
+                <tr>
+                  <td>المسؤولية</td>
+                  <td>UI/UX والتفاعل</td>
+                  <td>البيانات والمنطق والأمان</td>
+                </tr>
+                <tr>
+                  <td>هل يراه المستخدم؟</td>
+                  <td>نعم</td>
+                  <td>لا</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="lnote">الفرونت مثل واجهة المبنى، والباك مثل الكهرباء والأنظمة الداخلية. غير مرئي لكنه أساسي.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s6">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">PHP</span>
+            <span class="pn">06 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">PHP — لم تمت، <span class="a">بل تطورت</span></div>
+            <div class="grid-4">
+              <div class="card kpi"><div class="n">73%</div><div class="t">حصة مواقع الويب</div><div class="s">من المواقع المعروفة</div></div>
+              <div class="card kpi"><div class="n">74.5%</div><div class="t">W3Techs 2025</div><div class="s">بحسب آخر الإحصائيات</div></div>
+              <div class="card kpi"><div class="n">43%+</div><div class="t">WordPress</div><div class="s">من الإنترنت بالكامل</div></div>
+              <div class="card kpi"><div class="n">8.x</div><div class="t">جيل سريع وحديث</div><div class="s">أنواع قوية وأداء أعلى</div></div>
+            </div>
+            <div class="grid-2">
+              <div class="card c-acc"><h4>PHP القديمة</h4><p>كود فوضوي وأداء أقل وبنية أقل وضوحاً.</p></div>
+              <div class="card c-gn"><h4>PHP الحديثة</h4><p>OOP أوضح، Type System أفضل، وإطار Laravel قوي متكامل.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s7">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Laravel</span>
+            <span class="pn">07 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">Laravel — <span class="a">الأرقام لا تكذب</span></div>
+            <div class="grid-3">
+              <div class="card kpi"><div class="n">1.5M+</div><div class="t">موقع حول العالم</div></div>
+              <div class="card kpi"><div class="n">60%</div><div class="t">من مطوري PHP</div><div class="s">JetBrains 2024</div></div>
+              <div class="card kpi"><div class="n">75K+</div><div class="t">GitHub Stars</div></div>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Framework</th><th>Language</th><th>Popular Use</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Laravel</td><td>PHP</td><td>E-commerce, SaaS, APIs</td></tr>
+                <tr><td>Symfony</td><td>PHP</td><td>Enterprise Apps</td></tr>
+                <tr><td>Django</td><td>Python</td><td>Data-heavy Platforms</td></tr>
+                <tr><td>Express</td><td>JavaScript</td><td>Node APIs</td></tr>
+              </tbody>
+            </table>
+            <div class="lnote">Laravel 12 يركز على الاستقرار، الإنتاجية، وسرعة بناء features جاهزة للاستخدام.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s8">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Lifecycle</span>
+            <span class="pn">08 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">Request Lifecycle في Laravel — <span class="a">المسار الأساسي</span></div>
+            <div class="card c-pu">
+              <div class="flow">
+                <span class="node">Request</span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node">Routes</span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node">Middleware</span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node">Controller</span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node">Model/DB</span>
+                <i class="fas fa-arrow-left-long arr"></i>
+                <span class="node">View/JSON</span>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="card">
+                <h4>لماذا هذه الشريحة مهمة؟</h4>
+                <p>كل ما ستتعلمه لاحقاً هو جزء من هذا المسار. فهمه مبكراً يعطيك Mental Model نظيف وواضح.</p>
+              </div>
+              <div class="card">
+                <h4>كيف نستخدمها أثناء الكورس؟</h4>
+                <p>كل محور جديد سنربطه بمكانه في دورة الطلب حتى لا تتشتت الصورة الكبيرة.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s9">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Build Scope</span>
+            <span class="pn">09 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">ماذا تبني مع Laravel؟ <span class="a">Web + API + Full Stack</span></div>
+            <div class="grid-3">
+              <div class="card c-bl">
+                <h4>Web App</h4>
+                <ul>
+                  <li>متاجر إلكترونية</li>
+                  <li>SaaS Platforms</li>
+                  <li>Admin Dashboards</li>
+                </ul>
+              </div>
+              <div class="card c-gn">
+                <h4>REST API</h4>
+                <ul>
+                  <li>تطبيقات iOS/Android</li>
+                  <li>React/Vue Frontends</li>
+                  <li>تكاملات خارجية</li>
+                </ul>
+              </div>
+              <div class="card c-pu">
+                <h4>Full Stack</h4>
+                <ul>
+                  <li>Laravel + Inertia</li>
+                  <li>Laravel + Livewire</li>
+                  <li>Blade مع تجربة متكاملة</li>
+                </ul>
+              </div>
+            </div>
+            <div class="note">في هذا الكورس سنبني outputs متعددة: متجر ويب كامل + API مهيأ للجوال.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s10">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">NativePHP</span>
+            <span class="pn">10 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">PHP خارج الويب — <span class="a">NativePHP</span></div>
+            <div class="grid-2">
+              <div class="card c-acc">
+                <h4>الفكرة</h4>
+                <p>نفس منطق Laravel يمكن أن يمتد لتطبيقات Desktop وMobile، مع إعادة استخدام مهاراتك الحالية.</p>
+                <div class="flow" style="margin-top:10px;justify-content:flex-start;">
+                  <span class="node">Laravel App</span>
+                  <i class="fas fa-arrow-left-long arr"></i>
+                  <span class="node">NativePHP</span>
+                  <i class="fas fa-arrow-left-long arr"></i>
+                  <span class="node">Desktop / iOS / Android</span>
+                </div>
+              </div>
+              <div class="card c-bl">
+                <h4>لماذا هذا محفز للطالب؟</h4>
+                <ul>
+                  <li>توسيع فرص العمل بمسار تعلم واحد</li>
+                  <li>إمكانية بناء أدوات داخلية بسرعة</li>
+                  <li>فتح تصور Full-Platform للمطور</li>
+                </ul>
+              </div>
+            </div>
+            <div class="lnote">لا ندخل التفاصيل التقنية هنا؛ الهدف توسيع الرؤية وتحفيز الطالب من البداية.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s11">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">AI</span>
+            <span class="pn">11 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">AI في البرمجة — <span class="a">أداة، مش منافس</span></div>
+            <table>
+              <thead>
+                <tr><th>الحالة</th><th>الأداة</th><th>الاستخدام</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>كتابة كود متكرر</td><td>Copilot / Cursor</td><td>اقتراح Migrations, Controllers, Factories</td></tr>
+                <tr><td>Debug</td><td>ChatGPT / Claude</td><td>تحليل الخطأ وشرح سبب المشكلة</td></tr>
+                <tr><td>فهم Concept</td><td>ChatGPT / Claude</td><td>شرح بمثال مباشر من مشروع SouqPro</td></tr>
+                <tr><td>Refactoring</td><td>Cursor</td><td>تنظيف كود قائم وتسريع التحسين</td></tr>
+                <tr><td>Tests</td><td>AI</td><td>توليد بداية قوية لاختبارات Unit/Feature</td></tr>
+              </tbody>
+            </table>
+            <div class="note">المعادلة الذهبية: فهم قوي أولاً + AI ثانياً. AI بدون فهم ينتج أخطاء مكلفة.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s12">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Project</span>
+            <span class="pn">12 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">SouqPro — <span class="a">المشروع الذي ستبنيه</span></div>
+            <div class="grid-2">
+              <div class="card c-gn">
+                <h4>الواجهة + لوحة التحكم</h4>
+                <ul>
+                  <li>واجهة متجر للزوار (عرض، بحث، فلترة)</li>
+                  <li>لوحة Admin لإدارة المنتجات والطلبات</li>
+                  <li>نظام تقييمات ومفضلة</li>
+                  <li>دعم عربي/إنجليزي RTL/LTR</li>
+                </ul>
+              </div>
+              <div class="card c-acc">
+                <h4>المنظومة الخلفية</h4>
+                <ul>
+                  <li>Auth متكامل + 2FA + Google Login</li>
+                  <li>Cart + Coupons + Shipping + Orders</li>
+                  <li>Stripe Payment + REST API</li>
+                  <li>Real-time Notifications + نشر على VPS</li>
+                </ul>
+              </div>
+            </div>
+            <div class="lnote">هذا ليس مشروع تدريب مصغّر؛ هذا مشروع Portfolio كامل يمكن عرضه في CV.</div>
+          </div>
+        </section>
+
+        <section class="slide" id="s13">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Roadmap</span>
+            <span class="pn">13 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">خارطة الكورس — <span class="a">14 محوراً / ~50 ساعة</span></div>
+            <table>
+              <thead>
+                <tr><th>المحور</th><th>الموضوع</th><th>الوقت</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1-3</td><td>الأساسيات، DB Design، CRUD</td><td>14h</td></tr>
+                <tr><td>4-6</td><td>Relations، Auth/Permissions، ميزات المتجر</td><td>16h</td></tr>
+                <tr><td>7-10</td><td>Payments، APIs، Notifications، Queues</td><td>10.5h</td></tr>
+                <tr><td>11-14</td><td>Localization، Security/Performance، Deploy، AI</td><td>5h+</td></tr>
+              </tbody>
+            </table>
+            <div class="grid-2">
+              <div class="card"><h4>منهج التنفيذ</h4><p>كل محور يضيف لبنة واضحة في SouqPro، بدون قفزات مفاهيمية.</p></div>
+              <div class="card"><h4>النتيجة النهائية</h4><p>مشروع متكامل قابل للتشغيل والنشر الفعلي في بيئة حقيقية.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s14">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Requirements</span>
+            <span class="pn">14 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">المتطلبات والتوقعات — <span class="a">بشكل صريح وواضح</span></div>
+            <div class="grid-3">
+              <div class="card c-gn">
+                <h4>✅ مطلوب</h4>
+                <ul>
+                  <li>PHP أساسية: variables, arrays, functions, loops</li>
+                  <li>فهم أساسي لـ HTML/CSS</li>
+                  <li>تعامل بسيط مع Terminal أو Command Prompt</li>
+                </ul>
+              </div>
+              <div class="card c-acc">
+                <h4>⚡ مفيد (ليس شرطاً)</h4>
+                <ul>
+                  <li>OOP Basics في PHP</li>
+                  <li>معرفة SQL أساسية</li>
+                  <li>أي تجربة سابقة مع أي framework</li>
+                </ul>
+              </div>
+              <div class="card c-pu">
+                <h4>❌ غير مطلوب</h4>
+                <ul>
+                  <li>خبرة Laravel مسبقة — ستبدأ من الصفر</li>
+                  <li>React أو Vue أو أي JS framework</li>
+                  <li>Linux/VPS — ستتعلمه في المحور 13</li>
+                </ul>
+              </div>
+            </div>
+            <ul class="check">
+              <li><i class="fas fa-check-circle"></i><span>طبّق كل محاضرة بنفسك قبل الانتقال للتالية</span></li>
+              <li><i class="fas fa-check-circle"></i><span>حل الواجبات أولاً — هي جزء أساسي من التعلم</span></li>
+              <li><i class="fas fa-check-circle"></i><span>عند الخطأ: جرّب &larr; ابحث &larr; اسأل AI &larr; ثم اسأل المدرب</span></li>
+              <li><i class="fas fa-check-circle"></i><span>تذكر: الفهم أهم من السرعة — الكورس ~50 ساعة من التطبيق</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide" id="s15">
+          <div class="tb">
+            <div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div>
+            <span class="tag">Course Details</span>
+            <span class="pn">15 / 16</span>
+          </div>
+          <div class="sb">
+            <div class="sh">تفاصيل الكورس — <span class="a">بشفافية كاملة</span></div>
+            <div class="grid-2">
+              <div class="card c-acc">
+                <h4>المعلومات الأساسية</h4>
+                <ul>
+                  <li>السعر: ₪250 شيكل</li>
+                  <li>المدة الإجمالية: ~50 ساعة — 48 محاضرة — 14 محوراً</li>
+                  <li>المواعيد الأسبوعية: يتم الاتفاق عليها مع الطلاب</li>
+                </ul>
+              </div>
+              <div class="card c-gn">
+                <h4>المخرجات النهائية</h4>
+                <ul>
+                  <li>✅ مشروع SouqPro كامل (المتجر الإلكتروني اللي نبنيه طوال الكورس)</li>
+                  <li>🏆 مشروع تخرج منفصل في نهاية الكورس</li>
+                </ul>
+              </div>
+            </div>
+            <div class="note">"خلّيني أكون واضح من البداية: هذا الكورس تكلفته ₪250 شيكل، وبمدّة تطبيقية تقارب 50 ساعة على 48 محاضرة ضمن 14 محور. القيمة الحقيقية إنك ما بتاخذ شرح فقط، بل بتطلع بمشروع SouqPro كامل بالإضافة إلى مشروع تخرج منفصل يثبت مستواك عملياً. والمواعيد الأسبوعية بنحددها معكم بما يناسب أغلب الطلاب."</div>
+          </div>
+        </section>
+
+        <section class="slide closing" id="s16">
+          <div class="closing-side">
+            <div class="clcode"><span style="color:#6b7a94;">// final wrap-up</span>
+
+<span style="color:var(--bl);">Next</span> <span style="color:var(--acc);">-&gt;</span> Environment Setup
+Laravel Install <span style="color:var(--acc);">:</span> Local Ready
+Request Flow <span style="color:var(--acc);">:</span> First Practical App
+
+Mindset:
+- Build, test, repeat
+- Ask smart questions
+- Use <span style="color:var(--gn);">AI</span> with understanding
+
+<span style="color:var(--gn);">SouqPro</span> journey starts now.</div>
+            <div class="hero-foot">
+              <i class="fas fa-flag-checkered" style="color:var(--acc)"></i>
+              <i class="fas fa-list-check" style="color:var(--gn)"></i>
+              <span class="sp"></span>
+              <span class="v">Final Wrap-up</span>
+            </div>
+          </div>
+          <div class="closing-main" style="direction: rtl;">
+            <div>
+              <h2>الأسئلة <span>والنقاش</span> 💬</h2>
+              <p class="lead">من المحاضرة القادمة سنبدأ التنفيذ العملي خطوة بخطوة حتى بناء متجر إلكتروني كامل قابل للنشر والعرض في Portfolio.</p>
+            </div>
+            <div class="instructor">
+              <div>
+                <div class="name">السيد الاخرسي</div>
+                <div class="role">Full Stack Developer & Instructor</div>
+              </div>
+              <img src="../../assets/alsaeyd.png" alt="المدرب" />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="nav-row">
+      <div id="instr-card">
+        <div class="iav"><img src="../../assets/alsaeyd.png" alt="" /></div>
+        <div>
+          <div class="inm">السيد الاخرسي</div>
+          <div class="irl">Full Stack Developer & Instructor</div>
+        </div>
+      </div>
+
+      <div id="nav">
+        <button class="nb next" id="btnN" aria-label="التالي"><i class="fas fa-chevron-right"></i></button>
+        <div id="dots"></div>
+        <span id="ctr">1 / 16</span>
+        <button class="nb" id="btnP" aria-label="السابق" disabled><i class="fas fa-chevron-left"></i></button>
+      </div>
+    </div>
+
+    <script>
+      const N = 16;
+      let c = 1;
+
+      const stage = document.getElementById("stage");
+      const wrap = document.getElementById("scale-wrap");
+      const ctr = document.getElementById("ctr");
+      const btnN = document.getElementById("btnN");
+      const btnP = document.getElementById("btnP");
+      const dotsEl = document.getElementById("dots");
+
+      for (let i = 1; i <= N; i++) {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 1 ? " on" : "");
+        d.addEventListener("click", () => go(i));
+        dotsEl.appendChild(d);
+      }
+
+      function go(n) {
+        if (n < 1 || n > N || n === c) return;
+        document.getElementById("s" + c).classList.remove("active");
+        c = n;
+        document.getElementById("s" + c).classList.add("active");
+
+        ctr.textContent = c + " / " + N;
+        btnP.disabled = c === 1;
+        btnN.disabled = c === N;
+
+        dotsEl.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("on", i + 1 === c));
+      }
+
+      function scaleStage() {
+        const W = 1060;
+        const H = 596;
+        const navRow = document.getElementById("nav-row");
+        const navH = navRow ? navRow.offsetHeight : 56;
+        const vw = window.innerWidth - 24;
+        const vh = window.innerHeight - navH - 34;
+        const scale = Math.max(0.42, Math.min(vw / W, vh / H, 1));
+
+        stage.style.transform = `scale(${scale})`;
+        wrap.style.width = `${W * scale}px`;
+        wrap.style.height = `${H * scale}px`;
+      }
+
+      btnN.addEventListener("click", () => go(c + 1));
+      btnP.addEventListener("click", () => go(c - 1));
+
+      document.addEventListener("keydown", (e) => {
+        if (["ArrowRight", "ArrowDown", " ", "PageDown"].includes(e.key)) {
+          e.preventDefault();
+          go(c + 1);
+        }
+        if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+          e.preventDefault();
+          go(c - 1);
+        }
+      });
+
+      let x0 = 0;
+      stage.addEventListener("touchstart", (e) => {
+        x0 = e.changedTouches[0].clientX;
+      });
+
+      stage.addEventListener("touchend", (e) => {
+        const dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) < 42) return;
+        if (dx < 0) go(c + 1);
+        else go(c - 1);
+      });
+
+      window.addEventListener("resize", scaleStage);
+      window.addEventListener("load", scaleStage);
+      scaleStage();
+    </script>
+  </body>
+</html>

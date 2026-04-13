@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المحاضرة 27 — العناوين والشحن والكوبونات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+:root {
+  --bg: #080c14;
+  --surf: #0d1520;
+  --card: #111b2a;
+  --bdr: #1c2d42;
+  --bdr2: #243650;
+  --acc: #10d97a;
+  --acc2: #34d399;
+  --wh: #f0f6ff;
+  --sub: #7a9bbf;
+  --dim: #3a5470;
+  --gn: #10d97a;
+  --bl: #38bdf8;
+  --pu: #c084fc;
+  --yl: #fbbf24;
+  --rd: #f87171;
+  --mono: "JetBrains Mono", monospace;
+  --sans: "Tajawal", sans-serif;
+  --W: 1060px;
+  --H: 596px;
+  --R: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body {
+  background: radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 28%), #03060b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  gap: 18px;
+  padding: 0 0 8px;
+  overflow: hidden;
+}
+#scale-wrap { display: flex; align-items: center; justify-content: center; }
+#stage { position: relative; width: var(--W); height: var(--H); transform-origin: center center; }
+.slide {
+  position: absolute;
+  inset: 0;
+  width: var(--W);
+  height: var(--H);
+  background: linear-gradient(180deg, rgba(13,21,32,0.98), rgba(8,12,20,1));
+  border: 1px solid var(--bdr);
+  border-radius: var(--R);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+.slide.active { display: flex; }
+.hero, .closing { flex-direction: row; }
+.tb {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--bdr);
+  background: rgba(11, 18, 32, 0.88);
+  flex-shrink: 0;
+}
+.cid, .tag, .pn, .card-lbl, .cb-label, #ctr, .irl, .v, .copy-btn { font-family: var(--mono); }
+.cid { font-size: 10.5px; color: var(--dim); display: flex; align-items: center; gap: 6px; }
+.dlive { width: 6px; height: 6px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 0 4px rgba(255,255,255,0.03); }
+.tag { font-size: 10px; color: var(--acc); }
+.pn { font-size: 10px; color: var(--dim); }
+.sb {
+  flex: 1;
+  padding: 20px 28px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
+}
+.sh { font-size: 24px; font-weight: 900; color: var(--wh); text-align: right; line-height: 1.25; margin-bottom: 14px; }
+.a { color: var(--acc); }
+.badge-line { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.pill {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: var(--wh);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pill.acc { color: var(--acc); }
+.pill.yl { color: var(--yl); }
+.pill.gn { color: var(--gn); }
+.stat-row, .grid-2, .grid-3, .flow-row { min-height: 0; }
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: right;
+}
+.stat i { font-size: 16px; color: var(--acc); margin-bottom: 8px; }
+.stat h4 { font-size: 13px; color: var(--wh); margin-bottom: 6px; }
+.stat p { font-size: 11.5px; color: var(--sub); line-height: 1.7; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 0;
+}
+.card.c-acc { border-color: rgba(249,115,22,0.35); }
+.card.c-gn { border-color: rgba(16,217,122,0.28); }
+.card.c-bl { border-color: rgba(56,189,248,0.28); }
+.card.c-pu { border-color: rgba(192,132,252,0.28); }
+.card.c-yl { border-color: rgba(251,191,36,0.28); }
+.card-lbl { font-size: 10px; color: var(--dim); margin-bottom: 10px; letter-spacing: 0.06em; }
+.list { display: flex; flex-direction: column; gap: 8px; }
+.li { display: flex; align-items: flex-start; gap: 8px; color: var(--sub); font-size: 12px; line-height: 1.7; }
+.li i { color: var(--acc); margin-top: 3px; flex-shrink: 0; }
+.cb {
+  position: relative;
+  background: #06111d;
+  border: 1px solid var(--bdr2);
+  border-radius: 10px;
+  padding: 36px 12px 12px;
+  overflow: auto;
+  min-height: 0;
+}
+.cb-label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-size: 10px;
+  color: var(--acc);
+}
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  height: 26px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.04);
+  color: var(--wh);
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.copy-btn.done { color: var(--gn); border-color: rgba(16,217,122,0.25); }
+.cb pre, .hero-code, .clcode {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--mono);
+  white-space: pre-wrap;
+}
+.cb pre { color: #d7e7fb; font-size: 11px; line-height: 1.8; }
+.note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(249,115,22,0.18);
+  background: rgba(249,115,22,0.08);
+  color: #ffd8bf;
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+.hero-side, .closing-side {
+  width: 320px;
+  border-left: 1px solid var(--bdr);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.hero-main, .closing-main {
+  flex: 1;
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.hero-main::before, .closing-main::before {
+  content: "";
+  position: absolute;
+  inset: 40px 32px auto auto;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 65%);
+  pointer-events: none;
+}
+.hero-code, .clcode {
+  background: #05111c;
+  border: 1px solid var(--bdr2);
+  border-radius: 14px;
+  padding: 16px;
+  color: #d7e7fb;
+  font-size: 11px;
+  line-height: 1.85;
+  overflow: auto;
+}
+.hero-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dim);
+  margin-top: 16px;
+}
+.sp { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+.v { font-size: 10px; color: var(--dim); }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--acc);
+  font-size: 10px;
+  font-family: var(--mono);
+  margin-bottom: 14px;
+}
+.hero-eye { color: var(--sub); font-size: 14px; margin-bottom: 10px; }
+.hero-h { font-size: 34px; font-weight: 900; color: var(--wh); line-height: 1.35; margin-bottom: 12px; }
+.hero-h span { color: var(--acc); }
+.hero-desc { color: var(--sub); font-size: 14px; line-height: 1.9; max-width: 620px; }
+.hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 8px 12px;
+  min-width: 120px;
+}
+.cl, .cv { display: block; }
+.cl { color: var(--dim); font-size: 10px; margin-bottom: 4px; }
+.cv { color: var(--wh); font-size: 12px; font-weight: 700; }
+.flow-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.flow-step {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 14px;
+}
+.flow-n {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--bg);
+  background: var(--acc);
+  margin-bottom: 10px;
+}
+.flow-title { color: var(--wh); font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+.flow-text { color: var(--sub); font-size: 11.5px; line-height: 1.7; }
+.homework { display: flex; flex-direction: column; gap: 10px; }
+.hw {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--bdr);
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  padding: 12px;
+}
+.n {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--acc);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.hw strong { color: var(--wh); font-size: 13px; }
+.hw p { color: var(--sub); font-size: 11.5px; line-height: 1.7; margin-top: 4px; }
+.big { font-size: 34px; color: var(--wh); font-weight: 900; line-height: 1.35; margin-bottom: 14px; }
+.big span:last-child { color: var(--acc); }
+.subt { color: var(--sub); font-size: 14px; line-height: 1.9; max-width: 560px; }
+#nav-row {
+  width: 1060px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#instr-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  min-width: 240px;
+}
+.iav img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.inm { color: var(--wh); font-size: 13px; font-weight: 800; }
+.irl { color: var(--dim); font-size: 10px; }
+#nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+}
+.nb {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--bdr);
+  background: rgba(255,255,255,0.04);
+  color: var(--wh);
+  cursor: pointer;
+}
+.nb:disabled { opacity: 0.38; cursor: not-allowed; }
+#dots { display: flex; gap: 6px; }
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  cursor: pointer;
+}
+.dot.on { width: 22px; background: var(--acc); }
+#ctr { color: var(--wh); font-size: 11px; min-width: 48px; text-align: center; }
+</style>
+</head>
+<body>
+  <div id="scale-wrap"><div id="stage"><div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">if ($coupon-&gt;expires_at?-&gt;isPast()) {
+    throw ValidationException::withMessages([&#x27;coupon&#x27; =&gt; &#x27;الكوبون منتهي&#x27;]);
+}
+
+if ($cartTotal &lt; $coupon-&gt;min_amount) {
+    throw ValidationException::withMessages([&#x27;coupon&#x27; =&gt; &#x27;الحد الأدنى غير متحقق&#x27;]);
+}</div><div class="hero-foot"><i class="fas fa-code" style="color:var(--acc)"></i><i class="fas fa-layer-group" style="color:var(--bl)"></i><span class="sp"></span><span class="v">Core Store Features</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-graduation-cap"></i> Module 06 - Lecture 27</div><div class="hero-eye">Address + Shipping + Coupons</div><div class="hero-h">قبل الدفع نحتاج <span>تفاصيل الشراء الذكية</span></div><div class="hero-desc">في هذه المحاضرة نضيف العناصر التي تجعل checkout واقعية: عنوان توصيل، طريقة شحن، وكوبون خصم له شروط واضحة داخل SouqPro.</div><div class="hero-chips"><div class="chip"><span class="cl">المدة</span><span class="cv">60 دقيقة</span></div><div class="chip"><span class="cl">التركيز</span><span class="cv">Checkout Inputs</span></div><div class="chip"><span class="cl">النتيجة</span><span class="cv">Address + Shipping + Coupon</span></div></div></div></div><div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Plan</span><span class="pn">02 / 09</span></div><div class="sb"><div class="badge-line"><span class="pill acc"><i class="fas fa-bullseye"></i> الهدف</span><span class="pill yl"><i class="fas fa-list-check"></i> المحاور</span></div><div class="sh">خارطة التنفيذ في <span class="a">هذه المحاضرة</span></div><div class="stat-row"><div class="stat"><i class="fas fa-location-dot"></i><h4>العناوين</h4><p>حتى يعرف النظام أين سيتم التوصيل.</p></div><div class="stat"><i class="fas fa-truck"></i><h4>الشحن</h4><p>نضيف تكلفة إضافية وطريقة توصيل مفهومة.</p></div><div class="stat"><i class="fas fa-ticket"></i><h4>الكوبونات</h4><p>خصومات حقيقية لكن بشروط تحمي المتجر من الفوضى.</p></div><div class="stat"><i class="fas fa-user-gear"></i><h4>Admin View</h4><p>الأدمن يحتاج إدارة الكوبونات وطرق الشحن لاحقاً.</p></div></div><div class="note">رتب الشرح دائماً من المشكلة إلى التطبيق داخل SouqPro حتى يبقى الطالب ممسكاً بالصورة كاملة.</div></div></div><div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Core Concept</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">الجداول التي تجعل <span class="a">Checkout</span> واقعية</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">TABLES</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>`addresses`: user_id, city, area, street, phone, is_default</span></div><div class="li"><i class="fas fa-check"></i><span>`shipping_methods`: name, price, is_active</span></div><div class="li"><i class="fas fa-check"></i><span>`coupons`: code, type, value, min_amount, uses_limit, expires_at</span></div></div></div><div class="card c-bl"><div class="card-lbl">WHY NOW</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>لأن الطلب دون عنوان أو شحن ليس طلباً قابلاً للتنفيذ.</span></div><div class="li"><i class="fas fa-check"></i><span>ولأن الخصومات تحتاج شروطاً واضحة قبل الوصول لمرحلة الدفع.</span></div></div></div></div></div></div><div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Implementation</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">التحقق من <span class="a">الكوبون</span> خطوة بخطوة</div><div class="grid-2"><div class="card c-gn"><div class="card-lbl">PHP</div><div class="cb"><div class="cb-label">PHP</div><button class="copy-btn" type="button">نسخ</button><pre>$coupon = Coupon::where(&#x27;code&#x27;, $request-&gt;code)-&gt;firstOrFail();
+
+abort_if($coupon-&gt;expires_at &amp;&amp; $coupon-&gt;expires_at-&gt;isPast(), 422);
+abort_if($coupon-&gt;uses_limit &amp;&amp; $coupon-&gt;used_count &gt;= $coupon-&gt;uses_limit, 422);
+abort_if($cartTotal &lt; $coupon-&gt;min_amount, 422);
+
+$discount = $coupon-&gt;type === &#x27;percent&#x27;
+    ? ($cartTotal * $coupon-&gt;value / 100)
+    : $coupon-&gt;value;</pre></div></div><div class="card c-pu"><div class="card-lbl">BUSINESS RULES</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>بعض الكوبونات نسبة مئوية وبعضها مبلغ ثابت.</span></div><div class="li"><i class="fas fa-check"></i><span>وجود `min_amount` يمنع استخدام الكوبون في طلبات صغيرة جداً.</span></div><div class="li"><i class="fas fa-check"></i><span>`uses_limit` يمنع الاستهلاك غير المنضبط للحملات.</span></div></div></div></div></div></div><div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Flow</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">ماذا يختار المستخدم قبل <span class="a">إتمام الطلب</span>؟</div><div class="flow-row"><div class="flow-step"><div class="flow-n">1</div><div class="flow-title">Address</div><div class="flow-text">يختار أو يضيف عنوان التوصيل.</div></div><div class="flow-step"><div class="flow-n">2</div><div class="flow-title">Shipping</div><div class="flow-text">يحدد طريقة الشحن المناسبة وسعرها.</div></div><div class="flow-step"><div class="flow-n">3</div><div class="flow-title">Coupon</div><div class="flow-text">يدخل كود الخصم إن كان يملكه.</div></div><div class="flow-step"><div class="flow-n">4</div><div class="flow-title">Summary</div><div class="flow-text">يشاهد subtotal + discount + shipping + final total.</div></div></div></div></div><div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Best Practice</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">أفضل ممارسات في <span class="a">الخصومات والشحن</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">DO THIS</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>اعرض للمستخدم سبب رفض الكوبون بوضوح.</span></div><div class="li"><i class="fas fa-check"></i><span>اختر عنواناً افتراضياً لتسهيل checkout.</span></div><div class="li"><i class="fas fa-check"></i><span>اجعل أسعار الشحن بيانات قابلة للإدارة لا أرقاماً ثابتة في الكود.</span></div></div></div><div class="card c-yl"><div class="card-lbl">AVOID</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>تطبيق الكوبون دون التحقق من expiry أو limits.</span></div><div class="li"><i class="fas fa-check"></i><span>ربط كل شيء بواجهة واحدة مزدحمة جداً.</span></div><div class="li"><i class="fas fa-check"></i><span>نسيان تحديث الملخص النهائي بعد الشحن أو الخصم.</span></div></div></div></div></div></div><div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Focus</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">الأثر المباشر على <span class="a">SouqPro</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">REAL STORE FEEL</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>الطالب يبدأ يرى تجربة شراء قريبة من الواقع فعلاً.</span></div><div class="li"><i class="fas fa-check"></i><span>المتجر لم يعد مجرد cart وbutton checkout بل flow كامل.</span></div></div></div><div class="card c-yl"><div class="card-lbl">NEXT</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>في المحاضرة التالية سنحول هذا كله إلى Order محفوظة في النظام.</span></div><div class="li"><i class="fas fa-check"></i><span>وهناك سنبدأ التفكير في stock وorder status بشكل واضح.</span></div></div></div></div></div></div><div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="sh">ثبّت المحاضرة عبر <span class="a">التطبيق والواجب</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CHECKLIST</div><div class="cb"><div class="cb-label">NOTES</div><button class="copy-btn" type="button">نسخ</button><pre>addresses
+shipping_methods
+coupons
+discount + final total</pre></div></div><div class="card c-pu"><div class="card-lbl">HOMEWORK</div><div class="homework"><div class="hw"><div class="n">1</div><div><strong>ابنِ جداول checkout الأساسية</strong><p>أنشئ addresses وshipping_methods وcoupons مع العلاقات المناسبة.</p></div></div><div class="hw"><div class="n">2</div><div><strong>فعّل إدخال الكوبون</strong><p>تحقق من الصلاحية والحد الأدنى والانتهاء قبل التطبيق.</p></div></div><div class="hw"><div class="n">3</div><div><strong>اعرض ملخص الطلب</strong><p>أظهر subtotal والخصم والشحن والإجمالي النهائي في شاشة cart/checkout.</p></div></div></div></div></div><div class="note">نفّذ هذه النقاط قبل الانتقال إلى المحاضرة التالية حتى يبقى تراكم المشروع منطقياً وواضحاً.</div></div></div><div class="slide closing" id="s9"><div class="closing-side"><div class="clcode">addresses
+shipping_methods
+coupons
+final total</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:var(--acc)"></i><i class="fas fa-list-check" style="color:var(--gn)"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big">الآن checkout صار <span>أقرب للواقع</span></div><div class="subt">العناوين والشحن والكوبونات هي ما يحول السلة من مجرد قائمة منتجات إلى عملية شراء حقيقية قابلة للتنفيذ.</div></div></div></div></div>
+  <div id="nav-row">
+    <div id="instr-card">
+      <div class="iav"><img src="../../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=143042&color=ffffff&size=80&bold=true'" /></div>
+      <div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div>
+    </div>
+    <div id="nav">
+      <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
+      <div id="dots"></div>
+      <span id="ctr">1 / 9</span>
+      <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+  <script>
+    const N = 9;
+    let c = 1;
+    const ctr = document.getElementById('ctr');
+    const btnN = document.getElementById('btnN');
+    const btnP = document.getElementById('btnP');
+    const dotsEl = document.getElementById('dots');
+    for (let i = 1; i <= N; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 1 ? ' on' : '');
+      d.onclick = () => go(i);
+      dotsEl.appendChild(d);
+    }
+    function go(n) {
+      if (n < 1 || n > N || n === c) return;
+      document.getElementById('s' + c).classList.remove('active');
+      c = n;
+      document.getElementById('s' + c).classList.add('active');
+      ctr.textContent = c + ' / ' + N;
+      btnP.disabled = c === 1;
+      btnN.disabled = c === N;
+      dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i + 1 === c));
+    }
+    btnN.onclick = () => go(c + 1);
+    btnP.onclick = () => go(c - 1);
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); go(c + 1); }
+      if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); go(c - 1); }
+    });
+    function scaleStage() {
+      const wrap = document.getElementById('scale-wrap');
+      const stage = document.getElementById('stage');
+      const navH = document.getElementById('nav-row').offsetHeight + 26;
+      const aw = window.innerWidth - 32;
+      const ah = window.innerHeight - navH - 24;
+      const scale = Math.min(1, aw / 1060, ah / 596);
+      stage.style.transform = 'scale(' + scale + ')';
+      wrap.style.width = Math.round(1060 * scale) + 'px';
+      wrap.style.height = Math.round(596 * scale) + 'px';
+    }
+    function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); resolve(); } catch (err) { reject(err); }
+        document.body.removeChild(ta);
+      });
+    }
+    function initCopyButtons() {
+      document.querySelectorAll('.cb').forEach((box) => {
+        const btn = box.querySelector('.copy-btn');
+        const pre = box.querySelector('pre');
+        if (!btn || !pre) return;
+        btn.addEventListener('click', async () => {
+          try {
+            await copyText(pre.innerText.trim());
+            const prev = btn.innerHTML;
+            btn.classList.add('done');
+            btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+            setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = prev; }, 1600);
+          } catch (err) {
+            btn.innerHTML = '<i class="fas fa-xmark"></i> فشل';
+            setTimeout(() => btn.innerHTML = 'نسخ', 1600);
+          }
+        });
+      });
+    }
+    window.addEventListener('resize', scaleStage);
+    scaleStage();
+    initCopyButtons();
+  </script>
+</body>
+</html>

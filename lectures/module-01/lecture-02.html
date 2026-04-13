@@ -275,6 +275,43 @@
     .fn-sub { font-size:11px; color:var(--sub); font-family:var(--mono); }
     .fn-desc { font-size:12px; color:var(--sub); text-align:right; line-height:1.55; margin-top:4px; }
     .farrow { font-size:20px; color:var(--dim); padding:0 6px; flex-shrink:0; }
+    .oop-diagram {
+      background:rgba(255,255,255,.02);
+      border:1px solid var(--bdr);
+      border-radius:9px;
+      padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .oop-diagram .row { display:flex; gap:8px; justify-content:flex-end; }
+    .oop-diagram .node {
+      flex:1;
+      border-radius:8px;
+      padding:8px 11px;
+      font-family:var(--mono);
+      text-align:right;
+      font-size:10.8px;
+      line-height:1.65;
+    }
+    .oop-diagram .center { max-width:220px; align-self:center; text-align:center; }
+    .oop-arrow { color:var(--dim); text-align:center; font-size:15px; line-height:1; }
+    #s7 .two-col,
+    #s8 .two-col,
+    #s9 .two-col,
+    #s10 .two-col,
+    #s11 .two-col,
+    #s12 .two-col { align-items:stretch; }
+    #s8 .card,
+    #s9 .card,
+    #s10 .card,
+    #s11 .card,
+    #s12 .card { padding:13px 15px; }
+    #s9 .card table td,
+    #s9 .card table th,
+    #s11 .card div,
+    #s12 .card div,
+    #s12 .card p { line-height:1.6; }
 
     /* ── HOMEWORK ── */
     .hwl { display:flex; flex-direction:column; gap:10px; flex:1; }
@@ -313,7 +350,7 @@
     }
     #s15 { flex-direction:row; }
     .cll {
-      width:300px; background:var(--surf); border-left:1px solid var(--bdr);
+      width:320px; background:var(--surf); border-left:1px solid var(--bdr);
       flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
     }
     .cll::before {
@@ -321,22 +358,28 @@
       background:linear-gradient(90deg,var(--acc),transparent);
     }
     .clcode {
-      flex:1; padding:20px 16px;
-      font-family:var(--mono); font-size:11px; line-height:2;
-      color:#1e3554; overflow:hidden;
+      flex:1; padding:24px 20px;
+      font-family:var(--mono); font-size:12.5px; line-height:2.05;
+      color:#1d3450; overflow:hidden;
     }
     .clft {
       height:46px; border-top:1px solid var(--bdr);
-      display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0;
+      display:flex; align-items:center; padding:0 16px; gap:11px; flex-shrink:0;
     }
     .clft i { font-size:16px; }
     .clft .sp { flex:1; }
     .clft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
     .clr {
-      flex:1; display:flex; flex-direction:column;
-      padding:32px 40px 26px 24px; position:relative;
+      flex:1; display:flex; flex-direction:column; justify-content:center;
+      padding:32px 44px 28px 24px; position:relative; overflow:hidden;
     }
-    .clbig { font-size:48px; font-weight:900; text-align:right; line-height:1.1; margin-bottom:12px; }
+    .clr::before {
+      content:""; position:absolute; top:-80px; left:-80px;
+      width:340px; height:340px;
+      background:radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .clbig { font-size:52px; font-weight:900; text-align:right; line-height:1.1; }
     .clbig .l1 { color:var(--wh); }
     .clbig .l2 { color:var(--acc); }
     .cl-instr {
@@ -537,7 +580,7 @@
           <div style="font-size:11.5px;color:var(--rd);text-align:right;">الكود متشتت — صعب القراءة والصيانة</div>
         </div>
         <!-- Arrow -->
-        <div style="display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px;">→</div>
+        <div style="display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px;">←</div>
         <!-- OOP -->
         <div class="card c-gn" style="display:flex;flex-direction:column;gap:9px;">
           <div class="card-lbl" style="color:var(--gn)">✅ OOP — مع Classes</div>
@@ -570,7 +613,7 @@
     </div>
     <div class="sb">
       <div class="sh">Class · Properties · <span class="a">Methods</span></div>
-      <div class="two-col">
+      <div class="two-col" style="align-items:stretch;">
         <!-- Theory -->
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="card c-acc">
@@ -682,33 +725,47 @@
           </div>
         </div>
         <!-- Code -->
-        <div class="cb" style="font-size:11.5px;">
-          <div class="cb-label">PHP</div>
-          <br>
-          <span class="kw">class</span> <span class="fn">Order</span> {<br>
-          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$product</span>;<br>
-          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">int</span>    <span class="ac">$qty</span>;<br>
-          &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">float</span>  <span class="ac">$total</span>;<br>
-          <br>
-          &nbsp;&nbsp;<span class="cm">// يعمل تلقائياً عند new Order()</span><br>
-          &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">string</span> <span class="ac">$product</span>,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span>    <span class="ac">$qty</span>,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">float</span>  <span class="ac">$price</span><br>
-          &nbsp;&nbsp;) {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// $this = هذا الـ object</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">product</span> = <span class="ac">$product</span>;<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">qty</span>     = <span class="ac">$qty</span>;<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">total</span>   = <span class="ac">$qty</span> * <span class="ac">$price</span>;<br>
-          &nbsp;&nbsp;}<br>
-          }<br>
-          <br>
-          <span class="cm">// إنشاء Object مع قيم فورية</span><br>
-          <span class="ac">$o</span> = <span class="kw">new</span> <span class="fn">Order</span>(<span class="st">"Laptop"</span>, <span class="wht">2</span>, <span class="wht">999</span>);<br>
-          <span class="cm">// $o->total = 1998</span>
+        <div style="display:flex;flex-direction:column;gap:10px;min-height:0;">
+          <div class="cb" style="font-size:11.5px;flex:1;">
+            <div class="cb-label">PHP</div>
+            <br>
+            <span class="kw">class</span> <span class="fn">Order</span> {<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">string</span> <span class="ac">$product</span>;<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">int</span>    <span class="ac">$qty</span>;<br>
+            &nbsp;&nbsp;<span class="kw">public</span> <span class="kw">float</span>  <span class="ac">$total</span>;<br>
+            <br>
+            &nbsp;&nbsp;<span class="cm">// يعمل تلقائياً عند new Order()</span><br>
+            &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">string</span> <span class="ac">$product</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span>    <span class="ac">$qty</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">float</span>  <span class="ac">$price</span><br>
+            &nbsp;&nbsp;) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// $this = هذا الـ object</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">product</span> = <span class="ac">$product</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">qty</span>     = <span class="ac">$qty</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">$this</span>-><span class="fn">total</span>   = <span class="ac">$qty</span> * <span class="ac">$price</span>;<br>
+            &nbsp;&nbsp;}<br>
+            }<br>
+            <br>
+            <span class="cm">// إنشاء Object مع قيم فورية</span><br>
+            <span class="ac">$o</span> = <span class="kw">new</span> <span class="fn">Order</span>(<span class="st">"Laptop"</span>, <span class="wht">2</span>, <span class="wht">999</span>);<br>
+            <span class="cm">// $o->total = 1998</span>
+          </div>
+          <div class="card c-bl" style="padding:10px 12px;">
+            <div class="card-lbl" style="color:var(--bl);">Dependency Injection</div>
+            <div style="font-size:12px;color:var(--sub);text-align:right;line-height:1.65;">
+              يعني أن الكلاس يستقبل الخدمة التي يحتاجها من الخارج بدل ما ينشئها بنفسه.
+            </div>
+            <div class="cb" style="margin-top:8px;font-size:10.7px;line-height:1.7;">
+              <span class="kw">class</span> <span class="fn">OrderController</span> {<br>
+              &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="fn">OrderService</span> <span class="ac">$service</span><br>
+              &nbsp;&nbsp;) {}<br>
+              }<br>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="lnote"><i class="fab fa-laravel" style="color:#ff2d20"></i> <strong>Dependency Injection</strong> يعني أن الكلاس يستقبل الخدمة التي يحتاجها من الخارج بدل ما ينشئها بنفسه. مثال سريع: <code style="font-family:var(--mono);color:var(--acc)">class OrderController { public function __construct(private OrderService $service) {} }</code></div>
     </div>
   </div>
 
@@ -789,17 +846,17 @@
             </p>
           </div>
           <!-- Visual diagram -->
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0;">
-            <div style="background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.25);border-radius:8px;padding:9px 16px;font-family:var(--mono);font-size:12px;color:var(--pu);width:200px;text-align:right;">
+          <div class="oop-diagram">
+            <div class="node center" style="background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.25);color:var(--pu);">
               Animal <span style="font-size:10px;color:var(--dim)">// الأب</span>
               <div style="font-size:11px;color:var(--dim);margin-top:4px;">+ name, age<br>+ speak()</div>
             </div>
-            <div style="color:var(--dim);font-size:11px;margin-right:46px;padding:2px 0;">extends ↓</div>
-            <div style="display:flex;gap:10px;justify-content:flex-end;width:100%;">
-              <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--acc);flex:1;text-align:right;">
+            <div class="oop-arrow">extends</div>
+            <div class="row">
+              <div class="node" style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.22);color:var(--acc);">
                 Dog<br><span style="color:var(--dim)">+ breed<br>+ fetch()</span>
               </div>
-              <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.22);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--bl);flex:1;text-align:right;">
+              <div class="node" style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.22);color:var(--bl);">
                 Cat<br><span style="color:var(--dim)">+ indoor<br>+ purr()</span>
               </div>
             </div>
@@ -852,20 +909,20 @@
               يحدد هيكل الكلاسات الأبناء ويجبرها على تطبيق دوال معينة.
             </p>
           </div>
-          <div class="card c-bl" style="flex:1;">
+          <div class="card c-bl" style="padding:14px 16px;">
             <div class="card-lbl">متى نستخدمها؟</div>
             <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تحدد عقد مشترك بين عدة كلاسات</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">لما تبغى تحدد عقد مشترك بين عدة كلاسات</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">لما عندك كود مشترك بين الكلاسات — ضعه في الأب</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">لما عندك كود مشترك بين الكلاسات — ضعه في الأب</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تجبر الأبناء على تطبيق دالة معينة</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">لما تبغى تجبر الأبناء على تطبيق دالة معينة</span>
               </div>
             </div>
           </div>
@@ -936,7 +993,7 @@
               </tr>
             </table>
           </div>
-          <div class="card c-gn" style="flex:1;">
+          <div class="card c-gn" style="padding:13px 15px;">
             <div class="card-lbl">متى تستخدم Interface؟</div>
             <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.65;margin-top:6px;">
               عندما تريد أن تضمن أن أي كلاس <strong style="color:var(--wh)">يطبق مجموعة دوال بعينها</strong> — بغض النظر عن أصل الكلاس.
@@ -990,7 +1047,7 @@
             </p>
           </div>
           <!-- Visual -->
-          <div style="background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;flex:1;">
+          <div style="background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;">
             <div class="card-lbl" style="margin-bottom:8px;">مثال بصري</div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
               <div style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:6px;padding:6px 12px;font-family:var(--mono);font-size:11px;color:var(--acc);width:fit-content;">
@@ -1059,20 +1116,20 @@
               </div>
             </div>
           </div>
-          <div class="card c-bl" style="flex:1;">
+          <div class="card c-bl" style="padding:13px 15px;">
             <div class="card-lbl">متى تستخدم static؟</div>
             <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">Helper functions مشتركة</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">Helper functions مشتركة</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">Factory methods لإنشاء Objects</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">Factory methods لإنشاء Objects</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="color:var(--gn);flex-shrink:0;font-size:13px;">✓</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">Counters أو cache مشترك بين الـ Objects</span>
+                <span style="font-size:12.5px;color:var(--sub);text-align:right;line-height:1.6;">Counters أو cache مشترك بين الـ Objects</span>
               </div>
             </div>
           </div>
@@ -1128,7 +1185,7 @@
               مثل مجلدات الملفات: اسم الملف واحد لكن المسار مختلف.
             </p>
           </div>
-          <div class="card c-gn" style="flex:1;">
+          <div class="card c-gn" style="padding:13px 15px;">
             <div class="card-lbl">PSR-4 — القاعدة الرسمية</div>
             <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
               <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;">
@@ -1455,7 +1512,7 @@
   }
 
   function initCopyButtons() {
-    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+    document.querySelectorAll('.cb, .term-body').forEach(el => {
       if (el.dataset.copyReady === 'true') return;
       el.dataset.copyReady = 'true';
       el.classList.add('copyable-code');

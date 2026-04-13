@@ -1,0 +1,107 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <title>المحاضرة 17 — HasMany: Category و Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root{--bg:#080c14;--surf:#0d1520;--card:#111b2a;--bdr:#1c2d42;--bdr2:#243650;--acc:#c084fc;--wh:#f0f6ff;--sub:#7a9bbf;--dim:#3a5470;--gn:#10d97a;--mono:"JetBrains Mono",monospace;--sans:"Tajawal",sans-serif;--W:1060px;--H:596px;--R:14px}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%}body{background:#03060b;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--sans);gap:18px;padding:0 0 8px;overflow:hidden}
+    #scale-wrap{display:flex;align-items:center;justify-content:center;flex-shrink:0}#stage{position:relative;width:var(--W);height:var(--H);transform-origin:center center}.slide{position:absolute;inset:0;width:var(--W);height:var(--H);background:var(--bg);border-radius:var(--R);border:1px solid var(--bdr);overflow:hidden;display:none;flex-direction:column}.slide.active{display:flex}
+    .tb{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--bdr);background:rgba(11,18,32,.88)}.tb .tag,.tb .pn{font-family:var(--mono);font-size:10px}.tb .tag{color:var(--acc)}.tb .pn{color:var(--dim)}.cid{font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:6px}.dlive{width:6px;height:6px;border-radius:50%;background:var(--acc)}
+    .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0}.sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;line-height:1.25;margin-bottom:14px}.a{color:var(--acc)}
+    .card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}.card-lbl{font-size:10px;font-family:var(--mono);color:var(--sub);margin-bottom:6px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.list{display:flex;flex-direction:column;gap:8px}.li{display:flex;gap:8px;color:var(--sub);font-size:12px;line-height:1.6}.li i{color:var(--acc);margin-top:3px}
+    .cb{background:#07111d;border:1px solid var(--bdr);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.75;color:#88a9cc;direction:ltr;text-align:left;overflow:auto;position:relative;white-space:pre-wrap}.cb-label{position:absolute;top:10px;left:12px;font-size:10px;color:var(--dim);font-family:var(--mono)}
+    .copyable-code{position:relative;padding-top:38px!important}.copyable-code .copy-btn{position:absolute;top:8px;right:10px;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border:1px solid var(--bdr2);border-radius:999px;background:rgba(6,11,18,.96);color:var(--sub);font-family:var(--sans);font-size:11px;cursor:pointer}.copyable-code .copy-btn.copied{color:var(--gn);border-color:rgba(16,217,122,.35);background:rgba(16,217,122,.1)}
+    #nav-row{display:flex;align-items:center;gap:12px;flex-shrink:0}#instr-card{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 14px 5px 6px}.iav{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);overflow:hidden}.iav img{width:100%;height:100%;object-fit:cover}.inm{font-size:12.5px;font-weight:800;color:var(--wh)}.irl{font-size:9.5px;color:var(--sub);font-family:var(--mono)}
+    #nav{display:flex;align-items:center;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 6px}.nb{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--sub);cursor:pointer}.nb:disabled{opacity:.22;cursor:not-allowed}.nb.next{background:var(--acc);color:#140a1f;margin-right:4px}#ctr{font-family:var(--mono);font-size:11px;color:var(--dim);padding:0 10px}#dots{display:flex;gap:3px;padding:0 4px}.dot{width:5px;height:5px;border-radius:50%;background:var(--bdr2);cursor:pointer}.dot.on{background:var(--acc);width:14px;border-radius:3px}
+    .hero{flex-direction:row}.hero-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column}.hero-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:11.8px;line-height:1.95;color:#3a2a55;direction:ltr;text-align:left;white-space:pre-wrap;overflow:auto}.hero-foot{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:12px;padding:0 16px}.hero-foot .sp{flex:1}.hero-foot .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}.hero-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:34px 44px 28px 26px}.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.24);border-radius:6px;padding:5px 12px;font-size:11.5px;font-weight:700;color:var(--acc);align-self:flex-end;margin-bottom:18px}.hero-eye{font-size:12.5px;color:var(--sub);text-align:right;margin-bottom:6px}.hero-h{font-size:39px;font-weight:900;line-height:1.08;text-align:right;color:var(--wh)}.hero-h span{color:var(--acc);display:block}.hero-desc{font-size:13px;color:var(--sub);text-align:right;margin-top:10px;line-height:1.7;max-width:420px;margin-left:auto}
+    .note{margin-top:12px;background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--acc)}
+    .homework{display:flex;flex-direction:column;gap:10px}.hw{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}.n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.25);color:var(--acc);font-family:var(--mono);font-weight:700}
+    .closing{flex-direction:row}.closing-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column}.closing-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:12px;line-height:2;color:#3a2a55;direction:ltr;text-align:left;white-space:pre-wrap;overflow:auto}.closing-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 44px 28px 24px}.big{font-size:48px;font-weight:900;line-height:1.1;text-align:right}.big .l1{color:var(--wh)}.big .l2{color:var(--acc)}.subt{font-size:13px;color:var(--sub);line-height:1.7;margin-top:12px;text-align:right}
+  </style>
+</head>
+<body>
+<div id="scale-wrap"><div id="stage">
+<div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">class Category extends Model {
+    public function products(): HasMany {
+        return $this->hasMany(Product::class);
+    }
+}
+
+class Product extends Model {
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class);
+    }
+}</div><div class="hero-foot"><i class="fas fa-link" style="color:#c084fc"></i><i class="fas fa-database" style="color:#38bdf8"></i><span class="sp"></span><span class="v">One-to-Many Relations</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-diagram-project"></i> Module 04 - Lecture 17</div><div class="hero-eye">HasMany — Category و Products</div><div class="hero-h">ابنِ العلاقة صح <span>وتجنب N+1</span></div><div class="hero-desc">في هذه المحاضرة سنثبت علاقة Category/Product عملياً، ثم نكشف N+1 Problem ونحلها بـ Eager Loading في SouqPro.</div></div></div>
+
+<div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Concept</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">فهم علاقة <span class="a">One-to-Many</span> بسرعة</div><div class="grid-2"><div class="card"><div class="card-lbl">Category (Parent)</div><div class="list"><div class="li"><i class="fas fa-folder"></i><span>الفئة الواحدة تحتوي عدة منتجات.</span></div><div class="li"><i class="fas fa-key"></i><span>المفتاح الأساسي: `categories.id`.</span></div></div></div><div class="card"><div class="card-lbl">Product (Child)</div><div class="list"><div class="li"><i class="fas fa-box"></i><span>كل منتج ينتمي لفئة واحدة.</span></div><div class="li"><i class="fas fa-link"></i><span>المفتاح الأجنبي: `products.category_id`.</span></div></div></div></div><div class="note">قاعدة ذهبية: `hasMany` على الأب، و`belongsTo` على الابن.</div></div></div>
+
+<div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Definition</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">تعريف العلاقة داخل <span class="a">Models</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Category.php</div><div class="cb"><div class="cb-label">PHP</div>public function products(): HasMany
+{
+    return $this->hasMany(Product::class);
+}
+
+public function activeProducts(): HasMany
+{
+    return $this->hasMany(Product::class)
+        ->where('is_active', true);
+}</div></div><div class="card"><div class="card-lbl">Product.php</div><div class="cb"><div class="cb-label">PHP</div>public function category(): BelongsTo
+{
+    return $this->belongsTo(Category::class);
+}</div></div></div></div></div>
+
+<div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Access</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">الوصول للعلاقة والإنشاء عبرها</div><div class="grid-2"><div class="card"><div class="card-lbl">Read</div><div class="cb"><div class="cb-label">PHP</div>$category = Category::find(1);
+$products = $category->products;
+$count = $category->products()->count();
+
+$product = Product::find(5);
+$name = $product->category->name;</div></div><div class="card"><div class="card-lbl">Create from Relation</div><div class="cb"><div class="cb-label">PHP</div>$category->products()->create([
+    'name' => 'iPhone 15',
+    'price' => 999,
+    'stock' => 5,
+]);
+// category_id set automatically</div></div></div></div></div>
+
+<div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">N+1 Problem</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">المشكلة الشهيرة: <span class="a">N+1 Queries</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Bad Pattern</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::all();
+
+foreach ($products as $product) {
+    echo $product->category->name;
+}
+
+// 20 products => 21 queries</div></div><div class="card"><div class="card-lbl">Why Dangerous</div><div class="list"><div class="li"><i class="fas fa-bolt"></i><span>يزيد زمن الاستجابة بشكل كبير.</span></div><div class="li"><i class="fas fa-server"></i><span>يضغط قاعدة البيانات في الشاشات الكثيفة.</span></div><div class="li"><i class="fas fa-chart-line"></i><span>يزداد الضرر مع كل نمو في البيانات.</span></div></div></div></div></div></div>
+
+<div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Eager Loading</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">الحل: <span class="a">with()</span> و <span class="a">withCount()</span></div><div class="grid-2"><div class="card"><div class="card-lbl">with()</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::with('category')->get();
+
+foreach ($products as $product) {
+    echo $product->category->name;
+}
+
+// always 2 queries</div></div><div class="card"><div class="card-lbl">withCount()</div><div class="cb"><div class="cb-label">PHP</div>$categories = Category::withCount('products')->get();
+
+// $category->products_count
+
+Product::with('category:id,name,slug')->get();</div></div></div></div></div>
+
+<div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Nested Loading</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">تحميل متقدم مع شروط <span class="a">Nested Eager Loading</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Example</div><div class="cb"><div class="cb-label">PHP</div>$categories = Category::with([
+    'products' => function ($query) {
+        $query->active()->inStock()->latest();
+    }
+])->get();</div></div><div class="card"><div class="card-lbl">Rule of Thumb</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>إذا استخدمت علاقة داخل loop استخدم `with()` مباشرة.</span></div><div class="li"><i class="fas fa-check"></i><span>حمّل الأعمدة التي تحتاجها فقط.</span></div><div class="li"><i class="fas fa-check"></i><span>راقب عدد الـ queries عبر Debugbar.</span></div></div></div></div></div></div>
+
+<div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="sh">واجب المحاضرة — اجعل علاقات المنتجات <span class="a">جاهزة للإنتاج</span></div><div class="homework"><div class="hw"><div class="n">1</div><div><strong style="color:var(--wh)">عرّف العلاقات</strong><div style="font-size:11.5px;color:var(--sub)">`products()` في Category و`category()` في Product.</div></div></div><div class="hw"><div class="n">2</div><div><strong style="color:var(--wh)">أصلح N+1</strong><div style="font-size:11.5px;color:var(--sub)">حدث صفحة المنتجات لاستخدام `with('category')`.</div></div></div><div class="hw"><div class="n">3</div><div><strong style="color:var(--wh)">اعرض إحصاءات</strong><div style="font-size:11.5px;color:var(--sub)">أضف `withCount('products')` في صفحة الفئات.</div></div></div></div><div class="note">أي شاشة List فيها loop على العلاقات يجب أن تمر على هذا الواجب.</div></div></div>
+
+<div class="slide closing" id="s9"><div class="closing-side"><div class="closing-code">hasMany()
+belongsTo()
+with('category')
+withCount('products')
+N+1 => solved</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:#c084fc"></i><i class="fas fa-list-check" style="color:#10d97a"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">العلاقة أصبحت واضحة</span><span class="l2">والأداء أيضاً</span></div><div class="subt">بناء العلاقة وحده لا يكفي، المهم أن تتعامل معها بأداء صحيح حتى يبقى التطبيق سريعاً مع زيادة البيانات.</div></div></div>
+</div></div>
+
+<div id="nav-row"><div id="instr-card"><div class="iav"><img src="../../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E1B2D&color=C084FC&size=80&bold=true'"/></div><div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div></div><div id="nav"><button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button><div id="dots"></div><span id="ctr">1 / 9</span><button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button></div></div>
+<script>
+const N=9;let c=1;const ctr=document.getElementById('ctr'),btnN=document.getElementById('btnN'),btnP=document.getElementById('btnP'),dotsEl=document.getElementById('dots');for(let i=1;i<=N;i++){const d=document.createElement('div');d.className='dot'+(i===1?' on':'');d.onclick=()=>go(i);dotsEl.appendChild(d)}function go(n){if(n<1||n>N||n===c)return;document.getElementById('s'+c).classList.remove('active');c=n;document.getElementById('s'+c).classList.add('active');ctr.textContent=c+' / '+N;btnP.disabled=c===1;btnN.disabled=c===N;dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i+1===c));}btnN.onclick=()=>go(c+1);btnP.onclick=()=>go(c-1);document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(c+1)}if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(c-1)}});function scaleStage(){const wrap=document.getElementById('scale-wrap'),stage=document.getElementById('stage'),W=1060,H=596,navH=document.getElementById('nav-row').offsetHeight+26,aw=window.innerWidth-32,ah=window.innerHeight-navH-24,scale=Math.min(1,aw/W,ah/H);stage.style.transform='scale('+scale+')';wrap.style.width=Math.round(W*scale)+'px';wrap.style.height=Math.round(H*scale)+'px'}scaleStage();window.addEventListener('resize',scaleStage);function copyCodeText(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);return Promise.resolve()}function extractCodeText(el){const clone=el.cloneNode(true);clone.querySelectorAll('.copy-btn,.cb-label').forEach(node=>node.remove());return clone.innerText.split('\u00A0').join(' ').trim()}function setCopiedState(btn){clearTimeout(btn._copyTimer);btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i><span>تم النسخ</span>';btn._copyTimer=setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>'},1600)}function initCopyButtons(){document.querySelectorAll('.cb').forEach(el=>{if(el.dataset.copyReady==='true')return;el.dataset.copyReady='true';el.classList.add('copyable-code');const btn=document.createElement('button');btn.type='button';btn.className='copy-btn';btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>';btn.addEventListener('click',async event=>{event.preventDefault();event.stopPropagation();const text=extractCodeText(el);if(!text)return;try{await copyCodeText(text);setCopiedState(btn)}catch(error){console.error('Copy failed:',error)}});el.appendChild(btn);})}initCopyButtons();
+</script>
+</body>
+</html>

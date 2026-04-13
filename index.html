@@ -16,27 +16,27 @@
    TOKENS
 ═══════════════════════════════════════════════════════════════ */
       :root {
-        --bg: #06090f;
-        --surf: #0b1220;
-        --card: #0f1a2e;
-        --card2: #111e34;
-        --bdr: #182840;
-        --bdr2: #1e3250;
-        --acc: #f97316;
-        --acc2: #fb923c;
-        --wh: #eef4ff;
-        --sub: #6b90b8;
-        --dim: #324f6e;
-        --gn: #10d97a;
-        --bl: #38bdf8;
-        --pu: #c084fc;
-        --rd: #f87171;
-        --gold: #fbbf24;
+        --bg: #07111d;
+        --surf: #0d1726;
+        --card: #101d31;
+        --card2: #16253d;
+        --bdr: #22324c;
+        --bdr2: #2c4366;
+        --acc: #ff8a3d;
+        --acc2: #ffb067;
+        --wh: #f4f8ff;
+        --sub: #89a4c7;
+        --dim: #496585;
+        --gn: #19d48a;
+        --bl: #4fc3ff;
+        --pu: #b98dff;
+        --rd: #ff7a7a;
+        --gold: #f3c55f;
         --mono: "JetBrains Mono", monospace;
         --sans: "Tajawal", sans-serif;
         --W: 1060px;
         --H: 596px;
-        --R: 14px;
+        --R: 18px;
       }
 
       *,
@@ -48,7 +48,11 @@
       }
 
       body {
-        background: #03060b;
+        background:
+          radial-gradient(circle at 15% 18%, rgba(79, 195, 255, 0.12), transparent 24%),
+          radial-gradient(circle at 82% 14%, rgba(255, 138, 61, 0.16), transparent 28%),
+          radial-gradient(circle at 50% 100%, rgba(185, 141, 255, 0.08), transparent 32%),
+          linear-gradient(180deg, #02050a 0%, #06101a 45%, #03060b 100%);
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -58,6 +62,28 @@
         overflow: hidden;
         gap: 18px;
         padding: 16px 0;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        background-size: 36px 36px;
+        mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
+        pointer-events: none;
+        opacity: 0.35;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(3, 6, 11, 0.15), rgba(3, 6, 11, 0.55));
+        pointer-events: none;
       }
 
       /* ── STAGE ── */
@@ -66,6 +92,7 @@
         width: var(--W);
         height: var(--H);
         flex-shrink: 0;
+        z-index: 1;
       }
 
       /* ── SLIDES ── */
@@ -74,15 +101,18 @@
         inset: 0;
         width: var(--W);
         height: var(--H);
-        background: var(--bg);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+          linear-gradient(180deg, #0a1421 0%, #07111d 100%);
         border-radius: var(--R);
         border: 1px solid var(--bdr);
         overflow: hidden;
         display: none;
         flex-direction: column;
         box-shadow:
-          0 28px 70px rgba(0, 0, 0, 0.88),
-          0 0 0 1px rgba(249, 115, 22, 0.04);
+          0 30px 90px rgba(0, 0, 0, 0.72),
+          0 0 0 1px rgba(255, 138, 61, 0.05),
+          inset 0 1px 0 rgba(255, 255, 255, 0.03);
       }
 
       .slide.active {
@@ -108,6 +138,7 @@
         align-items: center;
         gap: 12px;
         flex-shrink: 0;
+        z-index: 1;
       }
 
       /* Instructor card — compact pill on the side */
@@ -115,11 +146,12 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background: var(--surf);
+        background: rgba(13, 23, 38, 0.82);
         border: 1px solid var(--bdr);
         border-radius: 50px;
         padding: 5px 14px 5px 6px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(14px);
       }
 
       .instr-avatar {
@@ -162,11 +194,12 @@
         display: flex;
         align-items: center;
         gap: 0;
-        background: var(--surf);
+        background: rgba(13, 23, 38, 0.82);
         border: 1px solid var(--bdr);
         border-radius: 50px;
         padding: 5px 6px;
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(14px);
         flex-shrink: 0;
       }
 
@@ -180,14 +213,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.15s;
+        transition: all 0.18s ease;
         color: var(--sub);
         background: transparent;
       }
 
       .nb:hover:not(:disabled) {
-        background: var(--card);
+        background: rgba(255, 255, 255, 0.06);
         color: var(--wh);
+        transform: translateY(-1px);
       }
 
       .nb:disabled {
@@ -196,9 +230,10 @@
       }
 
       .nb.next {
-        background: var(--acc);
+        background: linear-gradient(135deg, var(--acc), var(--acc2));
         color: #fff;
         margin-right: 4px;
+        box-shadow: 0 10px 20px rgba(255, 138, 61, 0.28);
       }
 
       .nb.next:hover:not(:disabled) {
@@ -246,7 +281,8 @@
         justify-content: space-between;
         padding: 0 32px;
         border-bottom: 1px solid var(--bdr);
-        background: rgba(11, 18, 32, 0.88);
+        background: rgba(10, 20, 33, 0.84);
+        backdrop-filter: blur(10px);
         flex-shrink: 0;
         position: relative;
         z-index: 2;
@@ -301,7 +337,7 @@
         flex-direction: column;
         position: relative;
         z-index: 1;
-        overflow: hidden;
+        overflow: auto;
       }
 
       .sh {
@@ -350,14 +386,15 @@
       }
 
       .note {
-        background: rgba(249, 115, 22, 0.07);
-        border: 1px solid rgba(249, 115, 22, 0.17);
+        background: linear-gradient(135deg, rgba(255, 138, 61, 0.12), rgba(255, 195, 112, 0.06));
+        border: 1px solid rgba(255, 138, 61, 0.2);
         border-radius: 8px;
         padding: 9px 14px;
         font-size: 12px;
-        color: var(--acc);
+        color: #ffd9ba;
         text-align: right;
-        font-style: italic;
+        font-style: normal;
+        line-height: 1.6;
       }
 
       /* ═══════════════════════════════════════════════════════════════
@@ -369,7 +406,9 @@
 
       .home-left {
         width: 340px;
-        background: var(--surf);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+          linear-gradient(180deg, #0e1828 0%, #0b1522 100%);
         border-left: 1px solid var(--bdr);
         flex-shrink: 0;
         display: flex;
@@ -385,7 +424,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, var(--acc), transparent);
+        background: linear-gradient(90deg, var(--acc), rgba(79, 195, 255, 0.55), transparent);
       }
 
       .home-code {
@@ -394,8 +433,11 @@
         font-family: var(--mono);
         font-size: 12px;
         line-height: 2;
-        color: #1c3050;
-        overflow: hidden;
+        color: #5f7ea4;
+        overflow: auto;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+          linear-gradient(180deg, #08111d, #091320);
       }
 
       .home-left-ft {
@@ -451,10 +493,10 @@
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        background: rgba(249, 115, 22, 0.1);
-        border: 1px solid rgba(249, 115, 22, 0.2);
-        border-radius: 6px;
-        padding: 4px 12px;
+        background: linear-gradient(135deg, rgba(255, 138, 61, 0.16), rgba(79, 195, 255, 0.12));
+        border: 1px solid rgba(255, 138, 61, 0.2);
+        border-radius: 999px;
+        padding: 6px 14px;
         font-size: 11.5px;
         font-weight: 700;
         color: var(--acc);
@@ -470,15 +512,16 @@
       }
 
       .home-h {
-        font-size: 38px;
+        font-size: 42px;
         font-weight: 900;
-        line-height: 1.1;
+        line-height: 1.02;
         text-align: right;
         color: var(--wh);
+        letter-spacing: -0.02em;
       }
 
       .home-h span {
-        color: var(--acc);
+        color: #ffb067;
         display: block;
       }
 
@@ -501,11 +544,12 @@
       }
 
       .hstat {
-        background: var(--card);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
         border: 1px solid var(--bdr);
-        border-radius: 8px;
-        padding: 9px 14px;
+        border-radius: 12px;
+        padding: 10px 14px;
         text-align: center;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
       }
 
       .hstat .hl {
@@ -537,20 +581,22 @@
       }
 
       .idx-card {
-        background: var(--card);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
         border: 1px solid var(--bdr);
-        border-radius: 9px;
-        padding: 10px 10px 9px;
+        border-radius: 14px;
+        padding: 12px 12px 11px;
         display: flex;
         flex-direction: column;
         gap: 5px;
         cursor: pointer;
         transition:
-          border-color 0.18s,
-          transform 0.18s;
+          border-color 0.22s,
+          transform 0.22s,
+          box-shadow 0.22s;
         position: relative;
         overflow: hidden;
         text-decoration: none;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
       }
 
       .idx-card::before {
@@ -568,7 +614,8 @@
 
       .idx-card:hover {
         border-color: var(--acc);
-        transform: translateY(-2px);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.22);
       }
 
       .idx-card:hover::before {
@@ -659,9 +706,10 @@
         align-items: center;
         gap: 16px;
         padding: 0 0 14px;
-        border-bottom: 1px solid var(--bdr);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         margin-bottom: 14px;
         flex-shrink: 0;
+        padding-bottom: 16px;
       }
 
       .mod-num-badge {
@@ -717,18 +765,22 @@
       }
 
       .lec-card {
-        background: var(--card);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
         border: 1px solid var(--bdr);
-        border-radius: 9px;
+        border-radius: 12px;
         padding: 12px 14px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         text-decoration: none;
-        transition: border-color 0.18s;
+        transition:
+          border-color 0.22s,
+          transform 0.22s,
+          box-shadow 0.22s;
         position: relative;
         overflow: hidden;
         cursor: pointer;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
       }
 
       .lec-card::after {
@@ -745,6 +797,8 @@
 
       .lec-card:hover {
         border-color: var(--acc);
+        transform: translateY(-3px);
+        box-shadow: 0 18px 28px rgba(0, 0, 0, 0.22);
       }
 
       .lec-card:hover::after {
@@ -805,7 +859,9 @@
 
       .close-left {
         width: 300px;
-        background: var(--surf);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+          linear-gradient(180deg, #0e1828 0%, #0b1522 100%);
         border-left: 1px solid var(--bdr);
         flex-shrink: 0;
         display: flex;
@@ -821,7 +877,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, var(--acc), transparent);
+        background: linear-gradient(90deg, var(--acc), rgba(185, 141, 255, 0.65), transparent);
       }
 
       /* Instructor photo area */
@@ -1093,15 +1149,15 @@
       }
 
       .m12 .idx-card::before {
-        background: #f472b6;
+        background: #06b6d4;
       }
 
       .m13 .idx-card::before {
-        background: #94a3b8;
+        background: #f59e0b;
       }
 
       .m14 .idx-card::before {
-        background: #4ade80;
+        background: #8b5cf6;
       }
 
       /* idx hover border colors per module */
@@ -1150,15 +1206,15 @@
       }
 
       .m12 .idx-card:hover {
-        border-color: #f472b6;
+        border-color: #06b6d4;
       }
 
       .m13 .idx-card:hover {
-        border-color: #94a3b8;
+        border-color: #f59e0b;
       }
 
       .m14 .idx-card:hover {
-        border-color: #4ade80;
+        border-color: #8b5cf6;
       }
 
       /* mod-num-badge per module */
@@ -1229,21 +1285,21 @@
       }
 
       .m12 .mod-num-badge {
-        background: rgba(244, 114, 182, 0.1);
-        border-color: rgba(244, 114, 182, 0.25);
-        color: #f472b6;
+        background: rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.25);
+        color: #06b6d4;
       }
 
       .m13 .mod-num-badge {
-        background: rgba(148, 163, 184, 0.1);
-        border-color: rgba(148, 163, 184, 0.25);
-        color: #94a3b8;
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.25);
+        color: #f59e0b;
       }
 
       .m14 .mod-num-badge {
-        background: rgba(74, 222, 128, 0.1);
-        border-color: rgba(74, 222, 128, 0.25);
-        color: #4ade80;
+        background: rgba(139, 92, 246, 0.1);
+        border-color: rgba(139, 92, 246, 0.25);
+        color: #8b5cf6;
       }
 
       /* lec-card right accent per module */
@@ -1292,15 +1348,15 @@
       }
 
       .m12 .lec-card::after {
-        background: #f472b6;
+        background: #06b6d4;
       }
 
       .m13 .lec-card::after {
-        background: #94a3b8;
+        background: #f59e0b;
       }
 
       .m14 .lec-card::after {
-        background: #4ade80;
+        background: #8b5cf6;
       }
     </style>
   </head>
@@ -1357,7 +1413,7 @@
               ><span class="hu">ساعة</span>
             </div>
             <div class="hstat">
-              <span class="hl">المحاضرات</span><span class="hv">50</span
+              <span class="hl">المحاضرات</span><span class="hv">46</span
               ><span class="hu">محاضرة</span>
             </div>
             <div class="hstat">
@@ -1367,7 +1423,7 @@
             <div class="hstat">
               <span class="hl">المستوى</span
               ><span class="hv" style="font-size: 13px">مبتدئ</span
-              ><span class="hu">← متقدم</span>
+                ><span class="hu">← متوسط</span>
             </div>
           </div>
         </div>
@@ -1402,7 +1458,7 @@
               <div class="idx-icon">⚙️</div>
               <div class="idx-title">الأساسيات والإعداد</div>
               <div class="idx-lecs">م 1 → 5</div>
-              <div class="idx-hrs">6.5 ساعات</div>
+              <div class="idx-hrs">5.5 ساعات</div>
             </a>
             <a
               class="idx-card m2"
@@ -1415,8 +1471,8 @@
               <div class="idx-num">02</div>
               <div class="idx-icon">🗄️</div>
               <div class="idx-title">تصميم قاعدة البيانات</div>
-              <div class="idx-lecs">م 7 → 11</div>
-              <div class="idx-hrs">4 ساعات</div>
+              <div class="idx-lecs">م 6 → 7</div>
+              <div class="idx-hrs">2.5 ساعة</div>
             </a>
             <a
               class="idx-card m3"
@@ -1429,8 +1485,8 @@
               <div class="idx-num">03</div>
               <div class="idx-icon">📝</div>
               <div class="idx-title">Eloquent والـ CRUD</div>
-              <div class="idx-lecs">م 12 → 18</div>
-              <div class="idx-hrs">6 ساعات</div>
+              <div class="idx-lecs">م 8 → 14</div>
+              <div class="idx-hrs">7.5 ساعات</div>
             </a>
             <a
               class="idx-card m4"
@@ -1442,8 +1498,8 @@
             >
               <div class="idx-num">04</div>
               <div class="idx-icon">🔗</div>
-              <div class="idx-title">العلاقات المتقدمة</div>
-              <div class="idx-lecs">م 19 → 23</div>
+              <div class="idx-title">العلاقات والـ Scopes</div>
+              <div class="idx-lecs">م 15 → 19</div>
               <div class="idx-hrs">5 ساعات</div>
             </a>
             <a
@@ -1457,8 +1513,8 @@
               <div class="idx-num">05</div>
               <div class="idx-icon">🔐</div>
               <div class="idx-title">الهوية والصلاحيات</div>
-              <div class="idx-lecs">م 24 → 29</div>
-              <div class="idx-hrs">6 ساعات</div>
+              <div class="idx-lecs">م 20 → 24</div>
+              <div class="idx-hrs">5 ساعات</div>
             </a>
             <a
               class="idx-card m6"
@@ -1471,7 +1527,7 @@
               <div class="idx-num">06</div>
               <div class="idx-icon">🛒</div>
               <div class="idx-title">ميزات المتجر</div>
-              <div class="idx-lecs">م 30 → 36</div>
+              <div class="idx-lecs">م 25 → 31</div>
               <div class="idx-hrs">7 ساعات</div>
             </a>
             <a
@@ -1485,8 +1541,8 @@
               <div class="idx-num">07</div>
               <div class="idx-icon">💳</div>
               <div class="idx-title">الدفع الإلكتروني</div>
-              <div class="idx-lecs">م 37 → 40</div>
-              <div class="idx-hrs">4 ساعات</div>
+              <div class="idx-lecs">م 32 → 33</div>
+              <div class="idx-hrs">2.5 ساعة</div>
             </a>
             <a
               class="idx-card m8"
@@ -1499,7 +1555,7 @@
               <div class="idx-num">08</div>
               <div class="idx-icon">🔌</div>
               <div class="idx-title">REST API</div>
-              <div class="idx-lecs">م 41 → 43</div>
+              <div class="idx-lecs">م 34 → 36</div>
               <div class="idx-hrs">3 ساعات</div>
             </a>
             <a
@@ -1513,8 +1569,8 @@
               <div class="idx-num">09</div>
               <div class="idx-icon">⚡</div>
               <div class="idx-title">Real-time & Notifications</div>
-              <div class="idx-lecs">م 44 → 46</div>
-              <div class="idx-hrs">3 ساعات</div>
+              <div class="idx-lecs">م 37 → 38</div>
+              <div class="idx-hrs">2 ساعات</div>
             </a>
             <a
               class="idx-card m10"
@@ -1527,8 +1583,8 @@
               <div class="idx-num">10</div>
               <div class="idx-icon">🔄</div>
               <div class="idx-title">Events & Queues</div>
-              <div class="idx-lecs">م 47 → 50</div>
-              <div class="idx-hrs">4 ساعات</div>
+              <div class="idx-lecs">م 39 → 41</div>
+              <div class="idx-hrs">3 ساعات</div>
             </a>
             <a
               class="idx-card m11"
@@ -1541,8 +1597,8 @@
               <div class="idx-num">11</div>
               <div class="idx-icon">🌍</div>
               <div class="idx-title">Localization</div>
-              <div class="idx-lecs">م 51 → 52</div>
-              <div class="idx-hrs">1.5 ساعة</div>
+              <div class="idx-lecs">م 42</div>
+              <div class="idx-hrs">1 ساعة</div>
             </a>
             <a
               class="idx-card m12"
@@ -1553,10 +1609,10 @@
               "
             >
               <div class="idx-num">12</div>
-              <div class="idx-icon">🤖</div>
-              <div class="idx-title">الذكاء الاصطناعي</div>
-              <div class="idx-lecs">م 53</div>
-              <div class="idx-hrs">1 ساعة</div>
+              <div class="idx-icon">⚙️</div>
+              <div class="idx-title">النظام والأداء والأمان</div>
+              <div class="idx-lecs">م 43 → 44</div>
+              <div class="idx-hrs">2 ساعات</div>
             </a>
             <a
               class="idx-card m13"
@@ -1567,10 +1623,10 @@
               "
             >
               <div class="idx-num">13</div>
-              <div class="idx-icon">⚙️</div>
-              <div class="idx-title">النظام والأداء</div>
-              <div class="idx-lecs">م 54 → 56</div>
-              <div class="idx-hrs">2.5 ساعة</div>
+              <div class="idx-icon">🚀</div>
+              <div class="idx-title">الإطلاق والنشر</div>
+              <div class="idx-lecs">م 45</div>
+              <div class="idx-hrs">1 ساعة</div>
             </a>
             <a
               class="idx-card m14"
@@ -1581,10 +1637,10 @@
               "
             >
               <div class="idx-num">14</div>
-              <div class="idx-icon">🚀</div>
-              <div class="idx-title">الإطلاق والنشر</div>
-              <div class="idx-lecs">م 57 → 60</div>
-              <div class="idx-hrs">4 ساعات</div>
+              <div class="idx-icon">🤖</div>
+              <div class="idx-title">الذكاء الاصطناعي</div>
+              <div class="idx-lecs">م 46</div>
+              <div class="idx-hrs">1 ساعة</div>
             </a>
           </div>
         </div>
@@ -1607,7 +1663,7 @@
               </div>
               <div class="mod-meta">
                 <span><i class="fas fa-play-circle"></i> 5 محاضرات</span>
-                <span><i class="fas fa-clock"></i> 6.5 ساعات</span>
+                <span><i class="fas fa-clock"></i> 5.5 ساعات</span>
                 <span><i class="fas fa-signal"></i> مبتدئ</span>
               </div>
             </div>
@@ -1620,7 +1676,7 @@
               <div class="lec-desc">
                 Backend، أدوات AI، تثبيت PHP + Composer + VS Code + Cursor + Git
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i>
             </a>
             <a class="lec-card m1" href="./lectures/module-01/lecture-02.html" target="_blank">
@@ -1657,7 +1713,7 @@
               <div class="lec-desc">
                 Layout، Partials، Directives، Components، بناء Layout المتجر
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i>
             </a>
           </div>
@@ -1680,8 +1736,8 @@
                 🗄️ المحور الثاني — تصميم قاعدة البيانات
               </div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 5 محاضرات</span>
-                <span><i class="fas fa-clock"></i> 4 ساعات</span>
+                  <span><i class="fas fa-play-circle"></i> 2 محاضرات</span>
+                  <span><i class="fas fa-clock"></i> 2.5 ساعة</span>
               </div>
             </div>
             <div
@@ -1696,50 +1752,24 @@
             </div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m2" href="./lectures/lecture-07.html" target="_blank"
+            <a class="lec-card m2" href="./lectures/module-02/lecture-06.html" target="_blank"
+              ><div class="lec-num">محاضرة 06</div>
+              <div class="lec-title">تصميم DB والـ Migrations</div>
+              <div class="lec-desc">
+                كيف تفكر في DB قبل الكود، العلاقات، ER Diagram، وبناء الجداول
+                الأساسية في SouqPro
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m2" href="./lectures/module-02/lecture-07.html" target="_blank"
               ><div class="lec-num">محاضرة 07</div>
-              <div class="lec-title">تصميم قاعدة البيانات</div>
-              <div class="lec-desc">
-                ER Diagram لـ SouqPro، الجداول والعلاقات، One-to-Many vs
-                Many-to-Many
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m2" href="./lectures/lecture-08.html" target="_blank"
-              ><div class="lec-num">محاضرة 08</div>
-              <div class="lec-title">Migrations الجزء الأول</div>
-              <div class="lec-desc">
-                Column Types, Modifiers، بناء users, categories, products
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m2" href="./lectures/lecture-09.html" target="_blank"
-              ><div class="lec-num">محاضرة 09</div>
-              <div class="lec-title">Migrations الجزء الثاني</div>
-              <div class="lec-desc">
-                Foreign Keys، Pivot Tables، cart_items, addresses, shipping
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m2" href="./lectures/lecture-10.html" target="_blank"
-              ><div class="lec-num">محاضرة 10</div>
-              <div class="lec-title">إكمال جداول SouqPro</div>
-              <div class="lec-desc">
-                orders, coupons, reviews, wishlists, payments, notifications
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m2" href="./lectures/lecture-11.html" target="_blank"
-              ><div class="lec-num">محاضرة 11</div>
               <div class="lec-title">Seeders وFactories</div>
               <div class="lec-desc">
-                Faker لبيانات وهمية، Admin User, Categories, Products
+                DatabaseSeeder، UserSeeder، CategorySeeder، ProductFactory
+                وتجهيز بيانات وهمية واقعية
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
           </div>
@@ -1763,7 +1793,7 @@
               </div>
               <div class="mod-meta">
                 <span><i class="fas fa-play-circle"></i> 7 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 6 ساعات</span>
+                ><span><i class="fas fa-clock"></i> 7.5 ساعات</span>
               </div>
             </div>
             <div
@@ -1778,8 +1808,8 @@
             </div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m3" href="./lectures/lecture-12.html" target="_blank"
-              ><div class="lec-num">محاضرة 12</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-08.html" target="_blank"
+              ><div class="lec-num">محاضرة 08</div>
               <div class="lec-title">Eloquent Basics</div>
               <div class="lec-desc">
                 all(), find(), where(), $fillable, Accessors & Mutators
@@ -1787,56 +1817,56 @@
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/lecture-13.html" target="_blank"
-              ><div class="lec-num">محاضرة 13</div>
-              <div class="lec-title">CRUD: Create & Read</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-09.html" target="_blank"
+              ><div class="lec-num">محاضرة 09</div>
+              <div class="lec-title">CRUD: Create & Read + Pagination</div>
               <div class="lec-desc">
-                create()، عرض البيانات، Pagination، قائمة المنتجات
+                create()، عرض البيانات، بحث، Pagination، قائمة المنتجات
               </div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/lecture-14.html" target="_blank"
-              ><div class="lec-num">محاضرة 14</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-10.html" target="_blank"
+              ><div class="lec-num">محاضرة 10</div>
               <div class="lec-title">CRUD: Update & Delete</div>
               <div class="lec-desc">
-                update(), delete(), Flash Messages, Redirect
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m3" href="./lectures/lecture-15.html" target="_blank"
-              ><div class="lec-num">محاضرة 15</div>
-              <div class="lec-title">Form Validation</div>
-              <div class="lec-desc">
-                validate(), Form Request، Rules، @error في Blade
+                update()، delete()، Flash Messages، Route Model Binding
               </div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/lecture-16.html" target="_blank"
-              ><div class="lec-num">محاضرة 16</div>
-              <div class="lec-title">File Upload</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-11.html" target="_blank"
+              ><div class="lec-num">محاضرة 11</div>
+              <div class="lec-title">Validation وCustom Rules</div>
               <div class="lec-desc">
-                Storage Disk، رفع الصور، php artisan storage:link
+                validate()، Form Request، Rules، @error، Custom Rules
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/lecture-17.html" target="_blank"
-              ><div class="lec-num">محاضرة 17</div>
-              <div class="lec-title">CRUD كامل للمنتجات</div>
-              <div class="lec-desc">تطبيق شامل، Pagination، بحث، رفع صور</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-12.html" target="_blank"
+              ><div class="lec-num">محاضرة 12</div>
+              <div class="lec-title">File Upload وStorage</div>
+              <div class="lec-desc">
+                Storage Disks، رفع الصور، تحديثها، وعرضها
+              </div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/lecture-18.html" target="_blank"
-              ><div class="lec-num">محاضرة 18</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-13.html" target="_blank"
+              ><div class="lec-num">محاضرة 13</div>
+              <div class="lec-title">CRUD تطبيق كامل — SouqPro</div>
+              <div class="lec-desc">Admin Panel كامل للمنتجات والفئات مع تنظيف الكود</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-14.html" target="_blank"
+              ><div class="lec-num">محاضرة 14</div>
               <div class="lec-title">عرض المنتجات للزوار</div>
               <div class="lec-desc">
-                صفحة المتجر العامة، فلترة، تفاصيل المنتج
+                صفحة المتجر العامة، فلترة، ترتيب، وتفاصيل المنتج
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
           </div>
@@ -1849,14 +1879,14 @@
       <div class="slide m4" id="s6">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend with AI</div>
-          <span class="tag">Module 04 — العلاقات المتقدمة</span
+          <span class="tag">Module 04 — العلاقات والـ Scopes</span
           ><span class="pn">06 / 17</span>
         </div>
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
               <div class="mod-title-main">
-                🔗 المحور الرابع — العلاقات المتقدمة
+                🔗 المحور الرابع — العلاقات والـ Scopes
               </div>
               <div class="mod-meta">
                 <span><i class="fas fa-play-circle"></i> 5 محاضرات</span
@@ -1875,47 +1905,47 @@
             </div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m4" href="./lectures/lecture-19.html" target="_blank"
+            <a class="lec-card m4" href="./lectures/module-04/lecture-15.html" target="_blank"
+              ><div class="lec-num">محاضرة 15</div>
+              <div class="lec-title">Local Scopes وGlobal Scopes</div>
+              <div class="lec-desc">
+                تنظيف الـ queries، تقليل التكرار، وإدارة active products
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m4" href="./lectures/module-04/lecture-16.html" target="_blank"
+              ><div class="lec-num">محاضرة 16</div>
+              <div class="lec-title">Soft Deletes</div>
+              <div class="lec-desc">
+                حذف آمن، استعادة السجلات، وإدارة المحذوفات في Admin
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m4" href="./lectures/module-04/lecture-17.html" target="_blank"
+              ><div class="lec-num">محاضرة 17</div>
+              <div class="lec-title">HasMany — Category وProducts</div>
+              <div class="lec-desc">
+                One-to-Many، الوصول للعلاقات، N+1 و Eager Loading
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m4" href="./lectures/module-04/lecture-18.html" target="_blank"
+              ><div class="lec-num">محاضرة 18</div>
+              <div class="lec-title">HasOne — User وProfile</div>
+              <div class="lec-desc">
+                One-to-One، جدول profile، updateOrCreate، وإعدادات الحساب
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m4" href="./lectures/module-04/lecture-19.html" target="_blank"
               ><div class="lec-num">محاضرة 19</div>
-              <div class="lec-title">One-to-Many وBelongsTo</div>
+              <div class="lec-title">BelongsToMany — Product Tags</div>
               <div class="lec-desc">
-                hasMany, belongsTo، N+1 Problem شرح عملي
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m4" href="./lectures/lecture-20.html" target="_blank"
-              ><div class="lec-num">محاضرة 20</div>
-              <div class="lec-title">Many-to-Many وPivot</div>
-              <div class="lec-desc">
-                belongsToMany، attach/detach/sync، Eager Loading
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m4" href="./lectures/lecture-21.html" target="_blank"
-              ><div class="lec-num">محاضرة 21</div>
-              <div class="lec-title">Polymorphic Relations</div>
-              <div class="lec-desc">
-                morphMany, morphTo، صور وتقييمات بـ Polymorphic
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m4" href="./lectures/lecture-22.html" target="_blank"
-              ><div class="lec-num">محاضرة 22</div>
-              <div class="lec-title">Query Scopes وSoft Deletes</div>
-              <div class="lec-desc">
-                Local Scopes، SoftDeletes Trait، withTrashed, restore
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m4" href="./lectures/lecture-23.html" target="_blank"
-              ><div class="lec-num">محاضرة 23</div>
-              <div class="lec-title">Advanced Queries</div>
-              <div class="lec-desc">
-                selectRaw, chunk، Nested Eager Loading، مراجعة N+1
+                Pivot Table، attach/detach/sync، وفلترة المنتجات بالوسوم
               </div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
@@ -1934,78 +1964,45 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🔐 المحور الخامس — الهوية والصلاحيات
-              </div>
+              <div class="mod-title-main">🔐 المحور الخامس — الهوية والصلاحيات</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 6 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 6 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 5 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 5 ساعات</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(248, 113, 113, 0.1);
-                border-color: rgba(248, 113, 113, 0.25);
-                color: #f87171;
-              "
-            >
-              05
-            </div>
+            <div class="mod-num-badge">05</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m5" href="./lectures/lecture-24.html" target="_blank"
+            <a class="lec-card m5" href="./lectures/module-05/lecture-20.html" target="_blank"
+              ><div class="lec-num">محاضرة 20</div>
+              <div class="lec-title">Breeze وأساسيات Authentication</div>
+              <div class="lec-desc">تثبيت Breeze، auth basics، @auth/@guest، وتخصيص Views لـ SouqPro</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m5" href="./lectures/module-05/lecture-21.html" target="_blank"
+              ><div class="lec-num">محاضرة 21</div>
+              <div class="lec-title">Fortify: التثبيت والإعداد</div>
+              <div class="lec-desc">تثبيت Fortify، التخصيص، authenticateUsing، وحماية الـ Routes</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m5" href="./lectures/module-05/lecture-22.html" target="_blank"
+              ><div class="lec-num">محاضرة 22</div>
+              <div class="lec-title">Fortify: Two Factor Authentication</div>
+              <div class="lec-desc">2FA مع TOTP، Google Authenticator، Recovery Codes، وإدارة التفعيل</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m5" href="./lectures/module-05/lecture-23.html" target="_blank"
+              ><div class="lec-num">محاضرة 23</div>
+              <div class="lec-title">Gates وPolicies</div>
+              <div class="lec-desc">Gate::define، authorize()، @can/@cannot، وProductPolicy على SouqPro</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m5" href="./lectures/module-05/lecture-24.html" target="_blank"
               ><div class="lec-num">محاضرة 24</div>
-              <div class="lec-title">Laravel Breeze وAuthentication</div>
-              <div class="lec-desc">
-                Login, Register, Password Reset، تخصيص Views
-              </div>
+              <div class="lec-title">Middleware, Roles وSocialite</div>
+              <div class="lec-desc">AdminMiddleware، role column، isAdmin()، وGoogle login عبر Socialite</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m5" href="./lectures/lecture-25.html" target="_blank"
-              ><div class="lec-num">محاضرة 25</div>
-              <div class="lec-title">Fortify و2FA</div>
-              <div class="lec-desc">
-                Two-Factor Authentication، Google Authenticator، Recovery Codes
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m5" href="./lectures/lecture-26.html" target="_blank"
-              ><div class="lec-num">محاضرة 26</div>
-              <div class="lec-title">Gates وAuthorization</div>
-              <div class="lec-desc">Gate::define, @can, @cannot في Blade</div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m5" href="./lectures/lecture-27.html" target="_blank"
-              ><div class="lec-num">محاضرة 27</div>
-              <div class="lec-title">Policies</div>
-              <div class="lec-desc">
-                ProductPolicy، Policy Methods، before() للـ Admin
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m5" href="./lectures/lecture-28.html" target="_blank"
-              ><div class="lec-num">محاضرة 28</div>
-              <div class="lec-title">Middleware وRoles</div>
-              <div class="lec-desc">
-                AdminMiddleware، role column، حماية routes الـ Admin
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m5" href="./lectures/lecture-29.html" target="_blank"
-              ><div class="lec-num">محاضرة 29</div>
-              <div class="lec-title">Socialite — Google Login</div>
-              <div class="lec-desc">
-                Google OAuth، Redirect وCallback، ربط الحسابات
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2020,89 +2017,57 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🛒 المحور السادس — ميزات المتجر الأساسية
-              </div>
+              <div class="mod-title-main">🛒 المحور السادس — ميزات المتجر الأساسية</div>
               <div class="mod-meta">
                 <span><i class="fas fa-play-circle"></i> 7 محاضرات</span
                 ><span><i class="fas fa-clock"></i> 7 ساعات</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(251, 191, 36, 0.1);
-                border-color: rgba(251, 191, 36, 0.25);
-                color: #fbbf24;
-              "
-            >
-              06
-            </div>
+            <div class="mod-num-badge">06</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m6" href="./lectures/lecture-30.html" target="_blank"
-              ><div class="lec-num">محاضرة 30</div>
-              <div class="lec-title">سلة التسوق - الجزء الأول</div>
-              <div class="lec-desc">
-                Cart في Session، إضافة/حذف/تعديل، عداد الـ Nav
-              </div>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-25.html" target="_blank"
+              ><div class="lec-num">محاضرة 25</div>
+              <div class="lec-title">سلة التسوق: Session</div>
+              <div class="lec-desc">Cart في Session، إضافة/تعديل/حذف، عداد الـ Nav، وتحديث بدون Reload</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-31.html" target="_blank"
-              ><div class="lec-num">محاضرة 31</div>
-              <div class="lec-title">سلة التسوق - الجزء الثاني</div>
-              <div class="lec-desc">
-                Cart في Database، دمج Session Cart، صفحة Cart كاملة
-              </div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-26.html" target="_blank"
+              ><div class="lec-num">محاضرة 26</div>
+              <div class="lec-title">سلة التسوق: Database</div>
+              <div class="lec-desc">carts وcart_items، دمج Session Cart، وحساب الإجمالي وصفحة Cart</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-32.html" target="_blank"
-              ><div class="lec-num">محاضرة 32</div>
-              <div class="lec-title">العناوين والشحن</div>
-              <div class="lec-desc">
-                إدارة عناوين التوصيل، طرق الشحن، Checkout
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-33.html" target="_blank"
-              ><div class="lec-num">محاضرة 33</div>
-              <div class="lec-title">نظام الكوبونات</div>
-              <div class="lec-desc">
-                التحقق من الكوبون، حد الاستخدام، إدارة Admin
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-34.html" target="_blank"
-              ><div class="lec-num">محاضرة 34</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-27.html" target="_blank"
+              ><div class="lec-num">محاضرة 27</div>
+              <div class="lec-title">العناوين والشحن والكوبونات</div>
+              <div class="lec-desc">addresses وshipping_methods وcoupons والتحقق من الكوبونات</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-28.html" target="_blank"
+              ><div class="lec-num">محاضرة 28</div>
               <div class="lec-title">نظام الطلبات</div>
-              <div class="lec-desc">
-                Checkout كامل، إنشاء طلب، تحديث Stock، Order Timeline
-              </div>
+              <div class="lec-desc">orders وorder_items، Checkout كامل، تحديث Stock، وOrder Timeline</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-35.html" target="_blank"
-              ><div class="lec-num">محاضرة 35</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-29.html" target="_blank"
+              ><div class="lec-num">محاضرة 29</div>
               <div class="lec-title">إدارة الطلبات في Admin</div>
-              <div class="lec-desc">
-                قائمة الطلبات، تفاصيل، تغيير الحالة، إلغاء وإرجاع
-              </div>
+              <div class="lec-desc">قائمة الطلبات، الفلترة، تغيير الحالة، والإلغاء مع إرجاع Stock</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m6" href="./lectures/lecture-36.html" target="_blank"
-              ><div class="lec-num">محاضرة 36</div>
-              <div class="lec-title">Wishlist وReviews</div>
-              <div class="lec-desc">
-                المفضلة، تقييم نجوم، شرط الشراء، موافقة Admin
-              </div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-30.html" target="_blank"
+              ><div class="lec-num">محاضرة 30</div>
+              <div class="lec-title">Wishlist وHelper Classes</div>
+              <div class="lec-desc">wishlists، النقل إلى Cart، وHelper Classes للتنسيق والعملات</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m6" href="./lectures/module-06/lecture-31.html" target="_blank"
+              ><div class="lec-num">محاضرة 31</div>
+              <div class="lec-title">Reviews</div>
+              <div class="lec-desc">تقييم نجوم، تعليق، شرط الشراء، موافقة الأدمن، وعرض التقييمات</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2117,62 +2082,27 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                💳 المحور السابع — الدفع الإلكتروني
-              </div>
+              <div class="mod-title-main">💳 المحور السابع — الدفع الإلكتروني</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 4 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 4 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 2 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 2.5 ساعة</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(52, 211, 153, 0.1);
-                border-color: rgba(52, 211, 153, 0.25);
-                color: #34d399;
-              "
-            >
-              07
-            </div>
+            <div class="mod-num-badge">07</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m7" href="./lectures/lecture-37.html" target="_blank"
-              ><div class="lec-num">محاضرة 37</div>
-              <div class="lec-title">Stripe Setup وCheckout</div>
-              <div class="lec-desc">
-                إعداد Stripe، Checkout Session، Test Cards
-              </div>
+            <a class="lec-card m7" href="./lectures/module-07/lecture-32.html" target="_blank"
+              ><div class="lec-num">محاضرة 32</div>
+              <div class="lec-title">Stripe: الربط والتكامل</div>
+              <div class="lec-desc">payments، Stripe Checkout Session، webhook، وتحديث حالة الطلب</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m7" href="./lectures/module-07/lecture-33.html" target="_blank"
+              ><div class="lec-num">محاضرة 33</div>
+              <div class="lec-title">Refunds وفكرة Multi-Gateway</div>
+              <div class="lec-desc">Stripe Refund، Payment History، وInterface + Driver للتوسع</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m7" href="./lectures/lecture-38.html" target="_blank"
-              ><div class="lec-num">محاضرة 38</div>
-              <div class="lec-title">Stripe Webhooks</div>
-              <div class="lec-desc">
-                Webhook Endpoint، Signature Verification، Stripe CLI
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m7" href="./lectures/lecture-39.html" target="_blank"
-              ><div class="lec-num">محاضرة 39</div>
-              <div class="lec-title">Refunds وPayment Records</div>
-              <div class="lec-desc">
-                Stripe Refund، جدول payments، Payment History
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m7" href="./lectures/lecture-40.html" target="_blank"
-              ><div class="lec-num">محاضرة 40</div>
-              <div class="lec-title">مراجعة وتكامل الدفع</div>
-              <div class="lec-desc">
-                اختبار كل Flow، Error Handling، عرض حالة الدفع
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2193,46 +2123,27 @@
                 ><span><i class="fas fa-clock"></i> 3 ساعات</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(96, 165, 250, 0.1);
-                border-color: rgba(96, 165, 250, 0.25);
-                color: #60a5fa;
-              "
-            >
-              08
-            </div>
+            <div class="mod-num-badge">08</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m8" href="./lectures/lecture-41.html" target="_blank"
-              ><div class="lec-num">محاضرة 41</div>
+            <a class="lec-card m8" href="./lectures/module-08/lecture-34.html" target="_blank"
+              ><div class="lec-num">محاضرة 34</div>
               <div class="lec-title">API Basics وResources</div>
-              <div class="lec-desc">
-                routes/api.php، HTTP Methods، ProductResource، Nested Resources
-              </div>
+              <div class="lec-desc">routes/api.php، /api/v1، ProductResource، Nested Resources، وwhenLoaded()</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m8" href="./lectures/lecture-42.html" target="_blank"
-              ><div class="lec-num">محاضرة 42</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m8" href="./lectures/module-08/lecture-35.html" target="_blank"
+              ><div class="lec-num">محاضرة 35</div>
               <div class="lec-title">Sanctum وAuth API</div>
-              <div class="lec-desc">
-                Sanctum Tokens، Login/Register/Logout API، Postman Testing
-              </div>
+              <div class="lec-desc">Sanctum Tokens، login/register/logout API، وauth:sanctum</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m8" href="./lectures/lecture-43.html" target="_blank"
-              ><div class="lec-num">محاضرة 43</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m8" href="./lectures/module-08/lecture-36.html" target="_blank"
+              ><div class="lec-num">محاضرة 36</div>
               <div class="lec-title">API Endpoints كاملة</div>
-              <div class="lec-desc">
-                Products, Orders, Cart APIs، API Error Handling، Postman
-                Collection
-              </div>
+              <div class="lec-desc">Products، Categories، Orders، Cart APIs، وتوحيد Error Handling</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2247,54 +2158,27 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                ⚡ المحور التاسع — Real-time & Notifications
-              </div>
+              <div class="mod-title-main">⚡ المحور التاسع — Real-time & Notifications</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 3 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 3 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 2 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 2 ساعات</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(167, 139, 250, 0.1);
-                border-color: rgba(167, 139, 250, 0.25);
-                color: #a78bfa;
-              "
-            >
-              09
-            </div>
+            <div class="mod-num-badge">09</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m9" href="./lectures/lecture-44.html" target="_blank"
-              ><div class="lec-num">محاضرة 44</div>
-              <div class="lec-title">Laravel Notifications</div>
-              <div class="lec-desc">
-                Channels: mail/database/broadcast، Bell Icon، Notification
-                Dropdown
-              </div>
+            <a class="lec-card m9" href="./lectures/module-09/lecture-37.html" target="_blank"
+              ><div class="lec-num">محاضرة 37</div>
+              <div class="lec-title">Laravel Notifications وBroadcasting</div>
+              <div class="lec-desc">Channels: mail/database/broadcast، Bell Icon، Badge، وPrivate Channels</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m9" href="./lectures/lecture-45.html" target="_blank"
-              ><div class="lec-num">محاضرة 45</div>
-              <div class="lec-title">Broadcasting وPusher</div>
-              <div class="lec-desc">
-                Pusher Setup، Private Channels، laravel-echo + pusher-js
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m9" href="./lectures/lecture-46.html" target="_blank"
-              ><div class="lec-num">محاضرة 46</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m9" href="./lectures/module-09/lecture-38.html" target="_blank"
+              ><div class="lec-num">محاضرة 38</div>
               <div class="lec-title">Real-time في SouqPro</div>
-              <div class="lec-desc">
-                Live order status، إشعار Admin، Toast Notifications
-              </div>
+              <div class="lec-desc">Live order status، إشعار الأدمن عند طلب جديد، وToast Notifications</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2309,60 +2193,33 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🔄 المحور العاشر — Events & Listeners + Queues
-              </div>
+              <div class="mod-title-main">🔄 المحور العاشر — Events & Queues</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 4 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 4 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 3 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 3 ساعات</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(251, 146, 60, 0.1);
-                border-color: rgba(251, 146, 60, 0.25);
-                color: #fb923c;
-              "
-            >
-              10
-            </div>
+            <div class="mod-num-badge">10</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m10" href="./lectures/lecture-47.html" target="_blank"
-              ><div class="lec-num">محاضرة 47</div>
+            <a class="lec-card m10" href="./lectures/module-10/lecture-39.html" target="_blank"
+              ><div class="lec-num">محاضرة 39</div>
               <div class="lec-title">Events وListeners</div>
-              <div class="lec-desc">
-                Decoupling مفهوم، OrderPlaced Event، 3 Listeners
-              </div>
+              <div class="lec-desc">OrderPlaced Event، عدة Listeners، ومفهوم الـ Decoupling داخل SouqPro</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m10" href="./lectures/lecture-48.html" target="_blank"
-              ><div class="lec-num">محاضرة 48</div>
-              <div class="lec-title">Queues وJobs</div>
-              <div class="lec-desc">
-                ProcessOrderEmail Job، dispatch/delay، Failed Jobs
-              </div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m10" href="./lectures/module-10/lecture-40.html" target="_blank"
+              ><div class="lec-num">محاضرة 40</div>
+              <div class="lec-title">Jobs وQueues</div>
+              <div class="lec-desc">make:job، dispatch/delay، Failed Jobs، queue:work، وShouldQueue</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m10" href="./lectures/lecture-49.html" target="_blank"
-              ><div class="lec-num">محاضرة 49</div>
-              <div class="lec-title">Queue Worker وMail</div>
-              <div class="lec-desc">ShouldQueue، Mailable، SMTP + Mailtrap</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m10" href="./lectures/module-10/lecture-41.html" target="_blank"
+              ><div class="lec-num">محاضرة 41</div>
+              <div class="lec-title">Mail وScheduling</div>
+              <div class="lec-desc">Mailable، Mailtrap/SMTP، make:command، daily/hourly، وتنظيف الكوبونات</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m10" href="./lectures/lecture-50.html" target="_blank"
-              ><div class="lec-num">محاضرة 50</div>
-              <div class="lec-title">Scheduling</div>
-              <div class="lec-desc">
-                Artisan Commands، daily/hourly، Cron Job على السيرفر
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2377,44 +2234,21 @@
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🌍 المحور الحادي عشر — Localization
-              </div>
+              <div class="mod-title-main">🌍 المحور الحادي عشر — Localization</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 2 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 1.5 ساعة</span>
+                <span><i class="fas fa-play-circle"></i> 1 محاضرة</span
+                ><span><i class="fas fa-clock"></i> 1 ساعة</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(45, 212, 191, 0.1);
-                border-color: rgba(45, 212, 191, 0.25);
-                color: #2dd4bf;
-              "
-            >
-              11
-            </div>
+            <div class="mod-num-badge">11</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m11" href="./lectures/lecture-51.html" target="_blank"
-              ><div class="lec-num">محاضرة 51</div>
-              <div class="lec-title">Laravel Localization</div>
-              <div class="lec-desc">
-                resources/lang/ar|en، __('key')، Middleware اللغة
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m11" href="./lectures/lecture-52.html" target="_blank"
-              ><div class="lec-num">محاضرة 52</div>
-              <div class="lec-title">RTL/LTR وترجمة SouqPro</div>
-              <div class="lec-desc">
-                dir="rtl/ltr"، Tailwind RTL، Carbon بالعربية
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+            <a class="lec-card m11" href="./lectures/module-11/lecture-42.html" target="_blank"
+              ><div class="lec-num">محاضرة 42</div>
+              <div class="lec-title">Laravel Localization وRTL</div>
+              <div class="lec-desc">resources/lang/ar|en، __()، App::setLocale()، language switcher، وRTL/LTR</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2423,42 +2257,33 @@
       <div class="slide m12" id="s14">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend with AI</div>
-          <span class="tag">Module 12 — الذكاء الاصطناعي</span
+          <span class="tag">Module 12 — النظام والأداء والأمان</span
           ><span class="pn">14 / 17</span>
         </div>
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🤖 المحور الثاني عشر — الذكاء الاصطناعي
-              </div>
+              <div class="mod-title-main">⚙️ المحور الثاني عشر — النظام والأداء والأمان</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 1 محاضرة</span
-                ><span><i class="fas fa-clock"></i> 1 ساعة</span>
+                <span><i class="fas fa-play-circle"></i> 2 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 2 ساعتان</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(244, 114, 182, 0.1);
-                border-color: rgba(244, 114, 182, 0.25);
-                color: #f472b6;
-              "
-            >
-              12
-            </div>
+            <div class="mod-num-badge">12</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m12" href="./lectures/lecture-53.html" target="_blank"
-              ><div class="lec-num">محاضرة 53</div>
-              <div class="lec-title">AI في سير العمل البرمجي</div>
-              <div class="lec-desc">
-                Cursor + .cursorrules، Cmd+K/L، توليد كود بالـ AI، MCP وأدوات AI
-                المتقدمة
-              </div>
+            <a class="lec-card m12" href="./lectures/module-12/lecture-43.html" target="_blank"
+              ><div class="lec-num">محاضرة 43</div>
+              <div class="lec-title">Error Handling وCaching</div>
+              <div class="lec-desc">try/catch، Error Pages، Log::info/error، Cache::remember/forget، وoptimize</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
+            <a class="lec-card m12" href="./lectures/module-12/lecture-44.html" target="_blank"
+              ><div class="lec-num">محاضرة 44</div>
+              <div class="lec-title">Security Basics</div>
+              <div class="lec-desc">CSRF، SQL Injection، XSS، Mass Assignment Protection، وRate Limiting</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2467,59 +2292,27 @@
       <div class="slide m13" id="s15">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend with AI</div>
-          <span class="tag">Module 13 — النظام والأداء</span
+          <span class="tag">Module 13 — الإطلاق والنشر</span
           ><span class="pn">15 / 17</span>
         </div>
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                ⚙️ المحور الثالث عشر — النظام والأداء
-              </div>
+              <div class="mod-title-main">🚀 المحور الثالث عشر — الإطلاق والنشر</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 3 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 2.5 ساعة</span>
+                <span><i class="fas fa-play-circle"></i> 1 محاضرة</span
+                ><span><i class="fas fa-clock"></i> 1 ساعة</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(148, 163, 184, 0.1);
-                border-color: rgba(148, 163, 184, 0.25);
-                color: #94a3b8;
-              "
-            >
-              13
-            </div>
+            <div class="mod-num-badge">13</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m13" href="./lectures/lecture-54.html" target="_blank"
-              ><div class="lec-num">محاضرة 54</div>
-              <div class="lec-title">Error Handling وLogging</div>
-              <div class="lec-desc">
-                try/catch، Custom Exceptions، Error Pages، Log::info/error
-              </div>
+            <a class="lec-card m13" href="./lectures/module-13/lecture-45.html" target="_blank"
+              ><div class="lec-num">محاضرة 45</div>
+              <div class="lec-title">النشر على VPS</div>
+              <div class="lec-desc">Ubuntu، Nginx، MySQL، .env، migrate --force، SSL، Supervisor، والإطلاق</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m13" href="./lectures/lecture-55.html" target="_blank"
-              ><div class="lec-num">محاضرة 55</div>
-              <div class="lec-title">Caching وPerformance</div>
-              <div class="lec-desc">
-                Cache::remember/forget، Database Indexes، php artisan optimize
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m13" href="./lectures/lecture-56.html" target="_blank"
-              ><div class="lec-num">محاضرة 56</div>
-              <div class="lec-title">Security Basics</div>
-              <div class="lec-desc">
-                CSRF, SQL Injection, XSS، Mass Assignment، Rate Limiting
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>
@@ -2528,68 +2321,27 @@
       <div class="slide m14" id="s16">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend with AI</div>
-          <span class="tag">Module 14 — الإطلاق والنشر</span
+          <span class="tag">Module 14 — الذكاء الاصطناعي</span
           ><span class="pn">16 / 17</span>
         </div>
         <div class="sb">
           <div class="mod-header">
             <div class="mod-info">
-              <div class="mod-title-main">
-                🚀 المحور الرابع عشر — الإطلاق والنشر
-              </div>
+              <div class="mod-title-main">🤖 المحور الرابع عشر — الذكاء الاصطناعي</div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 4 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 4 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 1 محاضرة</span
+                ><span><i class="fas fa-clock"></i> 1 ساعة</span>
               </div>
             </div>
-            <div
-              class="mod-num-badge"
-              style="
-                background: rgba(74, 222, 128, 0.1);
-                border-color: rgba(74, 222, 128, 0.25);
-                color: #4ade80;
-              "
-            >
-              14
-            </div>
+            <div class="mod-num-badge">14</div>
           </div>
           <div class="lec-grid">
-            <a class="lec-card m14" href="./lectures/lecture-57.html" target="_blank"
-              ><div class="lec-num">محاضرة 57</div>
-              <div class="lec-title">إعداد الـ VPS</div>
-              <div class="lec-desc">
-                VPS + SSH، Ubuntu 22.04، PHP/Nginx/MySQL، Firewall
-              </div>
+            <a class="lec-card m14" href="./lectures/module-14/lecture-46.html" target="_blank"
+              ><div class="lec-num">محاضرة 46</div>
+              <div class="lec-title">AI في سير العمل البرمجي</div>
+              <div class="lec-desc">Cursor وCopilot وChatGPT وClaude، debugging، refactoring، وMCP داخل SouqPro</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m14" href="./lectures/lecture-58.html" target="_blank"
-              ><div class="lec-num">محاضرة 58</div>
-              <div class="lec-title">نشر المشروع</div>
-              <div class="lec-desc">
-                GitHub Clone، .env السيرفر، composer install، File Permissions
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m14" href="./lectures/lecture-59.html" target="_blank"
-              ><div class="lec-num">محاضرة 59</div>
-              <div class="lec-title">Nginx وSSL وSupervisor</div>
-              <div class="lec-desc">
-                Nginx Config، SSL مع Certbot، Supervisor للـ Queue Worker
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
-            <a class="lec-card m14" href="./lectures/lecture-60.html" target="_blank"
-              ><div class="lec-num">محاضرة 60 🎉</div>
-              <div class="lec-title">Deploy Script والإطلاق</div>
-              <div class="lec-desc">
-                deploy.sh جاهز، Production Config، الإطلاق الرسمي لـ SouqPro
-              </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 45 دقيقة</div>
-              <i class="fas fa-external-link-alt lec-link-icon"></i
-            ></a>
+              <i class="fas fa-external-link-alt lec-link-icon"></i></a>
           </div>
         </div>
       </div>

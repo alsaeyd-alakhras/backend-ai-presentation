@@ -2800,7 +2800,7 @@ class User {
   }
 
   function initCopyButtons() {
-    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+    document.querySelectorAll('.cb, .term-body').forEach(el => {
       if (el.dataset.copyReady === 'true') return;
       el.dataset.copyReady = 'true';
       el.classList.add('copyable-code');

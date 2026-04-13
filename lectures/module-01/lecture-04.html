@@ -305,7 +305,7 @@
     .fn-title { font-size:13.5px; font-weight:800; color:var(--wh); }
     .fn-sub { font-size:11px; color:var(--sub); font-family:var(--mono); direction:ltr; text-align:left; width:100%; }
     .fn-desc { font-size:12px; color:var(--sub); text-align:right; line-height:1.55; margin-top:4px; }
-    .farrow { font-size:20px; color:var(--dim); padding:0 6px; flex-shrink:0; }
+    .farrow { font-size:20px; color:var(--dim); padding:0 6px; flex-shrink:0; transform:scaleX(-1); }
 
     /* ── TABLE ── */
     .stbl { width:100%; border-collapse:collapse; }
@@ -335,7 +335,7 @@
     #s14 .hwl { min-height:0; }
     #s15 { flex-direction:row; }
     .cll {
-      width:300px; background:var(--surf); border-left:1px solid var(--bdr);
+      width:320px; background:var(--surf); border-left:1px solid var(--bdr);
       flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative;
     }
     .cll::before {
@@ -343,22 +343,28 @@
       background:linear-gradient(90deg,var(--acc),transparent);
     }
     .clcode {
-      flex:1; padding:20px 16px;
-      font-family:var(--mono); font-size:11px; line-height:2;
-      color:#1e3554; overflow:auto; direction:ltr; text-align:left;
+      flex:1; padding:24px 20px;
+      font-family:var(--mono); font-size:12.5px; line-height:2.05;
+      color:#1d3450; overflow:hidden; direction:ltr; text-align:left;
     }
     .clft {
       height:46px; border-top:1px solid var(--bdr);
-      display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0;
+      display:flex; align-items:center; padding:0 16px; gap:11px; flex-shrink:0;
     }
     .clft i { font-size:16px; }
     .clft .sp { flex:1; }
     .clft .v { font-family:var(--mono); font-size:9.5px; color:var(--dim); }
     .clr {
-      flex:1; display:flex; flex-direction:column;
-      padding:32px 40px 26px 24px; position:relative;
+      flex:1; display:flex; flex-direction:column; justify-content:center;
+      padding:32px 44px 28px 24px; position:relative; overflow:hidden;
     }
-    .clbig { font-size:48px; font-weight:900; text-align:right; line-height:1.1; margin-bottom:12px; }
+    .clr::before {
+      content:""; position:absolute; top:-80px; left:-80px;
+      width:340px; height:340px;
+      background:radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .clbig { font-size:52px; font-weight:900; text-align:right; line-height:1.1; }
     .clbig .l1 { color:var(--wh); }
     .clbig .l2 { color:var(--acc); }
     .cl-instr { display:flex; align-items:center; justify-content:flex-end; gap:14px; margin-bottom:14px; }
@@ -397,6 +403,38 @@
     }
     .grp-title { font-family:var(--mono); font-size:11px; color:var(--acc); font-weight:700; }
     .grp-body { padding:10px 14px; display:flex; flex-direction:column; gap:6px; }
+    .route-flow-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      flex:1;
+      align-content:start;
+    }
+    .route-flow-grid .fnode {
+      min-height:120px;
+      padding:12px 13px;
+    }
+    .route-step {
+      font-family:var(--mono);
+      font-size:10px;
+      color:var(--dim);
+      margin-bottom:2px;
+    }
+    .wide-note {
+      width:100%;
+      align-self:stretch !important;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:6px;
+    }
+    #s3 .flow-row{gap:8px; align-items:stretch}
+    #s3 .fnode{padding:12px 13px}
+    #s5 .lnote,
+    #s12 .lnote{margin-top:10px;align-self:flex-end;width:48%;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+    #s6 .card,
+    #s8 .card,
+    #s12 .card{padding:11px 13px}
 
     /* ── INLINE CODE ── */
     ic { font-family:var(--mono); font-size:11.5px; color:var(--acc); background:rgba(249,115,22,.08); padding:1px 6px; border-radius:3px; }
@@ -569,29 +607,30 @@
     </div>
     <div class="sb">
       <div class="sh">كيف يصل <span class="a">الطلب</span> لكودك؟</div>
-      <div class="flow-row" style="flex:1;gap:0;">
+      <div class="route-flow-grid">
         <div class="fnode gn-b">
+          <div class="route-step">01 — Start</div>
           <div class="fn-icon">🌐</div>
           <div class="fn-title">المتصفح</div>
           <div class="fn-sub">GET /products</div>
           <div class="fn-desc">المستخدم يفتح رابطاً أو يرسل نموذج</div>
         </div>
-        <div class="farrow">→</div>
         <div class="fnode acc-b">
+          <div class="route-step">02 — Match Route</div>
           <div class="fn-icon">📋</div>
           <div class="fn-title">web.php</div>
           <div class="fn-sub">Route::get('/products',...)</div>
           <div class="fn-desc">Laravel يبحث عن Route يطابق الطلب</div>
         </div>
-        <div class="farrow">→</div>
         <div class="fnode bl-b">
+          <div class="route-step">03 — Run Logic</div>
           <div class="fn-icon">⚙️</div>
           <div class="fn-title">Controller</div>
           <div class="fn-sub">ProductController@index</div>
           <div class="fn-desc">الـ Controller ينفذ الـ logic ويجلب البيانات</div>
         </div>
-        <div class="farrow">→</div>
         <div class="fnode pu-b">
+          <div class="route-step">04 — Return View</div>
           <div class="fn-icon">🖼️</div>
           <div class="fn-title">View (Blade)</div>
           <div class="fn-sub">products/index.blade.php</div>
@@ -735,7 +774,7 @@
         </div>
 
       </div>
-      <div class="lnote">
+      <div class="lnote wide-note">
         <i class="fas fa-lightbulb"></i>
         في SouqPro سنستخدم <ic class="bl">Route Model Binding</ic> — لما تكتب <ic>Product $product</ic> داخل الـ Controller يقوم Laravel تلقائياً بما يشبه <ic>Product::findOrFail($id)</ic>. سنشرحه بالتفصيل لاحقاً في محاضرة Eloquent، وهنا فقط نأخذه كمقدمة سريعة
       </div>
@@ -1137,7 +1176,7 @@
           </div>
         </div>
 
-        <div class="lnote" style="margin-top:0;">
+        <div class="lnote wide-note" style="margin-top:0;">
           <i class="fas fa-folder-tree"></i>
           Views تُحفظ في <ic class="bl">resources/views/</ic> — ملف <ic class="bl">products/index.blade.php</ic> يُستدعى بـ <ic class="bl">view('products.index')</ic> (نقطة بدل /). تفاصيل Blade مثل <ic class="bl">@if</ic> و<ic class="bl">@foreach</ic> سنأخذها كاملة في المحاضرة القادمة
         </div>
@@ -1409,7 +1448,7 @@
   }
 
   function initCopyButtons() {
-    document.querySelectorAll('.cb, .term-body, .cvl pre, .clcode').forEach(el => {
+    document.querySelectorAll('.cb, .term-body').forEach(el => {
       if (el.dataset.copyReady === 'true') return;
       el.dataset.copyReady = 'true';
       el.classList.add('copyable-code');

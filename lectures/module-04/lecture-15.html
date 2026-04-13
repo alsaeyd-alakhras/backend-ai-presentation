@@ -1,0 +1,133 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <title>المحاضرة 15 — Local Scopes و Global Scopes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root{--bg:#080c14;--surf:#0d1520;--card:#111b2a;--bdr:#1c2d42;--bdr2:#243650;--acc:#c084fc;--acc2:#d8b4fe;--wh:#f0f6ff;--sub:#7a9bbf;--dim:#3a5470;--gn:#10d97a;--yl:#fbbf24;--mono:"JetBrains Mono",monospace;--sans:"Tajawal",sans-serif;--W:1060px;--H:596px;--R:14px}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0} html,body{width:100%;height:100%}
+    body{background:#03060b;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--sans);gap:18px;padding:0 0 8px;overflow:hidden}
+    #scale-wrap{display:flex;align-items:center;justify-content:center;flex-shrink:0} #stage{position:relative;width:var(--W);height:var(--H);transform-origin:center center}
+    .slide{position:absolute;inset:0;width:var(--W);height:var(--H);background:var(--bg);border-radius:var(--R);border:1px solid var(--bdr);overflow:hidden;display:none;flex-direction:column;box-shadow:0 28px 70px rgba(0,0,0,.88),0 0 0 1px rgba(192,132,252,.05)} .slide.active{display:flex}
+    #nav-row{display:flex;align-items:center;gap:12px;flex-shrink:0} #instr-card{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 14px 5px 6px}
+    .iav{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);overflow:hidden}.iav img{width:100%;height:100%;object-fit:cover}.inm{font-size:12.5px;font-weight:800;color:var(--wh)}.irl{font-size:9.5px;color:var(--sub);font-family:var(--mono)}
+    #nav{display:flex;align-items:center;background:var(--surf);border:1px solid var(--bdr);border-radius:50px;padding:5px 6px}.nb{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--sub);cursor:pointer}.nb:disabled{opacity:.22;cursor:not-allowed}.nb.next{background:var(--acc);color:#140a1f;margin-right:4px}
+    #ctr{font-family:var(--mono);font-size:11px;color:var(--dim);padding:0 10px} #dots{display:flex;gap:3px;padding:0 4px}.dot{width:5px;height:5px;border-radius:50%;background:var(--bdr2);cursor:pointer}.dot.on{background:var(--acc);width:14px;border-radius:3px}
+    .tb{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--bdr);background:rgba(11,18,32,.88)} .tb .tag,.tb .pn{font-family:var(--mono);font-size:10px}.tb .tag{color:var(--acc)}.tb .pn{color:var(--dim)}.cid{font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:6px}.dlive{width:6px;height:6px;border-radius:50%;background:var(--acc)}
+    .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0}.sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;line-height:1.25;margin-bottom:14px}.a{color:var(--acc)}
+    .card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}.card-lbl{font-size:10px;font-family:var(--mono);color:var(--sub);margin-bottom:6px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.list{display:flex;flex-direction:column;gap:8px}.li{display:flex;gap:8px;color:var(--sub);font-size:12px;line-height:1.6}.li i{color:var(--acc);margin-top:3px}
+    .cb{background:#07111d;border:1px solid var(--bdr);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.75;color:#88a9cc;direction:ltr;text-align:left;overflow:auto;position:relative;white-space:pre-wrap}.cb-label{position:absolute;top:10px;left:12px;font-size:10px;color:var(--dim);font-family:var(--mono)}
+    .copyable-code{position:relative;padding-top:38px!important}.copyable-code .copy-btn{position:absolute;top:8px;right:10px;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border:1px solid var(--bdr2);border-radius:999px;background:rgba(6,11,18,.96);color:var(--sub);font-family:var(--sans);font-size:11px;cursor:pointer}.copyable-code .copy-btn.copied{color:var(--gn);border-color:rgba(16,217,122,.35);background:rgba(16,217,122,.1)}
+    .hero{flex-direction:row}.hero-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column}.hero-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:11.8px;line-height:1.95;color:#3a2a55;direction:ltr;text-align:left;white-space:pre-wrap;overflow:auto}.hero-foot{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:12px;padding:0 16px}.hero-foot .sp{flex:1}.hero-foot .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+    .hero-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:34px 44px 28px 26px}.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.24);border-radius:6px;padding:5px 12px;font-size:11.5px;font-weight:700;color:var(--acc);align-self:flex-end;margin-bottom:18px}.hero-eye{font-size:12.5px;color:var(--sub);text-align:right;margin-bottom:6px}.hero-h{font-size:39px;font-weight:900;line-height:1.08;text-align:right;color:var(--wh)}.hero-h span{color:var(--acc);display:block}.hero-desc{font-size:13px;color:var(--sub);text-align:right;margin-top:10px;line-height:1.7;max-width:420px;margin-left:auto}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 14px;text-align:right}.stat i{font-size:16px;color:var(--acc);margin-bottom:8px}.stat h4{font-size:13px;color:var(--wh);margin-bottom:4px}.stat p{font-size:11.5px;color:var(--sub);line-height:1.55}
+    .note{margin-top:12px;background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--acc)}
+    .homework{display:flex;flex-direction:column;gap:10px}.hw{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}.n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.25);color:var(--acc);font-family:var(--mono);font-weight:700}
+    .closing{flex-direction:row}.closing-side{width:318px;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column}.closing-code{flex:1;padding:24px 18px;font-family:var(--mono);font-size:12px;line-height:2;color:#3a2a55;direction:ltr;text-align:left;white-space:pre-wrap;overflow:auto}.closing-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 44px 28px 24px}.big{font-size:48px;font-weight:900;line-height:1.1;text-align:right}.big .l1{color:var(--wh)}.big .l2{color:var(--acc)}.subt{font-size:13px;color:var(--sub);line-height:1.7;margin-top:12px;text-align:right}
+  </style>
+</head>
+<body>
+<div id="scale-wrap"><div id="stage">
+  <div class="slide active hero" id="s1">
+    <div class="hero-side">
+      <div class="hero-code">// before scopes
+Product::where('is_active', true)->get();
+Product::where('is_active', true)->where('stock', '>', 0)->get();
+
+// after scopes
+Product::active()->get();
+Product::active()->inStock()->get();</div>
+      <div class="hero-foot"><i class="fas fa-filter" style="color:#c084fc"></i><i class="fas fa-code" style="color:#38bdf8"></i><span class="sp"></span><span class="v">Clean Query Design</span></div>
+    </div>
+    <div class="hero-main">
+      <div class="hero-badge"><i class="fas fa-diagram-project"></i> Module 04 - Lecture 15</div>
+      <div class="hero-eye">Local Scopes و Global Scopes</div>
+      <div class="hero-h">أوقف تكرار <span>where في كل مكان</span></div>
+      <div class="hero-desc">في هذه الجلسة سنبني أسلوب Query واضح داخل SouqPro: Local Scopes للاستخدام المرن، وGlobal Scope للحالات التي يجب فرضها تلقائياً.</div>
+    </div>
+  </div>
+
+  <div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Why Scopes</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">المشكلة: نفس الشرط يتكرر في كل <span class="a">Query</span></div><div class="stat-row"><div class="stat"><i class="fas fa-copy"></i><h4>تكرار</h4><p>نفس where يتكرر في Controller وService وBlade APIs.</p></div><div class="stat"><i class="fas fa-bug"></i><h4>أخطاء</h4><p>سهل تنسى شرط `is_active` في endpoint مهم.</p></div><div class="stat"><i class="fas fa-eye"></i><h4>ضعف القراءة</h4><p>السطر طويل وصعب تفهم قصده بسرعة.</p></div><div class="stat"><i class="fas fa-screwdriver-wrench"></i><h4>صيانة أصعب</h4><p>تعديل شرط واحد يتطلب تحديث عشرات الملفات.</p></div></div><div class="note">الـ Scope يعبّر عن النية: `active()` أو `featured()` أو `inStock()` بدلاً من تفاصيل where الخام.</div></div></div>
+
+  <div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Local Scope</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">تعريف <span class="a">Local Scopes</span> داخل الموديل</div><div class="grid-2"><div class="card"><div class="card-lbl">Product.php</div><div class="cb"><div class="cb-label">PHP</div>public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
+
+public function scopeFeatured($query)
+{
+    return $query->where('is_featured', true);
+}
+
+public function scopeInStock($query)
+{
+    return $query->where('stock', '>', 0);
+}</div></div><div class="card"><div class="card-lbl">Naming Rules</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>اسم الدالة يبدأ بـ `scope` داخل الموديل.</span></div><div class="li"><i class="fas fa-check"></i><span>الاستخدام الخارجي يكون بدون `scope` مثل `active()`.</span></div><div class="li"><i class="fas fa-check"></i><span>اختصر كل scope لفكرة واضحة واحدة.</span></div></div></div></div></div></div>
+
+  <div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Scope Params</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">Scopes مع <span class="a">Parameters</span> والبحث</div><div class="grid-2"><div class="card"><div class="card-lbl">Dynamic Scope</div><div class="cb"><div class="cb-label">PHP</div>public function scopeByCategory($query, int $categoryId)
+{
+    return $query->where('category_id', $categoryId);
+}
+
+public function scopeSearch($query, ?string $term)
+{
+    return $query->when($term, fn ($q) =>
+        $q->where('name', 'like', "%{$term}%")
+    );
+}</div></div><div class="card"><div class="card-lbl">Controller Usage</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::active()
+    ->inStock()
+    ->byCategory($request->category)
+    ->search($request->search)
+    ->latest()
+    ->paginate(12);</div></div></div></div></div>
+
+  <div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Global Scope</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">متى نستخدم <span class="a">Global Scope</span>؟</div><div class="grid-2"><div class="card"><div class="card-lbl">Create Scope Class</div><div class="cb"><div class="cb-label">BASH + PHP</div>php artisan make:scope ActiveProductScope
+
+class ActiveProductScope implements Scope
+{
+    public function apply(Builder $builder, Model $model): void
+    {
+        $builder->where('is_active', true);
+    }
+}</div></div><div class="card"><div class="card-lbl">Apply in Model</div><div class="cb"><div class="cb-label">PHP</div>protected static function booted(): void
+{
+    static::addGlobalScope(new ActiveProductScope);
+}</div><div class="note" style="margin-top:10px">استخدمه فقط إذا الشرط مطلوب في 90%+ من الحالات.</div></div></div></div></div>
+
+  <div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Bypass</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">تجاوز الـ Global Scope في <span class="a">Admin</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Normal Behavior</div><div class="cb"><div class="cb-label">PHP</div>Product::all();
+Product::where('price', '>', 100)->get();
+// includes is_active = true automatically</div></div><div class="card"><div class="card-lbl">Bypass</div><div class="cb"><div class="cb-label">PHP</div>Product::withoutGlobalScope(ActiveProductScope::class)->get();
+Product::withoutGlobalScopes()->get();</div><div class="list" style="margin-top:10px"><div class="li"><i class="fas fa-shield"></i><span>الزوار: مع Scope تلقائي.</span></div><div class="li"><i class="fas fa-user-gear"></i><span>الإدارة: يمكن رؤية كل السجلات.</span></div></div></div></div></div></div>
+
+  <div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Best Practice</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">قواعد عملية لاختيار <span class="a">Scope المناسب</span></div><div class="grid-3"><div class="card"><div class="card-lbl">Use Local</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>عند الحاجة المرنة والمتغيرة.</span></div><div class="li"><i class="fas fa-check"></i><span>عند الرغبة بتركيب Scopes متعددة.</span></div></div></div><div class="card"><div class="card-lbl">Use Global</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>عند شرط أساسي دائم مثل active products.</span></div><div class="li"><i class="fas fa-check"></i><span>عند حماية الواجهات العامة تلقائياً.</span></div></div></div><div class="card"><div class="card-lbl">Avoid</div><div class="list"><div class="li"><i class="fas fa-xmark"></i><span>تحويل كل where إلى scope بلا داعي.</span></div><div class="li"><i class="fas fa-xmark"></i><span>Global scope مع قواعد متغيرة لكل شاشة.</span></div></div></div></div></div></div>
+
+  <div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="sh">واجب المحاضرة — طبق نفس النمط داخل <span class="a">SouqPro</span></div><div class="homework"><div class="hw"><div class="n">1</div><div><strong style="color:var(--wh)">أضف 4 Local Scopes</strong><div style="font-size:11.5px;color:var(--sub)">`active`, `featured`, `inStock`, `search` داخل Product.</div></div></div><div class="hw"><div class="n">2</div><div><strong style="color:var(--wh)">فعّل Global Scope</strong><div style="font-size:11.5px;color:var(--sub)">اجعل منتجات الزوار لا تعرض إلا `is_active = true`.</div></div></div><div class="hw"><div class="n">3</div><div><strong style="color:var(--wh)">اختبر شاشة Admin</strong><div style="font-size:11.5px;color:var(--sub)">استخدم `withoutGlobalScope()` لعرض كل المنتجات.</div></div></div></div><div class="note">الهدف أن يصبح كود الـ queries في controllers أقصر، أوضح، وأسهل للمراجعة.</div></div></div>
+
+  <div class="slide closing" id="s9"><div class="closing-side"><div class="closing-code">scopeActive()
+scopeFeatured()
+scopeInStock()
+scopeSearch()
+
+ActiveProductScope
+withoutGlobalScope()</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:#c084fc"></i><i class="fas fa-list-check" style="color:#10d97a"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">الآن Query عندك</span><span class="l2">أنظف بكثير</span></div><div class="subt">بعد Scopes ستلاحظ أن الـ controllers صارت تعبّر عن المنطق مباشرة، بدلاً من إغراقها بتفاصيل where المتكررة.</div></div></div>
+</div></div>
+
+<div id="nav-row"><div id="instr-card"><div class="iav"><img src="../../assets/alsaeyd.png" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E1B2D&color=C084FC&size=80&bold=true'"/></div><div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div></div><div id="nav"><button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button><div id="dots"></div><span id="ctr">1 / 9</span><button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button></div></div>
+
+<script>
+const N=9;let c=1;const ctr=document.getElementById('ctr'),btnN=document.getElementById('btnN'),btnP=document.getElementById('btnP'),dotsEl=document.getElementById('dots');
+for(let i=1;i<=N;i++){const d=document.createElement('div');d.className='dot'+(i===1?' on':'');d.onclick=()=>go(i);dotsEl.appendChild(d)}
+function go(n){if(n<1||n>N||n===c)return;document.getElementById('s'+c).classList.remove('active');c=n;document.getElementById('s'+c).classList.add('active');ctr.textContent=c+' / '+N;btnP.disabled=c===1;btnN.disabled=c===N;dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i+1===c));}
+btnN.onclick=()=>go(c+1);btnP.onclick=()=>go(c-1);document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(c+1)}if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(c-1)}});
+function scaleStage(){const wrap=document.getElementById('scale-wrap'),stage=document.getElementById('stage'),W=1060,H=596,navH=document.getElementById('nav-row').offsetHeight+26,aw=window.innerWidth-32,ah=window.innerHeight-navH-24,scale=Math.min(1,aw/W,ah/H);stage.style.transform='scale('+scale+')';wrap.style.width=Math.round(W*scale)+'px';wrap.style.height=Math.round(H*scale)+'px'}
+scaleStage();window.addEventListener('resize',scaleStage);
+function copyCodeText(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);return new Promise((resolve,reject)=>{const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','readonly');ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');document.body.removeChild(ta);resolve()}catch(error){document.body.removeChild(ta);reject(error)}})}
+function extractCodeText(el){const clone=el.cloneNode(true);clone.querySelectorAll('.copy-btn,.cb-label').forEach(node=>node.remove());return clone.innerText.split('\u00A0').join(' ').trim()}
+function setCopiedState(btn){clearTimeout(btn._copyTimer);btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i><span>تم النسخ</span>';btn._copyTimer=setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>'},1600)}
+function initCopyButtons(){document.querySelectorAll('.cb').forEach(el=>{if(el.dataset.copyReady==='true')return;el.dataset.copyReady='true';el.classList.add('copyable-code');const btn=document.createElement('button');btn.type='button';btn.className='copy-btn';btn.innerHTML='<i class="fas fa-copy"></i><span>نسخ</span>';btn.addEventListener('click',async event=>{event.preventDefault();event.stopPropagation();const text=extractCodeText(el);if(!text)return;try{await copyCodeText(text);setCopiedState(btn)}catch(error){console.error('Copy failed:',error)}});el.appendChild(btn);})}
+initCopyButtons();
+</script>
+</body>
+</html>
