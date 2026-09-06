@@ -250,16 +250,12 @@
     #s4 .lnote{margin-top:10px;align-self:flex-end;width:48%;background:rgba(56,189,248,.08)}
     #s6 .card,
     #s9 .card,
-    #s13 .card,
-    #s14 .card{padding:10px 12px}
+    #s13 .card{padding:10px 12px}
     #s10 .art-grid,
     #s11 .art-grid{align-items:start}
     #s10 .art-group,
     #s11 .art-group{padding:10px 11px;gap:6px}
-    #s13 .two-col{grid-template-columns:.88fr 1.12fr}
-    #s13 .two-col > div:first-child .card:last-child{flex:none}
-    #s13 .lnote{margin-top:0;align-self:stretch}
-    #s14 .two-col{grid-template-columns:.9fr 1.1fr}
+    #s13 .two-col{grid-template-columns:.9fr 1.1fr}
     #s7 .sb > div:nth-child(2){gap:2px !important}
     #s7 .sb > div:nth-child(2) > div{min-width:0}
     #s7 .sb > div:nth-child(2) > div > div:first-child{padding:9px 9px 7px !important}
@@ -301,15 +297,15 @@
     .hwcr{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
     /* APP SERVICE PROVIDER + CLOSING */
-    #s14 .two-col{min-height:0;align-items:stretch}
-    #s14 .two-col > div{min-height:0}
-    #s14 .two-col > div:first-child,
-    #s14 .two-col > div:last-child{overflow:hidden}
-    #s14 .cb{height:100%}
-    #s14 .card{overflow:hidden}
+    #s13 .two-col{min-height:0;align-items:stretch}
+    #s13 .two-col > div{min-height:0}
+    #s13 .two-col > div:first-child,
+    #s13 .two-col > div:last-child{overflow:hidden}
+    #s13 .cb{height:100%}
+    #s13 .card{overflow:hidden}
 
     /* CLOSING */
-    #s16{flex-direction:row}
+    #s15{flex-direction:row}
     .cll{width:320px;background:var(--surf);border-left:1px solid var(--bdr);
       flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
     .cll::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
@@ -344,7 +340,7 @@
     .stbl td{padding:8px 14px;border-bottom:1px solid rgba(28,45,66,.5);font-size:12.5px;color:var(--wh)}
     .stbl tr:last-child td{border-bottom:none}
     .trn{display:flex;align-items:center;gap:8px}
-  
+
     /* COPY BUTTONS */
     .copyable-code {
       position: relative;
@@ -447,7 +443,7 @@
   <div class="slide" id="s2">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Agenda</span><span class="pn">2 / 16</span>
+      <span class="tag">Agenda</span><span class="pn">2 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">محتوى <span class="a">المحاضرة</span></div>
@@ -496,7 +492,7 @@
   <div class="slide" id="s3">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Requirements</span><span class="pn">3 / 16</span>
+      <span class="tag">Requirements</span><span class="pn">3 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">متطلبات <span class="a">التثبيت</span></div>
@@ -586,7 +582,7 @@
   <div class="slide" id="s4">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Installation — SouqPro</span><span class="pn">4 / 16</span>
+      <span class="tag">Installation — SouqPro</span><span class="pn">4 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">إنشاء مشروع <span class="a">SouqPro</span></div>
@@ -663,7 +659,7 @@
   <div class="slide" id="s5">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Project Structure</span><span class="pn">5 / 16</span>
+      <span class="tag">Project Structure</span><span class="pn">5 / 15</span>
     </div>
     <div class="sb" style="padding-bottom:12px;">
       <div class="sh">هيكل مشروع <span class="a">SouqPro</span></div>
@@ -740,7 +736,7 @@
   <div class="slide" id="s6">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Folders Detail</span><span class="pn">6 / 16</span>
+      <span class="tag">Folders Detail</span><span class="pn">6 / 15</span>
     </div>
     <div class="sb" style="padding-bottom:12px;">
       <div class="sh">شرح <span class="a">المجلدات</span> — اضغط للتفصيل</div>
@@ -958,7 +954,7 @@
   <div class="slide" id="s7">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Entry Point</span><span class="pn">7 / 16</span>
+      <span class="tag">Entry Point</span><span class="pn">7 / 15</span>
     </div>
     <div class="sb" style="padding-bottom:10px;">
       <div class="sh">Request Lifecycle — <span class="a">كيف يعمل Laravel</span></div>
@@ -981,7 +977,7 @@
           <div class="num">③ Bootstrap</div>
           <div class="ico">📦</div>
           <div class="ttl" style="color:var(--pu);">bootstrap/app.php</div>
-          <div class="sub">إنشاء التطبيق وتجهيز الـ Container والربط الأساسي</div>
+          <div class="sub">إنشاء التطبيق وتجهيز الإعدادات الأساسية</div>
         </div>
         <div class="lifecycle-link">→</div>
         <div class="lifecycle-step" style="border-top:2px solid var(--gn);">
@@ -1027,7 +1023,7 @@
   <div class="slide" id="s8">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">.env File</span><span class="pn">8 / 16</span>
+      <span class="tag">.env File</span><span class="pn">8 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">ملف <span class="a">.env</span> — الإعدادات السرية</div>
@@ -1107,7 +1103,7 @@
   <div class="slide" id="s9">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Artisan CLI</span><span class="pn">9 / 16</span>
+      <span class="tag">Artisan CLI</span><span class="pn">9 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">Artisan <span class="a">CLI</span> — أداة سطر الأوامر</div>
@@ -1170,7 +1166,7 @@
   <div class="slide" id="s10">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Artisan — make:</span><span class="pn">10 / 16</span>
+      <span class="tag">Artisan — make:</span><span class="pn">10 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">أوامر <span class="a">make:</span> — إنشاء الملفات</div>
@@ -1221,7 +1217,7 @@
   <div class="slide" id="s11">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Artisan — migrate + utils</span><span class="pn">11 / 16</span>
+      <span class="tag">Artisan — migrate + utils</span><span class="pn">11 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">أوامر <span class="a">migrate</span> والأدوات</div>
@@ -1291,7 +1287,7 @@
   <div class="slide" id="s12">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">SouqPro — Setup</span><span class="pn">12 / 16</span>
+      <span class="tag">SouqPro — Setup</span><span class="pn">12 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">إعداد مشروع <span class="a">SouqPro</span> كاملاً</div>
@@ -1351,97 +1347,11 @@
     </div>
   </div>
 
-  <!-- ══ S13 SERVICE CONTAINER ══ -->
+  <!-- ══ S13 APP SERVICE PROVIDER (Laravel 12) ══ -->
   <div class="slide" id="s13">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Service Container</span><span class="pn">13 / 16</span>
-    </div>
-    <div class="sb">
-      <div class="sh">Service <span class="a">Container</span> — أداة Dependency Injection</div>
-      <div class="two-col">
-        <!-- Concept column -->
-        <div style="display:flex;flex-direction:column;gap:9px;">
-          <div class="card c-pu">
-            <div class="card-lbl">التعريف الرسمي — Laravel Docs</div>
-            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:6px;">
-              أداة قوية لـ <strong style="color:var(--wh)">إدارة dependencies الكلاسات وحقنها تلقائياً</strong>.
-              بدل ما تكتب <span dir="ltr" style="font-family:var(--mono);color:var(--rd)">new Mailer(new SmtpTransport())</span> في كل مكان — تكتب اسم الكلاس فقط وLaravel ينشئه لك.
-            </p>
-          </div>
-          <!-- Zero config resolution -->
-          <div class="card c-gn">
-            <div class="card-lbl" style="color:var(--gn)">✨ Zero Configuration Resolution</div>
-            <p style="font-size:12px;color:var(--sub);text-align:right;line-height:1.7;margin-top:6px;">
-              إذا الكلاس ما عنده dependencies معقدة — Laravel يحلّه تلقائياً <strong style="color:var(--wh)">بدون أي تسجيل</strong>.
-              أغلب وقتك ما رح تحتاج تتعامل مع Container مباشرة — هو يشتغل في الخلفية.
-            </p>
-          </div>
-          <!-- When you need it manually -->
-          <div class="card c-acc" style="padding:10px 12px;">
-            <div class="card-lbl">متى تتعامل معه يدوياً؟</div>
-            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
-              <div style="display:flex;align-items:flex-start;gap:8px;">
-                <span style="color:var(--acc);flex-shrink:0;font-size:13px;">→</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى تربط Interface بـ implementation معين</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:8px;">
-                <span style="color:var(--acc);flex-shrink:0;font-size:13px;">→</span>
-                <span style="font-size:12px;color:var(--sub);text-align:right;">لما تبغى خدمة واحدة فقط طول عمر الطلب (singleton)</span>
-              </div>
-            </div>
-          </div>
-          <div class="card c-bl" style="padding:10px 12px;">
-            <div class="card-lbl" style="color:var(--bl)">حسب الـ Docs الرسمية</div>
-            <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.7;">
-              في أغلب الأحيان لن تحتاج للتعامل مع الـ Container مباشرة؛ فقط افهم الآن أن Laravel يدير إنشاء الكلاسات تلقائياً، وسيتضح هذا أكثر مع Controllers وDependency Injection.
-            </div>
-          </div>
-        </div>
-        <!-- Code column -->
-        <div style="display:flex;flex-direction:column;gap:9px;justify-content:center;min-height:0;">
-          <!-- Auto injection example -->
-          <div class="cb" dir="ltr" style="font-size:11.1px;flex:1;min-height:0;">
-            <div class="cb-label">// Automatic Injection — الأكثر استخداماً</div>
-            <br>
-            <span class="cm">// Laravel يحقن Request تلقائياً</span><br>
-            <span class="kw">use</span> <span class="fn">Illuminate\Http\Request</span>;<br>
-            <br>
-            <span class="fn">Route</span>::<span class="fn">get</span>(<span class="st">'/search'</span>, <span class="kw">function</span> (<span class="fn">Request</span> <span class="ac">$request</span>) {<br>
-            &nbsp;&nbsp;<span class="cm">// Container حقن Request تلقائياً هنا</span><br>
-            &nbsp;&nbsp;<span class="kw">return</span> <span class="ac">$request</span>-><span class="fn">input</span>(<span class="st">'q'</span>);<br>
-            });<br>
-            <br>
-            <span class="cm">// نفس الشيء في Controller</span><br>
-            <span class="kw">class</span> <span class="fn">ProductController</span> {<br>
-            &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">store</span>(<span class="fn">Request</span> <span class="ac">$request</span>) {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// $request جاهز — لم تكتب new Request()</span><br>
-            &nbsp;&nbsp;}<br>
-            }
-          </div>
-          <!-- bind example -->
-          <div class="cb" dir="ltr" style="font-size:11.1px;flex:1;min-height:0;">
-            <div class="cb-label">// Manual bind — في AppServiceProvider</div>
-            <br>
-            <span class="cm">// ربط Interface بـ Implementation</span><br>
-            <span class="ac">$this</span>-><span class="fn">app</span>-><span class="fn">bind</span>(<br>
-            &nbsp;&nbsp;<span class="fn">PaymentInterface</span>::<span class="kw">class</span>,<br>
-            &nbsp;&nbsp;<span class="fn">StripePayment</span>::<span class="kw">class</span><br>
-            );<br>
-            <br>
-            <span class="cm">// الآن كل مكان يطلب PaymentInterface</span><br>
-            <span class="cm">// يحصل تلقائياً على StripePayment</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ S14 APP SERVICE PROVIDER (Laravel 12) ══ -->
-  <div class="slide" id="s14">
-    <div class="tb">
-      <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">AppServiceProvider — Laravel 12</span><span class="pn">14 / 16</span>
+      <span class="tag">AppServiceProvider — Laravel 12</span><span class="pn">13 / 15</span>
     </div>
     <div class="sb">
       <div class="sh"><span class="a">AppServiceProvider</span> — بوابة تهيئة التطبيق</div>
@@ -1460,7 +1370,7 @@
             <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.22);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;">
               <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--bl);text-align:right;">register()</div>
               <div style="width:100%;height:1px;background:var(--bdr);"></div>
-              <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.6;">سجّل الخدمات في Container</div>
+              <div style="font-size:11.5px;color:var(--sub);text-align:right;line-height:1.6;">سجّل الخدمات هنا</div>
               <div style="font-size:11px;color:var(--dim);text-align:right;line-height:1.5;">يعمل <em>أول</em> — قبل boot<br>لا تستدعي خدمات هنا</div>
               <div dir="ltr" style="font-family:var(--mono);font-size:10px;color:var(--bl);background:rgba(56,189,248,.06);border-radius:4px;padding:3px 6px;margin-top:2px;">$this->app->bind(...)</div>
             </div>
@@ -1502,7 +1412,7 @@
           {<br>
           &nbsp;&nbsp;<span class="cm">/**</span><br>
           &nbsp;&nbsp;<span class="cm"> * 1️⃣ register() — يعمل أولاً</span><br>
-          &nbsp;&nbsp;<span class="cm"> * سجّل الخدمات في Container هنا</span><br>
+          &nbsp;&nbsp;<span class="cm"> * سجّل الخدمات هنا</span><br>
           &nbsp;&nbsp;<span class="cm"> */</span><br>
           &nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">register</span>(): <span class="kw">void</span><br>
           &nbsp;&nbsp;{<br>
@@ -1529,11 +1439,11 @@
     </div>
   </div>
 
-  <!-- ══ S15 HOMEWORK ══ -->
-  <div class="slide" id="s15">
+  <!-- ══ S14 HOMEWORK ══ -->
+  <div class="slide" id="s14">
     <div class="tb">
       <div class="cid"><span class="dlive"></span> Backend Course</div>
-      <span class="tag">Homework</span><span class="pn">15 / 16</span>
+      <span class="tag">Homework</span><span class="pn">14 / 15</span>
     </div>
     <div class="sb">
       <div class="sh">🎯 واجبك بعد <span class="a">المحاضرة</span></div>
@@ -1573,29 +1483,28 @@
     </div>
   </div>
 
-  <!-- ══ S16 CLOSING ══ -->
-  <div class="slide" id="s16">
+  <!-- ══ S15 CLOSING ══ -->
+  <div class="slide" id="s15">
     <div class="cll">
       <div class="clcode">
         // المحاضرة القادمة...<br><br>
-        // Routing &amp; Controllers<br>
-        // MVC Pattern<br><br>
-        <span style="color:#1e4060">Route</span>::<span style="color:#1a3a58">get</span>(<br>
-        &nbsp;<span style="color:#193550">'/products'</span>,<br>
-        &nbsp;[<span style="color:#1a3a58">ProductController</span><br>
-        &nbsp;::class,<br>
-        &nbsp;<span style="color:#193550">'index'</span>]);<br><br>
+        // Views &amp; Layouts<br>
+        // مقدمة Controller<br><br>
         <span style="color:#172e4a">class</span>
-        <span style="color:#1a3a58">ProductController</span><br>
+        <span style="color:#1a3a58">DashboardController</span><br>
         &nbsp;<span style="color:#172e4a">extends</span>
         <span style="color:#18375a">Controller</span> {<br>
         &nbsp;&nbsp;<span style="color:#172e4a">public function</span><br>
         &nbsp;&nbsp;<span style="color:#1a3a58">index</span>() {<br>
         &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#172e4a">return</span>
-        <span style="color:#1a3a58">Product</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;::<span style="color:#1e4060">all</span>();<br>
+        <span style="color:#1a3a58">view</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#193550">'dashboard'</span>);<br>
         &nbsp;&nbsp;}<br>
-        }
+        }<br><br>
+        <span style="color:#1e4060">@extends</span>(<span style="color:#193550">'layouts.dashboard'</span>)<br>
+        <span style="color:#1e4060">@section</span>(<span style="color:#193550">'content'</span>)<br>
+        &nbsp;...<br>
+        <span style="color:#1e4060">@endsection</span>
       </div>
       <div class="clft">
         <i class="fab fa-laravel" style="color:#ff2d20"></i>
@@ -1621,7 +1530,7 @@
       </div>
       <div class="clnx">
         <div class="nx-label">// المحاضرة القادمة</div>
-        <div class="nx-title">Routing, Controllers وMVC Pattern</div>
+        <div class="nx-title">Views, Layouts ومقدمة Controller</div>
       </div>
       <div class="clics">
         <i class="fab fa-laravel" style="color:#ff2d20"></i>
@@ -1648,13 +1557,13 @@
   <div id="nav">
     <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
     <div id="dots"></div>
-    <span id="ctr">1 / 16</span>
+    <span id="ctr">1 / 15</span>
     <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
   </div>
 </div>
 
 <script>
-  const N=16; let c=1;
+  const N=15; let c=1;
   const ctr=document.getElementById("ctr"),btnN=document.getElementById("btnN"),
         btnP=document.getElementById("btnP"),dotsEl=document.getElementById("dots");
   for(let i=1;i<=N;i++){
