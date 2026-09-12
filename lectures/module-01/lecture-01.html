@@ -199,28 +199,6 @@
         white-space: nowrap;
       }
 
-      #dots {
-        display: flex;
-        gap: 3px;
-        align-items: center;
-        padding: 0 4px;
-      }
-
-      .dot {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: var(--bdr2);
-        cursor: pointer;
-        transition: all 0.22s;
-      }
-
-      .dot.on {
-        background: var(--acc);
-        width: 14px;
-        border-radius: 3px;
-      }
-
       /* ── TOPBAR ── */
       .tb {
         height: 42px;
@@ -239,7 +217,7 @@
         font-family: var(--mono);
         font-size: 10px;
         color: var(--acc);
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
         text-transform: uppercase;
       }
 
@@ -284,7 +262,8 @@
         flex-direction: column;
         position: relative;
         z-index: 1;
-        overflow: hidden;
+        overflow-y: auto;
+        min-height: 0;
       }
 
       .sh {
@@ -1021,9 +1000,10 @@
       .trow {
         display: flex;
         gap: 9px;
-        flex: 1;
-        margin-top: 4px;
+        flex: 0 1 auto;
+        margin: auto 0 0;
         align-items: stretch;
+        justify-content: center;
       }
 
       .tip {
@@ -1031,11 +1011,12 @@
         background: var(--card);
         border: 1px solid var(--bdr);
         border-radius: 9px;
-        padding: 14px;
+        padding: 18px 14px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 7px;
+        justify-content: center;
+        gap: 8px;
         text-align: center;
         border-top: 2px solid var(--acc);
       }
@@ -1292,6 +1273,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
         gap: 9px;
         position: relative;
         overflow: hidden;
@@ -1379,6 +1361,10 @@
 
       .t3bl {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
       }
 
       .t3lb {
@@ -1387,7 +1373,7 @@
         color: var(--acc);
         text-align: right;
         margin-bottom: 2px;
-        letter-spacing: 0.05em;
+        letter-spacing: 0;
         text-transform: uppercase;
       }
 
@@ -1441,6 +1427,175 @@
         justify-content: flex-end;
         font-weight: 800;
         font-size: 12.5px;
+      }
+
+      /* ── INSTRUCTOR (S11) ── */
+      .instr-wrap {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 18px;
+        flex: 0 1 auto;
+        margin: auto 0;
+      }
+
+      .instr-card {
+        position: relative;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.16), transparent 62%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+          var(--card);
+        border: 1px solid var(--bdr2);
+        border-radius: 16px;
+        padding: 26px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .instr-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--acc), var(--acc2), transparent);
+      }
+
+      .instr-photo-ring {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        padding: 4px;
+        background: conic-gradient(from 180deg, var(--acc), var(--pu), var(--bl), var(--acc));
+        box-shadow: 0 0 30px rgba(249, 115, 22, 0.28);
+        margin-bottom: 14px;
+        flex-shrink: 0;
+      }
+
+      .instr-photo-ring .ph-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid var(--bg);
+      }
+
+      .instr-photo-ring img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .instr-name {
+        font-size: 21px;
+        font-weight: 900;
+        color: var(--wh);
+        margin-bottom: 4px;
+      }
+
+      .instr-role {
+        font-size: 11px;
+        font-family: var(--mono);
+        color: var(--acc2);
+        letter-spacing: 0.02em;
+        margin-bottom: 16px;
+      }
+
+      .instr-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .instr-stat {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 9px 6px;
+      }
+
+      .instr-stat .isv {
+        font-family: var(--mono);
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--acc);
+        line-height: 1.2;
+      }
+
+      .instr-stat .isl {
+        font-size: 9.5px;
+        color: var(--sub);
+        margin-top: 2px;
+      }
+
+      .instr-right {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .instr-quote {
+        border: 1px solid rgba(249, 115, 22, 0.28);
+        border-right: 3px solid var(--acc);
+        border-radius: 10px;
+        background: linear-gradient(90deg, rgba(249, 115, 22, 0.08), rgba(249, 115, 22, 0.02));
+        padding: 12px 16px;
+        font-size: 13.5px;
+        color: #ffe3cc;
+        line-height: 1.7;
+        text-align: right;
+        font-style: italic;
+      }
+
+      .instr-points {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .instr-point {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 10px 14px;
+        flex: 1;
+      }
+
+      .instr-point-ic {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .instr-point-tx {
+        flex: 1;
+        text-align: right;
+      }
+
+      .instr-point-tx .ipt {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--wh);
+        margin-bottom: 1px;
+      }
+
+      .instr-point-tx .ipd {
+        font-size: 11px;
+        color: var(--sub);
+        line-height: 1.5;
       }
 
       /* ── HOMEWORK ── */
@@ -1515,7 +1670,7 @@
       }
 
       /* ── CLOSING ── */
-      #s14 {
+      #s15 {
         flex-direction: row;
       }
 
@@ -1714,6 +1869,390 @@
       .rd {
         color: var(--rd);
       }
+
+      /* POLISH LAYER */
+      .slide {
+        background:
+          radial-gradient(circle at 14% 18%, rgba(56, 189, 248, 0.055), transparent 30%),
+          radial-gradient(circle at 86% 12%, rgba(249, 115, 22, 0.065), transparent 28%),
+          linear-gradient(145deg, #0a101a 0%, var(--bg) 48%, #060a11 100%);
+        box-shadow:
+          0 34px 80px rgba(0, 0, 0, 0.76),
+          0 14px 34px rgba(0, 0, 0, 0.48),
+          inset 0 1px 0 rgba(255, 255, 255, 0.045),
+          0 0 0 1px rgba(249, 115, 22, 0.045);
+      }
+
+      .tb,
+      #nav,
+      #instr-card,
+      .cvl,
+      .cll {
+        background:
+          linear-gradient(180deg, rgba(20, 31, 47, 0.96), rgba(10, 17, 28, 0.96)),
+          var(--surf);
+        border-color: rgba(54, 76, 106, 0.72);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.055),
+          0 10px 24px rgba(0, 0, 0, 0.3);
+      }
+
+      #nav {
+        padding: 5px 8px;
+      }
+
+      #progress {
+        width: 160px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(36, 54, 80, 0.58);
+        border: 1px solid rgba(58, 84, 112, 0.48);
+        overflow: hidden;
+        margin: 0 8px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.55);
+      }
+
+      #progress-fill {
+        width: 7.142857%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--acc), var(--acc2), rgba(56, 189, 248, 0.78));
+        box-shadow:
+          0 0 14px rgba(249, 115, 22, 0.42),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28);
+        transition: width 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nb,
+      .ag-row,
+      .tip,
+      .cmpt tbody tr,
+      .stbl tbody tr {
+        transition:
+          transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+          background 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+          color 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nb:hover:not(:disabled) {
+        transform: translateY(-1px);
+        background: linear-gradient(180deg, rgba(31, 47, 70, 0.96), rgba(17, 27, 42, 0.98));
+        box-shadow:
+          0 8px 18px rgba(0, 0, 0, 0.34),
+          0 0 16px rgba(249, 115, 22, 0.12);
+      }
+
+      .nb.next {
+        background: linear-gradient(135deg, var(--acc), var(--acc2));
+        box-shadow:
+          0 8px 18px rgba(249, 115, 22, 0.22),
+          inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      }
+
+      .nb.next:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--acc2), #fdba74);
+        box-shadow:
+          0 10px 24px rgba(249, 115, 22, 0.28),
+          0 0 20px rgba(249, 115, 22, 0.2);
+      }
+
+      .card,
+      .chip,
+      .tchip,
+      .wp,
+      .t4,
+      .t3,
+      .comp,
+      .hwr,
+      .tip,
+      .role-card,
+      .fnd,
+      .bac,
+      .qb {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008)),
+          linear-gradient(135deg, rgba(17, 27, 42, 0.98), rgba(11, 18, 30, 0.98));
+        border-color: rgba(52, 76, 108, 0.78);
+        box-shadow:
+          0 14px 30px rgba(0, 0, 0, 0.24),
+          0 4px 10px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.055);
+      }
+
+      .chip,
+      .tchip,
+      .pill,
+      .cmd,
+      .cv-badge,
+      .t3bg {
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.07),
+          0 4px 12px rgba(0, 0, 0, 0.18);
+      }
+
+      .chip {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+          rgba(17, 27, 42, 0.92);
+      }
+
+      .tchip {
+        background:
+          linear-gradient(180deg, rgba(249, 115, 22, 0.11), rgba(249, 115, 22, 0.04)),
+          rgba(17, 27, 42, 0.76);
+        border-color: rgba(249, 115, 22, 0.22);
+      }
+
+      .wp.oa,
+      .comp.mob,
+      .t4,
+      .t3,
+      .hwr,
+      .tip {
+        position: relative;
+      }
+
+      .wp.oa {
+        border-top-color: rgba(249, 115, 22, 0.78);
+      }
+
+      .wp.pu {
+        border-top-color: rgba(192, 132, 252, 0.74);
+      }
+
+      .comp.fe {
+        border-top-color: rgba(16, 217, 122, 0.72);
+      }
+
+      .comp.mob {
+        border-top-color: rgba(192, 132, 252, 0.72);
+      }
+
+      .ag-row {
+        background:
+          linear-gradient(90deg, rgba(249, 115, 22, 0.035), transparent 36%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008)),
+          rgba(17, 27, 42, 0.94);
+        box-shadow:
+          0 10px 22px rgba(0, 0, 0, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.045);
+      }
+
+      .ag-row:hover,
+      .tip:hover {
+        transform: translateY(-2px);
+        border-color: rgba(249, 115, 22, 0.62);
+        box-shadow:
+          0 18px 34px rgba(0, 0, 0, 0.28),
+          0 0 22px rgba(249, 115, 22, 0.11),
+          inset 0 1px 0 rgba(255, 255, 255, 0.075);
+      }
+
+      .cmpt tbody tr:hover td,
+      .stbl tbody tr:hover td {
+        background: rgba(249, 115, 22, 0.055);
+        color: var(--wh);
+      }
+
+      .cmpt tbody tr:hover,
+      .stbl tbody tr:hover {
+        transform: translateX(-2px);
+        box-shadow: inset 3px 0 0 rgba(249, 115, 22, 0.58);
+      }
+
+      .cmpt th,
+      .stbl th {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+          var(--surf);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+
+      .stbl th {
+        background: linear-gradient(135deg, var(--acc), var(--acc2));
+      }
+
+      .sh {
+        font-weight: 900;
+        line-height: 1.22;
+        letter-spacing: 0;
+        text-shadow: 0 8px 22px rgba(0, 0, 0, 0.36);
+      }
+
+      .cv-h,
+      .clbig {
+        font-weight: 900;
+        line-height: 1.04;
+        letter-spacing: 0;
+        text-shadow:
+          0 18px 38px rgba(0, 0, 0, 0.48),
+          0 0 26px rgba(249, 115, 22, 0.08);
+      }
+
+      .pill,
+      .cmd,
+      .cv-badge,
+      .t3bg,
+      .tb .tag,
+      .tb .pn,
+      #ctr {
+        letter-spacing: 0;
+        font-weight: 800;
+      }
+
+      .pill {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025));
+        border-color: rgba(58, 84, 112, 0.78);
+      }
+
+      .cmd {
+        background:
+          linear-gradient(180deg, rgba(16, 217, 122, 0.12), rgba(16, 217, 122, 0.052)),
+          rgba(7, 20, 16, 0.88);
+        border-color: rgba(16, 217, 122, 0.28);
+      }
+
+      .cv-badge {
+        background:
+          linear-gradient(180deg, rgba(249, 115, 22, 0.16), rgba(249, 115, 22, 0.075)),
+          rgba(17, 27, 42, 0.82);
+        border-color: rgba(249, 115, 22, 0.34);
+        letter-spacing: 0;
+      }
+
+      .cb,
+      .term-body,
+      .cvl pre,
+      .clcode {
+        direction: ltr;
+        text-align: left;
+      }
+
+      .dlive {
+        box-shadow:
+          0 0 0 3px rgba(249, 115, 22, 0.1),
+          0 0 13px rgba(249, 115, 22, 0.58);
+        animation: pulse 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 3px rgba(249, 115, 22, 0.1),
+            0 0 13px rgba(249, 115, 22, 0.58);
+        }
+
+        50% {
+          opacity: 0.52;
+          transform: scale(0.82);
+          box-shadow:
+            0 0 0 5px rgba(249, 115, 22, 0.045),
+            0 0 5px rgba(249, 115, 22, 0.24);
+        }
+      }
+
+      .apib,
+      .bridge-pill {
+        background: linear-gradient(135deg, var(--acc), var(--acc2));
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.08),
+          0 0 18px rgba(249, 115, 22, 0.36),
+          0 8px 18px rgba(249, 115, 22, 0.18);
+        animation: softGlow 2.8s ease-in-out infinite;
+      }
+
+      @keyframes softGlow {
+        0%,
+        100% {
+          filter: saturate(1);
+          box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.08),
+            0 0 18px rgba(249, 115, 22, 0.34),
+            0 8px 18px rgba(249, 115, 22, 0.16);
+        }
+
+        50% {
+          filter: saturate(1.12);
+          box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.12),
+            0 0 26px rgba(249, 115, 22, 0.46),
+            0 10px 24px rgba(249, 115, 22, 0.2);
+        }
+      }
+
+      .slide.active .ag-row,
+      .slide.active .tchip,
+      .slide.active .role-row {
+        animation: itemIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .slide.active .ag-row:nth-child(2),
+      .slide.active .tchip:nth-child(2),
+      .slide.active .role-row:nth-child(2) {
+        animation-delay: 0.045s;
+      }
+
+      .slide.active .ag-row:nth-child(3),
+      .slide.active .tchip:nth-child(3),
+      .slide.active .role-row:nth-child(3) {
+        animation-delay: 0.09s;
+      }
+
+      .slide.active .ag-row:nth-child(4),
+      .slide.active .tchip:nth-child(4),
+      .slide.active .role-row:nth-child(4) {
+        animation-delay: 0.135s;
+      }
+
+      .slide.active .ag-row:nth-child(5),
+      .slide.active .tchip:nth-child(5),
+      .slide.active .role-row:nth-child(5) {
+        animation-delay: 0.18s;
+      }
+
+      .slide.active .ag-row:nth-child(6),
+      .slide.active .tchip:nth-child(6),
+      .slide.active .role-row:nth-child(6) {
+        animation-delay: 0.225s;
+      }
+
+      @keyframes itemIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .slide.active,
+        .slide.active .ag-row,
+        .slide.active .tchip,
+        .slide.active .role-row,
+        .dlive,
+        .apib,
+        .bridge-pill {
+          animation: none;
+        }
+
+        #progress-fill,
+        .nb,
+        .ag-row,
+        .tip,
+        .cmpt tbody tr,
+        .stbl tbody tr {
+          transition: none;
+        }
+      }
     
     /* COPY BUTTONS */
     .copyable-code {
@@ -1830,200 +2369,150 @@ class User {
           <div class="cid">
             <span class="dlive"></span> Backend Course — المحاضرة الأولى
           </div>
-          <span class="tag">Agenda</span><span class="pn">02 / 14</span>
+          <span class="tag">Agenda</span><span class="pn">02 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">ماذا سنتعلم <span class="a">اليوم؟</span></div>
           <div class="ag-list">
             <div class="ag-row">
               <div class="ag-n">01</div>
-              <div class="ag-ic"><i class="fas fa-server"></i></div>
+              <div class="ag-ic"><i class="fas fa-globe"></i></div>
               <div class="ag-tx">
-                ما هو Backend وكيف يشتغل في المنظومة الكاملة
+                عالم الويب، كيف يشتغل الإنترنت، والفرق بين Frontend وBackend
               </div>
-              <div class="ag-tg"><span class="pill">Section 1</span></div>
+              <div class="ag-tg"><span class="pill">Web Basics</span></div>
             </div>
             <div class="ag-row">
               <div class="ag-n">02</div>
-              <div class="ag-ic"><i class="fas fa-brain"></i></div>
+              <div class="ag-ic"><i class="fas fa-server"></i></div>
               <div class="ag-tx">
-                AI وأدوات البرمجة الحديثة — كيف تستخدمها فعلياً
+                Backend من الداخل، وPHP وLaravel — ليش نتعلمهم بالذات
               </div>
-              <div class="ag-tg"><span class="pill">Section 2</span></div>
+              <div class="ag-tg"><span class="pill">Backend</span></div>
             </div>
             <div class="ag-row">
               <div class="ag-n">03</div>
-              <div class="ag-ic"><i class="fab fa-php"></i></div>
+              <div class="ag-ic"><i class="fas fa-brain"></i></div>
               <div class="ag-tx">
-                تثبيت PHP + Composer + Node.js + VS Code / Cursor
+                AI في البرمجة — أداة تسرّعك، مش بديل عن الفهم
               </div>
-              <div class="ag-tg"><span class="pill">Section 3</span></div>
+              <div class="ag-tg"><span class="pill">AI</span></div>
             </div>
             <div class="ag-row">
               <div class="ag-n">04</div>
-              <div class="ag-ic"><i class="fas fa-laptop-code"></i></div>
-              <div class="ag-tx">Cursor IDE — البديل الأقوى لـ VS Code</div>
-              <div class="ag-tg"><span class="pill">Section 4</span></div>
+              <div class="ag-ic"><i class="fas fa-store"></i></div>
+              <div class="ag-tx">
+                SouqPro — المشروع الذي ستبنيه طوال الكورس
+              </div>
+              <div class="ag-tg"><span class="pill">Project</span></div>
             </div>
             <div class="ag-row">
               <div class="ag-n">05</div>
+              <div class="ag-ic"><i class="fas fa-user"></i></div>
+              <div class="ag-tx">
+                من أنا، وروح هذا الكورس
+              </div>
+              <div class="ag-tg"><span class="pill">Instructor</span></div>
+            </div>
+            <div class="ag-row">
+              <div class="ag-n">06</div>
               <div class="ag-ic"><i class="fas fa-tools"></i></div>
               <div class="ag-tx">
-                Laravel Herd / Flyenv + Postman + Git — أدوات العمل اليومية
+                تجهيز بيئة العمل — الأدوات التي سنشتغل بها طوال الكورس
               </div>
-              <div class="ag-tg"><span class="pill">Section 5</span></div>
+              <div class="ag-tg"><span class="pill">Setup</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ S3 FE vs BE — REDESIGNED ══ -->
+      <!-- ══ S3 عالم الويب — أقسامه ومسارات الشغل ══ -->
       <div class="slide" id="s3">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 1 — Backend</span
-          ><span class="pn">03 / 14</span>
+          <span class="tag">Web World</span><span class="pn">03 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">
-            دورك كـ <span class="a">Backend Developer</span> — شو تعمل؟
+            عالم الويب — <span class="a">أقسامه ومسارات الشغل</span>
           </div>
-          <div class="role-layout" style="flex: 1; position: relative">
-            <!-- Frontend panel -->
-            <div class="role-card fe-card">
-              <div class="role-head">
-                <span class="role-title gn">Frontend Developer</span>
-                <div class="role-icon-wrap fe">
-                  <i
-                    class="fas fa-desktop"
-                    style="color: var(--gn); font-size: 16px"
-                  ></i>
+          <div class="t3g" style="flex: 0 1 auto; margin: auto 0">
+            <div class="t3 tp">
+              <span class="t3bg tp">UI / UX</span>
+              <div class="t3i tp"><i class="fas fa-paint-brush"></i></div>
+              <div class="t3n tp">Frontend</div>
+              <div class="t3bl">
+                <div class="t3lb">الوصف</div>
+                <div class="t3tx">
+                  كل ما يراه المستخدم: تصميم، تفاعل، حركة
                 </div>
               </div>
-              <div class="role-rows">
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >يبني الواجهة التي يراها المستخدم</span
-                  >
-                  <div class="role-row-icon gn"><i class="fas fa-eye"></i></div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >يعمل بـ HTML / CSS / JS / Vue / React</span
-                  >
-                  <div class="role-row-icon gn">
-                    <i class="fas fa-code"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label">يرسل Requests ويستقبل JSON</span>
-                  <div class="role-row-icon bl">
-                    <i class="fas fa-exchange-alt"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >لا يتعامل مع الـ Database أبداً</span
-                  >
-                  <div class="role-row-icon pu"><i class="fas fa-ban"></i></div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >يعتمد على الـ Backend لكل البيانات</span
-                  >
-                  <div class="role-row-icon gn">
-                    <i class="fas fa-arrow-left"></i>
-                  </div>
-                </div>
+              <div class="t3bl">
+                <div class="t3lb">أدوات</div>
+                <div class="t3tx">HTML · CSS · JS · Vue · React</div>
               </div>
             </div>
-            <!-- Backend panel -->
-            <div class="role-card be-card">
-              <div class="role-head">
-                <span class="role-title oa">Backend Developer — أنت</span>
-                <div class="role-icon-wrap be">
-                  <i
-                    class="fas fa-server"
-                    style="color: var(--acc); font-size: 16px"
-                  ></i>
+            <div class="t3 pm">
+              <span class="t3bg pm">Logic</span>
+              <div class="t3i pm"><i class="fas fa-server"></i></div>
+              <div class="t3n pm">Backend</div>
+              <div class="t3bl">
+                <div class="t3lb">الوصف</div>
+                <div class="t3tx">
+                  المنطق والبيانات والأمان — الكواليس التي تشغّل كل شيء
                 </div>
               </div>
-              <div class="role-rows">
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >تكتب المنطق والقواعد الخفية للنظام</span
-                  >
-                  <div class="role-row-icon oa">
-                    <i class="fas fa-cogs"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >تبني الـ APIs التي يستهلكها الجميع</span
-                  >
-                  <div class="role-row-icon oa">
-                    <i class="fas fa-plug"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >تحمي البيانات (Auth / Validation)</span
-                  >
-                  <div class="role-row-icon oa">
-                    <i class="fas fa-shield-alt"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >تتحدث مع الـ Database مباشرة (CRUD)</span
-                  >
-                  <div class="role-row-icon bl">
-                    <i class="fas fa-database"></i>
-                  </div>
-                </div>
-                <div class="role-row">
-                  <span class="role-row-label"
-                    >تخدم الويب والجوال بنفس الـ API</span
-                  >
-                  <div class="role-row-icon pu">
-                    <i class="fas fa-mobile-alt"></i>
-                  </div>
-                </div>
+              <div class="t3bl">
+                <div class="t3lb">أدوات</div>
+                <div class="t3tx">PHP · Laravel · Python · Node.js</div>
               </div>
             </div>
-            <!-- Bridge overlay -->
-            <div class="role-bridge">
-              <div class="bridge-pill">API / JSON</div>
+            <div class="t3 gt">
+              <span class="t3bg gt">Both</span>
+              <div class="t3i gt"><i class="fas fa-layer-group"></i></div>
+              <div class="t3n gt">Full Stack</div>
+              <div class="t3bl">
+                <div class="t3lb">الوصف</div>
+                <div class="t3tx">
+                  يجمع الاثنين — يبني الواجهة والخلفية معاً
+                </div>
+              </div>
+              <div class="t3bl">
+                <div class="t3lb">أدوات</div>
+                <div class="t3tx">Laravel + Vue · MERN · Next.js</div>
+              </div>
             </div>
+          </div>
+          <div class="note" style="margin-top: 11px">
+            📍 مسارك في هذا الكورس: نبدأ بـ Backend — الأساس الأقوى — ثم نبني API يخدم الويب والجوال معاً.
           </div>
         </div>
       </div>
 
-      <!-- ══ S4 FLOW ══ -->
+      <!-- ══ S4 الإنترنت في ثانية واحدة ══ -->
       <div class="slide" id="s4">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 1 — Architecture</span
-          ><span class="pn">04 / 14</span>
+          <span class="tag">Web Basics</span><span class="pn">04 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">
-            كيف يشتغل النظام — <span class="a">Client → Server → Database</span>
+            الإنترنت في ثانية واحدة — <span class="a">كيف يشتغل الويب؟</span>
           </div>
           <div class="flrow">
             <div class="fnd gn">
               <i class="fas fa-globe gn"></i>
-              <div class="nl gn">Client</div>
+              <div class="nl gn">Browser</div>
               <div class="ns">متصفح / جوال / تطبيق</div>
             </div>
             <div class="farr">
               <div class="fat">HTTP Request</div>
               <div class="fac">→</div>
-              <div class="fat">JSON Response</div>
+              <div class="fat">HTTP Response</div>
             </div>
             <div class="fnd oa">
               <i class="fas fa-server oa"></i>
-              <div class="nl oa">Backend Server</div>
+              <div class="nl oa">Server + Backend</div>
               <div class="ns">PHP / Laravel</div>
             </div>
             <div class="farr">
@@ -2037,310 +2526,408 @@ class User {
               <div class="ns">MySQL / phpMyAdmin</div>
             </div>
           </div>
-          <div
-            style="
-              font-size: 12.5px;
-              font-weight: 800;
-              color: var(--acc);
-              text-align: right;
-              margin: 12px 0 8px;
-            "
-          >
-            مسؤوليات مبرمج الـ Backend في كل طلب
-          </div>
-          <div class="tgrid">
-            <div class="tchip">
-              <i class="fas fa-route"></i><span>Routing</span
-              ><span class="ck">توجيه الطلب</span>
+          <div class="wg" style="flex: 0 1 auto; margin: auto 0">
+            <div class="wp oa">
+              <div class="wph oa">
+                <i class="fas fa-exchange-alt"></i> ما الذي يحصل فعلياً؟
+              </div>
+              <div class="wpi">كل صفحة تفتحها = Request</div>
+              <div class="wpi">السيرفر يعالج الطلب بمنطق الشغل</div>
+              <div class="wpi">يرجع Response: HTML أو JSON أو غيره</div>
             </div>
-            <div class="tchip">
-              <i class="fas fa-check-double"></i><span>Validation</span
-              ><span class="ck">التحقق من البيانات</span>
-            </div>
-            <div class="tchip">
-              <i class="fas fa-shield-alt"></i><span>Auth</span
-              ><span class="ck">هوية المستخدم</span>
-            </div>
-            <div class="tchip">
-              <i class="fas fa-code"></i><span>Business Logic</span
-              ><span class="ck">المنطق الأساسي</span>
-            </div>
-            <div class="tchip">
-              <i class="fas fa-database"></i><span>Database</span
-              ><span class="ck">قراءة / كتابة</span>
+            <div class="wp pu">
+              <div class="wph pu">
+                <i class="fab fa-amazon"></i> مثال سريع
+              </div>
+              <div class="wpi">
+                عند فتح Amazon: يتم جلب منتجاتك، حالتك، والعروض المناسبة لك من قاعدة البيانات في جزء من الثانية.
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ S5 COMM ══ -->
+      <!-- ══ S5 Backend — الكواليس التي تشغل كل شيء (مدمج) ══ -->
       <div class="slide" id="s5">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 1 — Team Sync</span
-          ><span class="pn">05 / 14</span>
+          <span class="tag">Backend</span><span class="pn">05 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">
-            <span class="a">Backend</span> يخدم الجميع —
-            <span class="a2">Frontend</span> و <span class="ag">Mobile</span>
+            Backend — <span class="a">الكواليس التي تشغل كل شيء</span>
           </div>
-          <div class="coml" style="flex: 1">
-            <div class="comp fe">
-              <div class="comh gn">🌐 Frontend / Web</div>
-              <div class="comi">
-                <span>يطلب بيانات — Backend يرجع JSON</span>
-                <div
-                  class="comi-icon gn"
-                  style="background: rgba(16, 217, 122, 0.1)"
-                >
-                  <i class="fas fa-arrow-left" style="color: var(--gn)"></i>
+          <div class="tgrid" style="grid-template-columns: repeat(4, 1fr); margin-top: 0;">
+            <div class="tchip">
+              <i class="fas fa-cogs"></i><span>Business Logic</span
+              ><span class="ck">الخصومات، الصلاحيات، سير الطلبات</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-database"></i><span>Database</span
+              ><span class="ck">تخزين واسترجاع آمن ومنظم</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-shield-alt"></i><span>Authentication</span
+              ><span class="ck">من أنت؟ وماذا يحق لك؟</span>
+            </div>
+            <div class="tchip">
+              <i class="fas fa-plug"></i><span>API</span
+              ><span class="ck">واجهة تواصل مع الويب والجوال</span>
+            </div>
+          </div>
+          <div class="role-layout" style="flex: 0 1 auto; margin: auto 0; position: relative">
+            <!-- Frontend panel -->
+            <div class="role-card fe-card">
+              <div class="role-head">
+                <span class="role-title gn">Frontend</span>
+                <div class="role-icon-wrap fe">
+                  <i class="fas fa-desktop" style="color: var(--gn); font-size: 16px"></i>
                 </div>
               </div>
-              <div class="comi">
-                <span
-                  >HTTP: GET لجلب، POST لإضافة، PUT لتعديل، DELETE لحذف</span
-                >
-                <div
-                  class="comi-icon bl"
-                  style="background: rgba(56, 189, 248, 0.1)"
-                >
-                  <i class="fas fa-exchange-alt" style="color: var(--bl)"></i>
+              <div class="role-rows">
+                <div class="role-row">
+                  <span class="role-row-label">يبني الواجهة التي يراها المستخدم</span>
+                  <div class="role-row-icon gn"><i class="fas fa-eye"></i></div>
                 </div>
-              </div>
-              <div class="comi">
-                <span>الـ Backend ما يهتم بالـ UI — فقط بالبيانات</span>
-                <div
-                  class="comi-icon"
-                  style="background: rgba(249, 115, 22, 0.1)"
-                >
-                  <i class="fas fa-eye-slash" style="color: var(--acc)"></i>
+                <div class="role-row">
+                  <span class="role-row-label">يرسل Requests ويستقبل JSON فقط</span>
+                  <div class="role-row-icon bl"><i class="fas fa-exchange-alt"></i></div>
                 </div>
-              </div>
-              <div class="comi">
-                <span
-                  >الـ API تُوثَّق قبل البدء بالكود (Postman / Swagger)</span
-                >
-                <div
-                  class="comi-icon"
-                  style="background: rgba(255, 108, 55, 0.1)"
-                >
-                  <i class="fas fa-file-code" style="color: #ff6c37"></i>
-                </div>
-              </div>
-              <div class="comi">
-                <span
-                  >اتفاقية الـ API = عقد بين الفريقين لا يتغير بدون تنسيق</span
-                >
-                <div
-                  class="comi-icon"
-                  style="background: rgba(251, 191, 36, 0.1)"
-                >
-                  <i class="fas fa-handshake" style="color: var(--gold)"></i>
+                <div class="role-row">
+                  <span class="role-row-label">لا يتعامل مع الـ Database أبداً</span>
+                  <div class="role-row-icon pu"><i class="fas fa-ban"></i></div>
                 </div>
               </div>
             </div>
-            <div class="apictr">
-              <div class="apib">API</div>
-              <div
-                style="
-                  font-size: 9px;
-                  color: var(--dim);
-                  margin-top: 4px;
-                  font-family: var(--mono);
-                  text-align: center;
-                "
-              >
-                JSON<br />Bridge
+            <!-- Backend panel -->
+            <div class="role-card be-card">
+              <div class="role-head">
+                <span class="role-title oa">Backend — أنت</span>
+                <div class="role-icon-wrap be">
+                  <i class="fas fa-server" style="color: var(--acc); font-size: 16px"></i>
+                </div>
+              </div>
+              <div class="role-rows">
+                <div class="role-row">
+                  <span class="role-row-label">تكتب المنطق والقواعد الخفية للنظام</span>
+                  <div class="role-row-icon oa"><i class="fas fa-code"></i></div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label">تتحدث مع الـ Database مباشرة (CRUD)</span>
+                  <div class="role-row-icon bl"><i class="fas fa-database"></i></div>
+                </div>
+                <div class="role-row">
+                  <span class="role-row-label">تخدم الويب والجوال بنفس الـ API</span>
+                  <div class="role-row-icon pu"><i class="fas fa-mobile-alt"></i></div>
+                </div>
               </div>
             </div>
-            <div class="comp mob">
-              <div class="comh pu">📱 Mobile App</div>
-              <div class="comi">
-                <span>الجوال زبون ثانٍ — نفس الـ API تماماً</span>
-                <div
-                  class="comi-icon pu"
-                  style="background: rgba(192, 132, 252, 0.1)"
-                >
-                  <i class="fas fa-mobile-alt" style="color: var(--pu)"></i>
-                </div>
+            <!-- Bridge overlay -->
+            <div class="role-bridge">
+              <div class="bridge-pill">API / JSON</div>
+            </div>
+          </div>
+          <div class="note" style="margin-top: 11px">
+            Frontend هو ما يراه المستخدم. Backend هو ما يجعل هذا كله يعمل فعلياً — التنسيق بين الفريقين يتم عبر عقد واحد: الـ API.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S6 Frontend vs Backend — الفرق الحقيقي ══ -->
+      <div class="slide" id="s6">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Compare</span><span class="pn">06 / 15</span>
+        </div>
+        <div class="sb">
+          <div class="sh">Frontend vs Backend — <span class="a">الفرق الحقيقي</span></div>
+          <table class="cmpt" style="flex: 1">
+            <thead>
+              <tr>
+                <th>المحور</th>
+                <th>Frontend</th>
+                <th>Backend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>اللغات</td>
+                <td>HTML, CSS, JS, Vue, React</td>
+                <td>PHP, Python, Node.js, Java</td>
+              </tr>
+              <tr>
+                <td>مكان التنفيذ</td>
+                <td>المتصفح أو الجهاز</td>
+                <td>السيرفر</td>
+              </tr>
+              <tr>
+                <td>المسؤولية</td>
+                <td>UI/UX والتفاعل</td>
+                <td>البيانات والمنطق والأمان</td>
+              </tr>
+              <tr>
+                <td>هل يراه المستخدم؟</td>
+                <td class="win">نعم</td>
+                <td>لا</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top: 11px">
+            الفرونت مثل واجهة المبنى، والباك مثل الكهرباء والأنظمة الداخلية. غير مرئي لكنه أساسي.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S7 PHP — لم تمت، بل تطورت ══ -->
+      <div class="slide" id="s7">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">PHP</span><span class="pn">07 / 15</span>
+        </div>
+        <div class="sb">
+          <div class="sh">PHP — لم تمت، <span class="a">بل تطورت</span></div>
+          <div class="t4g" style="flex: 0 1 auto; margin: auto 0">
+            <div class="t4 php">
+              <div class="t4info" style="align-items: center; text-align: center;">
+                <div class="t4n php" style="text-align: center;">73%</div>
+                <div class="t4s" style="text-align: center;">حصة مواقع الويب</div>
+                <div class="t4d" style="text-align: center;">من المواقع المعروفة</div>
               </div>
-              <div class="comi">
-                <span>ما في Backend منفصل للموبايل — نفس الـ Endpoints</span>
-                <div
-                  class="comi-icon"
-                  style="background: rgba(192, 132, 252, 0.1)"
-                >
-                  <i class="fas fa-equals" style="color: var(--pu)"></i>
-                </div>
+            </div>
+            <div class="t4 cmp">
+              <div class="t4info" style="align-items: center; text-align: center;">
+                <div class="t4n cmp" style="text-align: center;">74.5%</div>
+                <div class="t4s" style="text-align: center;">W3Techs 2025</div>
+                <div class="t4d" style="text-align: center;">بحسب آخر الإحصائيات</div>
               </div>
-              <div class="comi">
-                <span>يستخدم Token (Bearer) للتحقق من الهوية</span>
-                <div
-                  class="comi-icon"
-                  style="background: rgba(249, 115, 22, 0.1)"
-                >
-                  <i class="fas fa-key" style="color: var(--acc)"></i>
-                </div>
+            </div>
+            <div class="t4 nod">
+              <div class="t4info" style="align-items: center; text-align: center;">
+                <div class="t4n nod" style="text-align: center;">43%+</div>
+                <div class="t4s" style="text-align: center;">WordPress</div>
+                <div class="t4d" style="text-align: center;">من الإنترنت بالكامل</div>
               </div>
-              <div class="comi">
-                <span>التنسيق المبكر مع مطور الجوال يوفر أسابيع</span>
-                <div
-                  class="comi-icon gn"
-                  style="background: rgba(16, 217, 122, 0.1)"
-                >
-                  <i class="fas fa-calendar-check" style="color: var(--gn)"></i>
-                </div>
+            </div>
+            <div class="t4 vsc">
+              <div class="t4info" style="align-items: center; text-align: center;">
+                <div class="t4n vsc" style="text-align: center;">8.x</div>
+                <div class="t4s" style="text-align: center;">جيل سريع وحديث</div>
+                <div class="t4d" style="text-align: center;">أنواع قوية وأداء أعلى</div>
               </div>
-              <div class="comi">
-                <span>Response Format موحّد (status / data / message)</span>
-                <div
-                  class="comi-icon bl"
-                  style="background: rgba(56, 189, 248, 0.1)"
-                >
-                  <i class="fas fa-layer-group" style="color: var(--bl)"></i>
-                </div>
-              </div>
+            </div>
+          </div>
+          <div class="wg" style="flex: 0 1 auto; margin: auto 0">
+            <div class="wp oa">
+              <div class="wph oa"><i class="fas fa-clock"></i> PHP القديمة</div>
+              <div class="wpi">كود فوضوي، أداء أقل، وبنية أقل وضوحاً</div>
+            </div>
+            <div class="wp pu">
+              <div class="wph pu"><i class="fas fa-bolt"></i> PHP الحديثة</div>
+              <div class="wpi">OOP أوضح، Type System أفضل، وإطار Laravel قوي متكامل</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ S6 BEFORE/AFTER AI ══ -->
-      <div class="slide" id="s6">
+      <!-- ══ S8 Laravel — الأرقام لا تكذب ══ -->
+      <div class="slide" id="s8">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 2 — AI Era</span
-          ><span class="pn">06 / 14</span>
+          <span class="tag">Laravel</span><span class="pn">08 / 15</span>
         </div>
         <div class="sb">
-          <div class="sh">شو تغير في عالم <span class="a">البرمجة؟</span></div>
-          <div class="bal" style="flex: 1">
+          <div class="sh">Laravel — <span class="a">الأرقام لا تكذب</span></div>
+          <div class="t3g" style="flex: 0 1 auto; margin: auto 0">
+            <div class="t3 tp">
+              <div class="t3i tp"><i class="fas fa-globe"></i></div>
+              <div class="t3n tp">1.5M+</div>
+              <div class="t3bl">
+                <div class="t3tx" style="text-align: center;">موقع حول العالم</div>
+              </div>
+            </div>
+            <div class="t3 pm">
+              <div class="t3i pm"><i class="fas fa-users"></i></div>
+              <div class="t3n pm">60%</div>
+              <div class="t3bl">
+                <div class="t3tx" style="text-align: center;">من مطوري PHP — JetBrains 2024</div>
+              </div>
+            </div>
+            <div class="t3 gt">
+              <div class="t3i gt"><i class="fab fa-github"></i></div>
+              <div class="t3n gt">75K+</div>
+              <div class="t3bl">
+                <div class="t3tx" style="text-align: center;">GitHub Stars</div>
+              </div>
+            </div>
+          </div>
+          <table class="stbl" style="flex: 1; margin-top: 10px;">
+            <thead>
+              <tr><th>Framework</th><th>Language</th><th>Popular Use</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Laravel</td><td>PHP</td><td>E-commerce, SaaS, APIs</td></tr>
+              <tr><td>Symfony</td><td>PHP</td><td>Enterprise Apps</td></tr>
+              <tr><td>Django</td><td>Python</td><td>Data-heavy Platforms</td></tr>
+              <tr><td>Express</td><td>JavaScript</td><td>Node APIs</td></tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top: 10px">
+            Laravel 12 يركز على الاستقرار، الإنتاجية، وسرعة بناء features جاهزة للاستخدام.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S9 AI في البرمجة — أداة، مش منافس (مدمج) ══ -->
+      <div class="slide" id="s9">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">AI</span><span class="pn">09 / 15</span>
+        </div>
+        <div class="sb">
+          <div class="sh">AI في البرمجة — <span class="a">أداة، مش منافس</span></div>
+          <div class="bal" style="flex: 0 1 auto; margin: auto 0">
             <div class="bac bfr">
               <div class="bah rd">❌ قبل الـ AI</div>
               <div class="bai">تكتب كل حرف بإيدك</div>
               <div class="bai">ساعات بحث في Stack Overflow</div>
               <div class="bai">تعلم بطيء وإحباط كثير</div>
-              <div class="bai">أخطاء صعبة تلاقي سببها</div>
             </div>
             <div class="vsctr">
               <div class="vsring">VS</div>
             </div>
             <div class="bac aftr">
               <div class="bah gn">✅ مع الـ AI</div>
-              <div class="bai">الـ AI يكمل كودك تلقائياً</div>
-              <div class="bai">تشرح بالعربي ويكتب الكود</div>
+              <div class="bai">الـ AI يكمل كودك ويشرح بالعربي</div>
               <div class="bai">تعلم سريع بأمثلة مخصصة</div>
               <div class="bai">يشرح الأخطاء ويقترح الحل</div>
             </div>
           </div>
+          <table class="cmpt" style="flex: 1; margin-top: 4px;">
+            <thead>
+              <tr><th>الحالة</th><th>الأداة</th><th>الاستخدام</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>كتابة كود متكرر</td><td>Copilot / Cursor</td><td>اقتراح Migrations, Controllers, Factories</td></tr>
+              <tr><td>Debug</td><td>ChatGPT / Claude</td><td>تحليل الخطأ وشرح سبب المشكلة</td></tr>
+              <tr><td>فهم Concept</td><td>ChatGPT / Claude</td><td>شرح بمثال مباشر من مشروع SouqPro</td></tr>
+              <tr><td>Refactoring</td><td>Cursor</td><td>تنظيف كود قائم وتسريع التحسين</td></tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top: 10px">
+            المعادلة الذهبية: فهم قوي أولاً + AI ثانياً. AI بدون فهم ينتج أخطاء مكلفة.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S10 SouqPro — المشروع الذي ستبنيه ══ -->
+      <div class="slide" id="s10">
+        <div class="tb">
+          <div class="cid"><span class="dlive"></span> Backend Course</div>
+          <span class="tag">Project</span><span class="pn">10 / 15</span>
+        </div>
+        <div class="sb">
+          <div class="sh">SouqPro — <span class="a">المشروع الذي ستبنيه</span></div>
+          <div class="coml" style="grid-template-columns: 1fr 1fr; flex: 0 1 auto; margin: auto 0">
+            <div class="comp fe">
+              <div class="comh gn">🖥️ الواجهة + لوحة التحكم</div>
+              <div class="comi"><span>واجهة متجر للزوار (عرض، بحث، فلترة)</span></div>
+              <div class="comi"><span>لوحة Admin لإدارة المنتجات والطلبات</span></div>
+              <div class="comi"><span>نظام تقييمات ومفضلة</span></div>
+              <div class="comi"><span>دعم عربي/إنجليزي RTL/LTR</span></div>
+            </div>
+            <div class="comp mob" style="border-top-color: var(--acc);">
+              <div class="comh oa">⚙️ المنظومة الخلفية</div>
+              <div class="comi"><span>Auth متكامل + 2FA + Google Login</span></div>
+              <div class="comi"><span>Cart + Coupons + Shipping + Orders</span></div>
+              <div class="comi"><span>Stripe Payment + REST API</span></div>
+              <div class="comi"><span>Real-time Notifications + نشر على VPS</span></div>
+            </div>
+          </div>
           <div class="note" style="margin-top: 11px">
-            ⚡ الـ AI مش بيفكر بدلك — هو بيسرّع شغلك. اللي ما بيفهم البرمجة ما
-            يقدر يستخدمه صح.
+            هذا ليس مشروع تدريب مصغّر؛ هذا مشروع Portfolio كامل يمكن عرضه في CV.
           </div>
         </div>
       </div>
 
-      <!-- ══ S7 AI LEARN ══ -->
-      <div class="slide" id="s7">
+      <!-- ══ S11 من أنا؟ ولماذا هذا الكورس ══ -->
+      <div class="slide" id="s11">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 2 — AI for Learning</span
-          ><span class="pn">07 / 14</span>
+          <span class="tag">Instructor</span><span class="pn">11 / 15</span>
         </div>
         <div class="sb">
-          <div class="sh">
-            كيف تستخدم الـ AI لتتعلم <span class="a">بشكل صحيح؟</span>
-          </div>
-          <div class="qb bad">
-            <div class="ql r">
-              <i class="fas fa-times-circle"></i> سؤال ضعيف
-            </div>
-            <div class="qt dm">"شو هو الـ API؟"</div>
-          </div>
-          <div class="qb good">
-            <div class="ql g">
-              <i class="fas fa-check-circle"></i> سؤال احترافي — قوله في ChatGPT
-              أو Claude
-            </div>
-            <div class="qt">
-              "اشرح لي شو هو الـ API لمبتدئ في البرمجة، اعطيني الفائدة منه ومثال
-              عملي في مشروع حقيقي بثلاثة مستويات: بسيط، متوسط، متقدم"
-            </div>
-          </div>
-          <div class="trow">
-            <div class="tip">
-              <i class="fas fa-lightbulb"></i>
-              <div class="tt">معلم خاص 24/7</div>
-              <div class="td">
-                ChatGPT أو Claude — اسألهم عن أي موضوع بدون حرج
+          <div class="sh">من أنا؟ <span class="a">ولماذا هذا الكورس</span></div>
+          <div class="instr-wrap">
+            <div class="instr-card">
+              <div class="instr-photo-ring">
+                <div class="ph-inner">
+                  <img src="../../assets/alsaeyd.jpeg" alt="المدرب" />
+                </div>
+              </div>
+              <div class="instr-name">السيد الاخرسي</div>
+              <div class="instr-role">FULL STACK DEVELOPER &amp; LARAVEL INSTRUCTOR</div>
+              <div class="instr-stats">
+                <div class="instr-stat">
+                  <div class="isv">+5</div>
+                  <div class="isl">سنوات خبرة</div>
+                </div>
+                <div class="instr-stat">
+                  <div class="isv">WebUra</div>
+                  <div class="isl">Laravel Instructor</div>
+                </div>
               </div>
             </div>
-            <div class="tip">
-              <i class="fas fa-layer-group"></i>
-              <div class="tt">أمثلة بمستويات</div>
-              <div class="td">بسيط → متوسط → متقدم في مشاريع حقيقية</div>
-            </div>
-            <div class="tip">
-              <i class="fas fa-bug"></i>
-              <div class="tt">تفسير الأخطاء</div>
-              <div class="td">الصق الخطأ وقوله: لماذا حصل هذا؟</div>
+            <div class="instr-right">
+              <div class="instr-quote">
+                "هذا الكورس تكثيف لتجارب بناء أنظمة حقيقية خلال أكثر من 5 سنوات — الهدف أن تبني بنفسك وتفهم القرارات، لا أن تحفظ syntax."
+              </div>
+              <div class="instr-points">
+                <div class="instr-point">
+                  <div class="instr-point-ic" style="background: rgba(249, 115, 22, 0.12); color: var(--acc);"><i class="fas fa-layer-group"></i></div>
+                  <div class="instr-point-tx">
+                    <div class="ipt">خبرة تطبيقية حقيقية</div>
+                    <div class="ipd">بنى أنظمة: إدارة مالية، طبية، منصات محتوى، تعليمية</div>
+                  </div>
+                </div>
+                <div class="instr-point">
+                  <div class="instr-point-ic" style="background: rgba(56, 189, 248, 0.12); color: var(--bl);"><i class="fas fa-hammer"></i></div>
+                  <div class="instr-point-tx">
+                    <div class="ipt">تطبيق عملي متواصل</div>
+                    <div class="ipd">مشروع حقيقي واحد من البداية للنهاية، لا تمارين مبعثرة</div>
+                  </div>
+                </div>
+                <div class="instr-point">
+                  <div class="instr-point-ic" style="background: rgba(192, 132, 252, 0.12); color: var(--pu);"><i class="fas fa-brain"></i></div>
+                  <div class="instr-point-tx">
+                    <div class="ipt">AI من أول محاضرة</div>
+                    <div class="ipd">دمج صحيح وعملي، فهم قوي أولاً ثم تسريع بالـ AI</div>
+                  </div>
+                </div>
+                <div class="instr-point">
+                  <div class="instr-point-ic" style="background: rgba(16, 217, 122, 0.12); color: var(--gn);"><i class="fas fa-trophy"></i></div>
+                  <div class="instr-point-tx">
+                    <div class="ipt">تتخرج بمشروع Portfolio</div>
+                    <div class="ipd">SouqPro كامل قابل للعرض في CV — ليس تدريباً مصغّراً</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ S8 AI WORK ══ -->
-      <div class="slide" id="s8">
+      <!-- ══ S12 Setup — التجهيز العملي ══ -->
+      <div class="slide" id="s12">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 2 — AI in Practice</span
-          ><span class="pn">08 / 14</span>
-        </div>
-        <div class="sb">
-          <div class="sh">
-            الـ AI <span class="a">كشريك عمل</span> — مش بديل للمبرمج
-          </div>
-          <div class="wg" style="flex: 1">
-            <div class="wp oa">
-              <div class="wph oa">
-                <i class="fas fa-code"></i> في الشغل اليومي
-              </div>
-              <div class="wpi">
-                إكمال الكود تلقائياً (GitHub Copilot / Cursor)
-              </div>
-              <div class="wpi">كتابة الكود من وصف بالعربي</div>
-              <div class="wpi">مراجعة الكود وإيجاد الأخطاء</div>
-              <div class="wpi">كتابة التوثيق والتعليقات</div>
-            </div>
-            <div class="wp pu">
-              <div class="wph pu"><i class="fas fa-brain"></i> في التخطيط</div>
-              <div class="wpi">خطط الـ Database من فكرة المشروع</div>
-              <div class="wpi">قائمة الـ APIs المطلوبة لأي نظام</div>
-              <div class="wpi">اقتراح أفضل هيكل للكود</div>
-              <div class="wpi">تقدير الوقت والأولويات</div>
-            </div>
-          </div>
-          <div class="coming">
-            ⚡ تنبيه: رح يكون في محاضرة كاملة عن الـ AI مدتها ساعتين — هذا كان
-            مجرد مقدمة سريعة!
-          </div>
-        </div>
-      </div>
-
-      <!-- ══ S9 TOOLS 4 ══ -->
-      <div class="slide" id="s9">
-        <div class="tb">
-          <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 3 — Setup</span
-          ><span class="pn">09 / 14</span>
+          <span class="tag">Setup</span><span class="pn">12 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">
             الأدوات الأساسية —
-            <span class="a">PHP + Composer + Node.js + VS Code</span>
+            <span class="a">PHP + Composer + Node.js + محرر أكواد</span>
           </div>
-          <div class="t4g" style="flex: 1">
+          <div class="t4g" style="flex: 0 1 auto; margin: auto 0">
             <div class="t4 php">
               <div class="t4i php"><i class="fab fa-php"></i></div>
               <div class="t4info">
@@ -2371,166 +2958,33 @@ class User {
             <div class="t4 vsc">
               <div class="t4i vsc"><i class="fas fa-code"></i></div>
               <div class="t4info">
-                <div class="t4n vsc">VS Code / Cursor</div>
-                <div class="t4s">محرر الكود الأشهر + AI مدمج</div>
+                <div class="t4n vsc">محرر الأكواد</div>
+                <div class="t4s">VS Code — أو Cursor كخيار بديل بذكاء اصطناعي مدمج</div>
                 <div class="cmd" style="margin: 5px 0">code --version</div>
                 <div class="t4d">بيئة التطوير الأساسية</div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- ══ S10 CURSOR ══ -->
-      <div class="slide" id="s10">
-        <div class="tb">
-          <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 4 — Cursor IDE</span
-          ><span class="pn">10 / 14</span>
-        </div>
-        <div class="sb">
-          <div class="sh">
-            <span class="a">Cursor IDE</span> — البديل الأقوى لـ VS Code
-          </div>
-          <div
-            style="
-              font-size: 12.5px;
-              color: var(--sub);
-              text-align: right;
-              margin-bottom: 13px;
-            "
-          >
-            محرر كود مبني على VS Code — لكن مع AI متقدم مدمج بالكامل داخله
-          </div>
-          <table class="cmpt" style="flex: 1">
-            <thead>
-              <tr>
-                <th>الميزة</th>
-                <th>VS Code</th>
-                <th>Cursor</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>مجاني</td>
-                <td>✅ كامل</td>
-                <td class="win">✅ نسخة أساسية</td>
-              </tr>
-              <tr>
-                <td>GitHub Copilot</td>
-                <td>إضافة منفصلة</td>
-                <td class="win">مدمج ومتطور ✨</td>
-              </tr>
-              <tr>
-                <td>فهم سياق المشروع</td>
-                <td>محدود</td>
-                <td class="win">كامل ✨</td>
-              </tr>
-              <tr>
-                <td>كتابة كود من وصف</td>
-                <td>محدود</td>
-                <td class="win">متقدم جداً ✨</td>
-              </tr>
-              <tr>
-                <td>الواجهة</td>
-                <td>مألوفة</td>
-                <td>نفس VS Code</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="note" style="margin-top: 13px">
-            💡 ليش Cursor؟ بيفهم كامل المشروع مش بس السطر — يوفر وقت حقيقي في
-            الشغل اليومي.
+          <div class="note" style="margin-top: 11px">
+            💡 آخر خطوة: ثبّت Laravel Herd (لـ Windows) أو Flyenv (لـ Mac/Linux) لتشغيل PHP محلياً بسرعة.
           </div>
         </div>
       </div>
 
-      <!-- ══ S11 THREE TOOLS — Laravel Herd/Flyenv + Postman + Git ══ -->
-      <div class="slide" id="s11">
+      <!-- ══ S13 أدوات يومية / ملخص الأدوات (مدمج) ══ -->
+      <div class="slide" id="s13">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Section 5 — Daily Tools</span
-          ><span class="pn">11 / 14</span>
+          <span class="tag">Daily Tools</span><span class="pn">13 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">
-            <span class="a">Laravel Herd / Flyenv + Postman + Git</span> — أدوات ما
-            تشتغل بدونها
-          </div>
-          <div class="t3g" style="flex: 1">
-            <div class="t3 tp">
-              <span class="t3bg tp">Local Server</span>
-              <div class="t3i tp"><i class="fas fa-server"></i></div>
-              <div class="t3n tp">Laravel Herd / Flyenv</div>
-              <div class="t3bl">
-                <div class="t3lb">شو هما</div>
-                <div class="t3tx">
-                  <b style="color: #00c4b4">Laravel Herd</b> — الخيار الموصى به
-                  على Windows وMac لتجهيز PHP وComposer وبيئة Laravel بسرعة.
-                  <b style="color: #00c4b4">Flyenv</b> — بديل عام مناسب إذا
-                  فضّلت بيئة أخف أو كنت على Linux
-                </div>
-              </div>
-              <div class="t3bl">
-                <div class="t3lb">الفائدة</div>
-                <div class="t3tx">
-                  تشغيل PHP محلياً لمشاريع Laravel، ثم إدارة قاعدة البيانات
-                  لاحقاً عبر TablePlus أو phpMyAdmin
-                </div>
-              </div>
-            </div>
-            <div class="t3 pm">
-              <span class="t3bg pm">API Testing</span>
-              <div class="t3i pm"><i class="fas fa-paper-plane"></i></div>
-              <div class="t3n pm">Postman</div>
-              <div class="t3bl">
-                <div class="t3lb">متى نستخدمه</div>
-                <div class="t3tx">
-                  لاختبار الـ API قبل ما الـ Frontend يكون جاهز
-                </div>
-              </div>
-              <div class="t3bl">
-                <div class="t3lb">الفائدة</div>
-                <div class="t3tx">
-                  أرسل Request وشوف الـ Response بدون واجهة — اكتشف الأخطاء
-                  بسرعة
-                </div>
-              </div>
-            </div>
-            <div class="t3 gt">
-              <span class="t3bg gt">Version Control</span>
-              <div class="t3i gt"><i class="fab fa-git-alt"></i></div>
-              <div class="t3n gt">Git + GitHub</div>
-              <div class="t3bl">
-                <div class="t3lb">متى نستخدمه</div>
-                <div class="t3tx">من أول سطر كود حتى آخر مشروع</div>
-              </div>
-              <div class="t3bl">
-                <div class="t3lb">الفائدة</div>
-                <div class="t3tx">
-                  سجل كامل لكل تغيير — ارجع لأي نسخة قديمة واشتغل مع الفريق
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══ S12 SUMMARY TABLE — 5 tools only ══ -->
-      <div class="slide" id="s12">
-        <div class="tb">
-          <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Summary — Tools</span
-          ><span class="pn">12 / 14</span>
-        </div>
-        <div class="sb">
-          <div class="sh">
-            الأدوات الـ <span class="a">5 الأساسية</span> لهذه المحاضرة
+            <span class="a">أدوات يومية</span> — ملخص كل ما سنستخدمه
           </div>
           <table class="stbl" style="flex: 1">
             <thead>
               <tr>
-                <th style="width: 38%">الأداة</th>
+                <th style="width: 34%">الأداة</th>
                 <th>الاستخدام والوظيفة</th>
               </tr>
             </thead>
@@ -2542,9 +2996,7 @@ class User {
                     <span class="pill">Language</span>
                   </div>
                 </td>
-                <td>
-                  لغة الـ Backend الأساسية لكتابة المنطق والتعامل مع السيرفر
-                </td>
+                <td>لغة الـ Backend الأساسية لكتابة المنطق والتعامل مع السيرفر</td>
               </tr>
               <tr>
                 <td>
@@ -2557,49 +3009,53 @@ class User {
               </tr>
               <tr>
                 <td>
-                  <div class="trn" style="color: #339933">
-                    <i class="fab fa-node-js"></i> Node.js LTS
-                    <span class="pill">Runtime</span>
+                  <div class="trn" style="color: #00c4b4">
+                    <i class="fas fa-database"></i> phpMyAdmin
+                    <span class="pill">DB Client</span>
                   </div>
                 </td>
-                <td>تشغيل أدوات البناء وإدارة حزم الواجهة الأمامية</td>
+                <td>إدارة قاعدة البيانات بواجهة رسومية سهلة</td>
               </tr>
               <tr>
                 <td>
                   <div class="trn" style="color: #007acc">
-                    <i class="fas fa-code"></i> VS Code / Cursor
+                    <i class="fas fa-code"></i> VS Code
                     <span class="pill">Editor</span>
                   </div>
                 </td>
-                <td>بيئة التطوير المتكاملة لكتابة وتعديل الكود</td>
+                <td>محرر الأكواد الأساسي لكتابة وتعديل المشروع</td>
               </tr>
               <tr>
                 <td>
-                  <div class="trn" style="color: #00c4b4">
-                    <i class="fas fa-server"></i> Laravel Herd / Flyenv
-                    <span class="pill">Local Server</span>
+                  <div class="trn" style="color: #ff6c37">
+                    <i class="fas fa-paper-plane"></i> Postman
+                    <span class="pill">API Testing</span>
                   </div>
                 </td>
+                <td>اختبار الـ API قبل ما الـ Frontend يكون جاهز</td>
+              </tr>
+              <tr>
                 <td>
-                  تشغيل PHP محلياً لمشروع Laravel، ثم ربط MySQL وإدارته عبر
-                  TablePlus أو phpMyAdmin
+                  <div class="trn" style="color: #f05032">
+                    <i class="fab fa-git-alt"></i> Git + GitHub
+                    <span class="pill">Version Control</span>
+                  </div>
                 </td>
+                <td>سجل كامل لكل تغيير — ارجع لأي نسخة قديمة واشتغل مع الفريق</td>
               </tr>
             </tbody>
           </table>
           <div class="note" style="margin-top: 10px">
-            📌 TablePlus وPostman ذُكرا هنا للتعريف فقط — التثبيت والاستخدام
-            العملي سيكونان مع أول مشروع Laravel في المحاضرة 3، وGit سنبدأه مع
-            بداية الشغل الفعلي على المشروع.
+            📌 التثبيت الفعلي لهم لاحقاً مع أول استخدام حقيقي بمحاضرة 3.
           </div>
         </div>
       </div>
 
-      <!-- ══ S13 HOMEWORK ══ -->
-      <div class="slide" id="s13">
+      <!-- ══ S14 HOMEWORK ══ -->
+      <div class="slide" id="s14">
         <div class="tb">
           <div class="cid"><span class="dlive"></span> Backend Course</div>
-          <span class="tag">Homework</span><span class="pn">13 / 14</span>
+          <span class="tag">Homework</span><span class="pn">14 / 15</span>
         </div>
         <div class="sb">
           <div class="sh">🎯 واجبك بعد <span class="a">المحاضرة</span></div>
@@ -2607,9 +3063,9 @@ class User {
             <div class="hwr">
               <div class="hwn">01</div>
               <div class="hwb">
-                <div class="hwt">ثبّت الأدوات الأساسية الـ 5</div>
+                <div class="hwt">ثبّت الأدوات الأساسية</div>
                 <div class="hwd">
-                  PHP + Composer + Node.js + VS Code أو Cursor + Laravel Herd
+                  PHP + Composer + Node.js + محرر أكواد (VS Code أو Cursor) + Laravel Herd
                   (لـ Windows) أو Flyenv (لـ Mac/Linux)
                 </div>
               </div>
@@ -2639,8 +3095,8 @@ class User {
         </div>
       </div>
 
-      <!-- ══ S14 CLOSING ══ -->
-      <div class="slide" id="s14">
+      <!-- ══ S15 CLOSING ══ -->
+      <div class="slide" id="s15">
         <div class="cll">
           <div class="clcode">
             // المحاضرة القادمة...<br /><br />// أساسيات PHP<br />// ومقدمة في
@@ -2702,29 +3158,27 @@ class User {
         </div>
       </div>
       <div id="nav">
-        <button class="nb next" id="btnN">
+        <button class="nb" id="btnP" disabled>
           <i class="fas fa-chevron-right"></i>
         </button>
-        <div id="dots"></div>
-        <span id="ctr">1 / 14</span>
-        <button class="nb" id="btnP" disabled>
+        <div id="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+        <span id="ctr">1 / 15</span>
+        <button class="nb next" id="btnN">
           <i class="fas fa-chevron-left"></i>
         </button>
       </div>
     </div>
 
     <script>
-      const N = 14;
+      const N = 15;
       let c = 1;
       const ctr = document.getElementById("ctr");
       const btnN = document.getElementById("btnN");
       const btnP = document.getElementById("btnP");
-      const dotsEl = document.getElementById("dots");
-      for (let i = 1; i <= N; i++) {
-        const d = document.createElement("div");
-        d.className = "dot" + (i === 1 ? " on" : "");
-        d.onclick = () => go(i);
-        dotsEl.appendChild(d);
+      const progressFill = document.getElementById("progress-fill");
+      function updateProgress() {
+        if (!progressFill) return;
+        progressFill.style.width = (c / N) * 100 + "%";
       }
       function go(n) {
         if (n < 1 || n > N || n === c) return;
@@ -2734,18 +3188,17 @@ class User {
         ctr.textContent = c + " / " + N;
         btnP.disabled = c === 1;
         btnN.disabled = c === N;
-        dotsEl
-          .querySelectorAll(".dot")
-          .forEach((d, i) => d.classList.toggle("on", i + 1 === c));
+        updateProgress();
       }
+      updateProgress();
       btnN.onclick = () => go(c + 1);
       btnP.onclick = () => go(c - 1);
       document.addEventListener("keydown", (e) => {
-        if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
+        if (["ArrowLeft", "ArrowDown", " "].includes(e.key)) {
           e.preventDefault();
           go(c + 1);
         }
-        if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
+        if (["ArrowRight", "ArrowUp"].includes(e.key)) {
           e.preventDefault();
           go(c - 1);
         }
