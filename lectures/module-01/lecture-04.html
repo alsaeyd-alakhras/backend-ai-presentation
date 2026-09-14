@@ -5,317 +5,31 @@
   <title>المحاضرة الرابعة — Views, Layouts ومقدمة Controller</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:   #080c14; --surf: #0d1520; --card: #111b2a;
-      --bdr:  #1c2d42; --bdr2: #243650; --acc:  #f97316;
-      --acc2: #fb923c; --wh:   #f0f6ff; --sub:  #7a9bbf;
-      --dim:  #3a5470; --gn:   #10d97a; --bl:   #38bdf8;
-      --pu:   #c084fc; --rd:   #f87171;
-      --mono: "JetBrains Mono", monospace;
-      --sans: "Tajawal", sans-serif;
-      --W: 1060px; --H: 596px; --R: 14px;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:#03060b;min-height:100vh;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;font-family:var(--sans);
-      overflow:hidden;gap:18px;padding:0 0 8px}
-    #stage{position:relative;width:var(--W);height:var(--H);flex-shrink:0}
-    .slide{position:absolute;inset:0;width:var(--W);height:var(--H);
-      background:var(--bg);border-radius:var(--R);border:1px solid var(--bdr);
-      overflow:hidden;display:none;flex-direction:column;
-      box-shadow:0 28px 70px rgba(0,0,0,.88),0 0 0 1px rgba(249,115,22,.04)}
-    .slide.active{display:flex;animation:fadeUp .38s cubic-bezier(.16,1,.3,1) both}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px) scale(.986)}to{opacity:1;transform:none}}
-
-    /* NAV ROW */
-    #nav-row{display:flex;align-items:center;gap:12px;flex-shrink:0}
-    #instr-card{display:flex;align-items:center;gap:10px;background:var(--surf);
-      border:1px solid var(--bdr);border-radius:50px;padding:5px 14px 5px 6px;
-      box-shadow:0 4px 20px rgba(0,0,0,.5)}
-    .iav{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);flex-shrink:0;overflow:hidden}
-    .iav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .inm{font-size:12.5px;font-weight:800;color:var(--wh);white-space:nowrap}
-    .irl{font-size:9.5px;color:var(--sub);font-family:var(--mono);white-space:nowrap}
-    #nav{display:flex;align-items:center;background:var(--surf);border:1px solid var(--bdr);
-      border-radius:50px;padding:5px 6px;box-shadow:0 6px 24px rgba(0,0,0,.6);flex-shrink:0}
-    .nb{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;font-size:13px;
-      display:flex;align-items:center;justify-content:center;transition:all .15s;
-      color:var(--sub);background:transparent}
-    .nb:hover:not(:disabled){background:var(--card);color:var(--wh)}
-    .nb:disabled{opacity:.22;cursor:not-allowed}
-    .nb.next{background:var(--acc);color:#fff;margin-right:4px}
-    .nb.next:hover:not(:disabled){background:var(--acc2)}
-    #ctr{font-family:var(--mono);font-size:11px;color:var(--dim);padding:0 10px;white-space:nowrap}
-    #dots{display:flex;gap:3px;align-items:center;padding:0 4px}
-    .dot{width:5px;height:5px;border-radius:50%;background:var(--bdr2);cursor:pointer;transition:all .22s}
-    .dot.on{background:var(--acc);width:14px;border-radius:3px}
-
-    /* TOPBAR */
-    .tb{height:42px;display:flex;align-items:center;justify-content:space-between;
-      padding:0 32px;border-bottom:1px solid var(--bdr);
-      background:rgba(11,18,32,.88);flex-shrink:0;position:relative;z-index:2}
-    .tb .tag{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
-    .tb .pn{font-family:var(--mono);font-size:10px;color:var(--dim)}
-    .tb .cid{font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:6px}
-    .dlive{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:pulse 2s infinite;display:inline-block}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.22}}
-
-    /* SLIDE BODY */
-    .sb{flex:1;padding:20px 32px 16px;display:flex;flex-direction:column;overflow-y:auto;
-      position:relative;z-index:1;min-height:0}
-    .sh{font-size:23px;font-weight:900;color:var(--wh);text-align:right;
-      line-height:1.25;margin-bottom:14px}
-    .sh .a{color:var(--acc)} .sh .a2{color:var(--bl)} .sh .ag{color:var(--gn)}
-
-    /* SHARED */
-    .pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);
-      font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.05);
-      color:var(--sub);border:1px solid var(--bdr)}
-    .cmd{font-family:var(--mono);font-size:11px;color:var(--gn);direction:ltr;display:inline-block;
-      background:rgba(16,217,122,.07);border:1px solid rgba(16,217,122,.18);
-      border-radius:5px;padding:2px 8px;display:inline-block}
-    .note{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.17);
-      border-radius:8px;padding:9px 14px;font-size:12px;color:var(--acc);
-      text-align:right;font-style:italic}
-    .lnote{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);
-      border-radius:8px;padding:8px 13px;font-size:11.5px;color:var(--bl);
-      text-align:right;display:flex;align-items:center;gap:8px;margin-top:8px}
-    .lnote i{flex-shrink:0;font-size:13px}
-    .gnote{background:rgba(16,217,122,.07);border:1px solid rgba(16,217,122,.2);
-      border-radius:8px;padding:8px 13px;font-size:11.5px;color:var(--gn);
-      text-align:right;display:flex;align-items:center;gap:8px;margin-top:8px}
-    .gnote i{flex-shrink:0;font-size:13px}
-    .card{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 15px}
-    .card.c-acc{border-top:2px solid var(--acc)} .card.c-gn{border-top:2px solid var(--gn)}
-    .card.c-bl{border-top:2px solid var(--bl)}   .card.c-pu{border-top:2px solid var(--pu)}
-    .card.c-rd{border-top:2px solid var(--rd)}
-    .card-lbl{font-size:10px;font-family:var(--mono);color:var(--sub);
-      margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
-    .cb{background:#060b12;border:1px solid var(--bdr);border-radius:8px;
-      padding:12px 14px;font-family:var(--mono);font-size:11.5px;
-      line-height:1.9;color:#7a9bbf;overflow:auto;position:relative;direction:ltr;text-align:left}
-    .cb .kw{color:#c084fc} .cb .fn{color:#38bdf8} .cb .st{color:#10d97a}
-    .cb .cm{color:#3a5470} .cb .ac{color:#f97316} .cb .wht{color:#f0f6ff}
-    .cb .rd{color:#f87171} .cb .dim{color:#3a5470} .cb .tg{color:#4a6a90}
-    .cb-label{position:absolute;top:8px;left:10px;font-family:var(--mono);
-      font-size:9px;color:var(--dim);letter-spacing:.05em}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
-    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;flex:1;min-height:0}
-    .two-col > div,
-    .three-col > div,
-    .tabs-wrap,
-    .tab-pane{min-height:0}
-
-    /* LINK BUTTON */
-    .link-btn{display:inline-flex;align-items:center;gap:7px;
-      background:var(--card);border:1px solid var(--bdr);border-radius:7px;
-      padding:7px 14px;font-size:12px;font-family:var(--mono);
-      color:var(--sub);text-decoration:none;transition:all .18s;cursor:pointer}
-    .link-btn:hover{border-color:var(--acc);color:var(--acc)}
-    .link-btn i{font-size:12px}
-    .link-btn.lv:hover{border-color:#ff2d20;color:#ff2d20}
-    .link-btn.lv i{color:#ff2d20}
-
-    /* COVER */
-    #s1{flex-direction:row}
-    .cvl{width:310px;background:var(--surf);border-left:1px solid var(--bdr);
-      flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
-    .cvl::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-      background:linear-gradient(90deg,var(--acc),transparent)}
-    .cvl pre{flex:1;padding:22px 18px;font-family:var(--mono);font-size:11.5px;
-      line-height:2;color:#1e3554;overflow:auto;direction:ltr;text-align:left}
-    .cvl-ft{height:46px;border-top:1px solid var(--bdr);display:flex;
-      align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
-    .cvl-ft i{font-size:16px}
-    .cvl-ft .sp{flex:1}
-    .cvl-ft .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
-    .cvr{flex:1;display:flex;flex-direction:column;justify-content:center;
-      padding:36px 44px 32px 24px;position:relative}
-    .cvr::before{content:"";position:absolute;top:-60px;left:-60px;width:350px;height:350px;
-      background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 70%);pointer-events:none}
-    .cv-badge{display:inline-flex;align-items:center;gap:8px;
-      background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);
-      border-radius:6px;padding:5px 13px;font-size:12px;font-weight:700;
-      color:var(--acc);align-self:flex-end;margin-bottom:22px}
-    .cv-eye{font-size:13px;color:var(--sub);font-weight:500;text-align:right;margin-bottom:6px}
-    .cv-h{font-size:44px;font-weight:900;line-height:1.1;text-align:right;color:var(--wh);margin-bottom:6px}
-    .cv-h span{color:var(--acc);display:block}
-    .cv-tag{font-size:13.5px;color:var(--sub);text-align:right;margin-bottom:4px}
-    .cv-mono{font-family:var(--mono);font-size:10.5px;color:var(--dim);text-align:right}
-    .cv-chips{display:flex;gap:9px;justify-content:flex-end;margin-top:22px}
-    .chip{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:9px 14px;text-align:center}
-    .chip .cl{font-size:9.5px;color:var(--sub);display:block;margin-bottom:3px}
-    .chip .cv{font-size:12.5px;font-weight:800;color:var(--wh)}
-
-    /* AGENDA */
-    .ag-list{display:flex;flex-direction:column;gap:7px;flex:1}
-    .ag-row{display:flex;align-items:center;background:var(--card);
-      border:1px solid var(--bdr);border-radius:8px;overflow:hidden;flex:1;transition:border-color .2s}
-    .ag-row:hover{border-color:var(--acc)}
-    .ag-n{width:50px;display:flex;align-items:center;justify-content:center;
-      font-family:var(--mono);font-size:15px;font-weight:700;color:var(--acc);
-      background:rgba(249,115,22,.06);border-left:1px solid var(--bdr);align-self:stretch;flex-shrink:0}
-    .ag-ic{width:40px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--sub);flex-shrink:0}
-    .ag-tx{flex:1;font-size:13.5px;font-weight:600;color:var(--wh);text-align:right;padding-right:4px}
-    .ag-tg{margin-left:14px;flex-shrink:0}
-
-    /* TERMINAL BLOCK */
-    .term{background:#030810;border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
-    .term-bar{height:34px;background:#0a1220;border-bottom:1px solid var(--bdr);
-      display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0}
-    .t-dot{width:10px;height:10px;border-radius:50%}
-    .t-title{font-family:var(--mono);font-size:10px;color:var(--dim);flex:1;text-align:center}
-    .term-body{padding:14px 18px;font-family:var(--mono);font-size:12px;line-height:2;color:var(--sub);direction:ltr;text-align:left}
-    .term-body .prompt{color:var(--gn)}
-    .term-body .cmd-t{color:var(--wh)}
-    .term-body .out{color:var(--dim);font-size:11px}
-    .term-body .out-gn{color:var(--gn);font-size:11px}
-    .term-body .out-acc{color:var(--acc);font-size:11px}
-
-    /* FOLDER TREE */
-    .ftree{font-family:var(--mono);font-size:12px;line-height:2;color:var(--sub);
-      background:#060b12;border:1px solid var(--bdr);border-radius:9px;padding:14px 18px;overflow:hidden}
-    .ft-dir{color:var(--bl);font-weight:700}
-    .ft-dir-acc{color:var(--acc);font-weight:700}
-    .ft-dir-gn{color:var(--gn);font-weight:700}
-    .ft-dir-pu{color:var(--pu);font-weight:700}
-    .ft-file{color:#4a6a90}
-    .ft-badge{font-size:9px;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.2);
-      color:var(--acc);border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:middle}
-    .ft-badge-bl{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);color:var(--bl)}
-    .ft-badge-gn{background:rgba(16,217,122,.1);border-color:rgba(16,217,122,.2);color:var(--gn)}
-    .ft-badge-pu{background:rgba(192,132,252,.1);border-color:rgba(192,132,252,.2);color:var(--pu)}
-
-    /* FLOW */
-    .flow-row{display:flex;align-items:center;gap:0;flex:1}
-    .fnode{flex:1;background:var(--card);border:1px solid var(--bdr);
-      border-radius:9px;padding:13px 14px;display:flex;flex-direction:column;
-      align-items:flex-end;gap:5px;height:100%}
-    .fnode.acc-b{border-top:2px solid var(--acc)}
-    .fnode.gn-b{border-top:2px solid var(--gn)}
-    .fnode.bl-b{border-top:2px solid var(--bl)}
-    .fnode.pu-b{border-top:2px solid var(--pu)}
-    .fn-icon{font-size:20px;margin-bottom:2px}
-    .fn-title{font-size:13px;font-weight:800;color:var(--wh)}
-    .fn-sub{font-size:10.5px;color:var(--sub);font-family:var(--mono)}
-    .fn-desc{font-size:11.5px;color:var(--sub);text-align:right;line-height:1.55;margin-top:3px}
-    .farrow{font-size:18px;color:var(--dim);padding:0 4px;flex-shrink:0;transform:scaleX(-1)}
-
-    /* HOMEWORK */
-    .hwl{display:flex;flex-direction:column;gap:10px;flex:1}
-    .hwr{display:flex;align-items:flex-start;gap:14px;background:var(--card);
-      border:1px solid var(--bdr);border-radius:9px;padding:13px 16px;flex:1}
-    .hwn{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--acc);flex-shrink:0;width:32px}
-    .hwb{flex:1} .hwt{font-size:13.5px;font-weight:700;color:var(--wh);margin-bottom:4px}
-    .hwd{font-size:12px;color:var(--sub);line-height:1.5}
-    .hwcr{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-
-    /* CLOSING */
-    #s12{flex-direction:row}
-    .cll{width:320px;background:var(--surf);border-left:1px solid var(--bdr);
-      flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
-    .cll::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-      background:linear-gradient(90deg,var(--acc),transparent)}
-    .clcode{flex:1;padding:24px 20px;font-family:var(--mono);font-size:12.5px;
-      line-height:2.05;color:#1d3450;overflow:hidden;direction:ltr;text-align:left}
-    .clft{height:46px;border-top:1px solid var(--bdr);display:flex;align-items:center;
-      padding:0 16px;gap:11px;flex-shrink:0}
-    .clft i{font-size:16px} .clft .sp{flex:1}
-    .clft .v{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
-    .clr{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 44px 28px 24px;position:relative;overflow:hidden}
-    .clr::before{content:"";position:absolute;top:-80px;left:-80px;width:340px;height:340px;
-      background:radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%);pointer-events:none}
-    .clbig{font-size:52px;font-weight:900;text-align:right;line-height:1.1}
-    .clbig .l1{color:var(--wh)} .clbig .l2{color:var(--acc)}
-    .cl-instr{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-bottom:14px}
-    .cl-instr-info{text-align:right}
-    .cl-instr-name{font-size:13.5px;font-weight:800;color:var(--wh)}
-    .cl-instr-role{font-size:10.5px;color:var(--sub);font-family:var(--mono)}
-    .cl-instr-company{font-size:10px;color:var(--acc);font-family:var(--mono)}
-    .cl-instr-photo{width:44px;height:44px;border-radius:50%;border:2px solid var(--acc);overflow:hidden;flex-shrink:0}
-    .cl-instr-photo img{width:100%;height:100%;object-fit:cover}
-    .clnx{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;margin-bottom:14px}
-    .nx-label{font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:4px}
-    .nx-title{font-size:14px;font-weight:700;color:var(--wh)}
-    .clics{display:flex;gap:14px;justify-content:flex-end;font-size:18px}
-
-    /* misc per-slide fixes */
-    #s6 .two-col{grid-template-columns:.95fr 1.05fr}
-    #s9 .cb{height:100%}
-
-    /* COPY BUTTONS */
-    .copyable-code {
-      position: relative;
-      padding-top: 38px !important;
-    }
-    .copyable-code .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 26px;
-      padding: 0 10px;
-      border: 1px solid var(--bdr2);
-      border-radius: 999px;
-      background: rgba(6, 11, 18, 0.96);
-      color: var(--sub);
-      font-family: var(--sans);
-      font-size: 11px;
-      cursor: pointer;
-      transition: all .18s ease;
-      z-index: 3;
-    }
-    .copyable-code .copy-btn:hover {
-      border-color: var(--acc);
-      color: var(--wh);
-      background: rgba(17, 27, 42, 0.98);
-    }
-    .copyable-code .copy-btn i {
-      font-size: 11px;
-      pointer-events: none;
-    }
-    .copyable-code .copy-btn span {
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .copyable-code .copy-btn.copied {
-      color: var(--gn);
-      border-color: rgba(16, 217, 122, .35);
-      background: rgba(16, 217, 122, .1);
-    }
-    .copyable-code .cb-label {
-      left: 12px !important;
-      right: auto !important;
-      max-width: calc(100% - 120px);
-      text-align: left;
-    }
-  </style>
+  <link rel="stylesheet" href="../../assets/css/deck.css" />
 </head>
 <body>
+<div id="scale-wrap">
 <div id="stage">
 
   <!-- ══ S1 COVER ══ -->
   <div class="slide active" id="s1">
     <div class="cvl">
       <pre>
-<span style="color:#1e3554">&lt;!-- resources/views --&gt;</span>
-<span style="color:#1a3050">  layouts/dashboard.blade.php</span>
-<span style="color:#162b46">  partials/header.blade.php</span>
-<span style="color:#132740">  partials/sidebar.blade.php</span>
-<span style="color:#102240">  dashboard.blade.php</span>
+&lt;!-- resources/views --&gt;
+  layouts/dashboard.blade.php
+  partials/header.blade.php
+  partials/sidebar.blade.php
+  dashboard.blade.php
 
-<span style="color:#1e3554">@extends</span><span style="color:#1a3050">('layouts.dashboard')</span>
+@extends('layouts.dashboard')
 
-<span style="color:#1e3554">@section</span><span style="color:#1a3050">('content')</span>
-<span style="color:#162b46">  ...</span>
-<span style="color:#1e3554">@endsection</span>
+@section('content')
+  ...
+@endsection
 
-<span style="color:#1e3554">Route::get</span><span style="color:#1a3050">('/dashboard',</span>
-<span style="color:#162b46">  [DashboardController::class,</span>
-<span style="color:#132740">   'index']);</span>
+Route::get('/dashboard',
+  [DashboardController::class,
+   'index']);
       </pre>
       <div class="cvl-ft">
         <i class="fab fa-laravel" style="color:#ff2d20"></i>
@@ -760,13 +474,13 @@
         // المحاضرة القادمة...<br><br>
         // Blade بالعمق<br>
         // + Configuration<br><br>
-        <span style="color:#1e4060">@stack</span>(<span style="color:#193550">'scripts'</span>)<br>
-        <span style="color:#1e4060">@push</span>(<span style="color:#193550">'scripts'</span>)<br>
+        @stack('scripts')<br>
+        @push('scripts')<br>
         &nbsp;...<br>
-        <span style="color:#1e4060">@endpush</span><br><br>
-        <span style="color:#172e4a">config</span>(<span style="color:#193550">'app.name'</span>)<br>
-        <span style="color:#172e4a">php artisan</span><br>
-        <span style="color:#1a3a58">config:cache</span>
+        @endpush<br><br>
+        config('app.name')<br>
+        php artisan<br>
+        config:cache
       </div>
       <div class="clft">
         <i class="fab fa-laravel" style="color:#ff2d20"></i>
@@ -803,133 +517,34 @@
     </div>
   </div>
 
-</div><!-- /stage -->
+</div>
+<!-- /stage -->
+</div>
+<!-- /scale-wrap -->
 
 <!-- NAV ROW -->
-<div id="nav-row">
-  <div id="instr-card">
-    <div class="iav">
-      <img src="../../assets/alsaeyd.jpeg" alt=""/>
+    <div id="nav-row">
+      <div id="instr-card">
+        <div class="iav">
+          <img src="../../assets/alsaeyd.jpeg" alt="" />
+        </div>
+        <div>
+          <div class="inm">السيد الاخرسي</div>
+          <div class="irl">Full Stack Developer & Instructor</div>
+        </div>
+      </div>
+      <div id="nav">
+        <button class="nb" id="btnP" disabled>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div id="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+        <span id="ctr">1 / 12</span>
+        <button class="nb next" id="btnN">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
     </div>
-    <div>
-      <div class="inm">السيد الاخرسي</div>
-      <div class="irl">Full Stack Developer & Instructor</div>
-    </div>
-  </div>
-  <div id="nav">
-    <button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button>
-    <div id="dots"></div>
-    <span id="ctr">1 / 12</span>
-    <button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button>
-  </div>
-</div>
 
-<script>
-  const N=12; let c=1;
-  const ctr=document.getElementById("ctr"),btnN=document.getElementById("btnN"),
-        btnP=document.getElementById("btnP"),dotsEl=document.getElementById("dots");
-  for(let i=1;i<=N;i++){
-    const d=document.createElement("div");
-    d.className="dot"+(i===1?" on":"");
-    d.onclick=()=>go(i);
-    dotsEl.appendChild(d);
-  }
-  function go(n){
-    if(n<1||n>N||n===c)return;
-    document.getElementById("s"+c).classList.remove("active");
-    c=n;
-    document.getElementById("s"+c).classList.add("active");
-    ctr.textContent=c+" / "+N;
-    btnP.disabled=c===1; btnN.disabled=c===N;
-    dotsEl.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("on",i+1===c));
-  }
-  btnN.onclick=()=>go(c+1);
-  btnP.onclick=()=>go(c-1);
-  document.addEventListener("keydown",e=>{
-    if(["ArrowRight","ArrowDown"," "].includes(e.key)){e.preventDefault();go(c+1);}
-    if(["ArrowLeft","ArrowUp"].includes(e.key)){e.preventDefault();go(c-1);}
-  });
-
-  /* Copy code buttons */
-  function copyCodeText(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      return navigator.clipboard.writeText(text);
-    }
-
-    return new Promise((resolve, reject) => {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.setAttribute("readonly", "readonly");
-      ta.style.position = "fixed";
-      ta.style.top = "-9999px";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      ta.setSelectionRange(0, ta.value.length);
-
-      try {
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        resolve();
-      } catch (error) {
-        document.body.removeChild(ta);
-        reject(error);
-      }
-    });
-  }
-
-  function extractCodeText(el) {
-    const clone = el.cloneNode(true);
-    clone.querySelectorAll(".copy-btn, .cb-label").forEach(node => node.remove());
-    return clone.innerText
-      .replace(/\u00a0/g, " ")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim();
-  }
-
-  function setCopiedState(btn) {
-    clearTimeout(btn._copyTimer);
-    btn.classList.add("copied");
-    btn.innerHTML = '<i class="fas fa-check"></i><span>تم النسخ</span>';
-    btn._copyTimer = setTimeout(() => {
-      btn.classList.remove("copied");
-      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
-    }, 1600);
-  }
-
-  function initCopyButtons() {
-    document.querySelectorAll('.cb, .term-body').forEach(el => {
-      if (el.dataset.copyReady === 'true') return;
-      el.dataset.copyReady = 'true';
-      el.classList.add('copyable-code');
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'copy-btn';
-      btn.setAttribute('aria-label', 'نسخ الكود');
-      btn.innerHTML = '<i class="fas fa-copy"></i><span>نسخ</span>';
-
-      btn.addEventListener('click', async event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const text = extractCodeText(el);
-        if (!text) return;
-
-        try {
-          await copyCodeText(text);
-          setCopiedState(btn);
-        } catch (error) {
-          console.error('Copy failed:', error);
-        }
-      });
-
-      el.appendChild(btn);
-    });
-  }
-
-  initCopyButtons();
-
-</script>
+    <script src="../../assets/js/deck.js"></script>
 </body>
 </html>
