@@ -11,1358 +11,12 @@
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
       rel="stylesheet"
     />
-    <style>
-      /* ═══════════════════════════════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════════════════════════════ */
-      :root {
-        --bg: #07111d;
-        --surf: #0d1726;
-        --card: #101d31;
-        --card2: #16253d;
-        --bdr: #22324c;
-        --bdr2: #2c4366;
-        --acc: #ff8a3d;
-        --acc2: #ffb067;
-        --wh: #f4f8ff;
-        --sub: #89a4c7;
-        --dim: #496585;
-        --gn: #19d48a;
-        --bl: #4fc3ff;
-        --pu: #b98dff;
-        --rd: #ff7a7a;
-        --gold: #f3c55f;
-        --mono: "JetBrains Mono", monospace;
-        --sans: "Tajawal", sans-serif;
-        --W: 1060px;
-        --H: 596px;
-        --R: 18px;
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background:
-          radial-gradient(circle at 15% 18%, rgba(79, 195, 255, 0.12), transparent 24%),
-          radial-gradient(circle at 82% 14%, rgba(255, 138, 61, 0.16), transparent 28%),
-          radial-gradient(circle at 50% 100%, rgba(185, 141, 255, 0.08), transparent 32%),
-          linear-gradient(180deg, #02050a 0%, #06101a 45%, #03060b 100%);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--sans);
-        overflow: hidden;
-        gap: 18px;
-        padding: 16px 0;
-        position: relative;
-      }
-
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-        background-size: 36px 36px;
-        mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
-        pointer-events: none;
-        opacity: 0.35;
-      }
-
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(3, 6, 11, 0.15), rgba(3, 6, 11, 0.55));
-        pointer-events: none;
-      }
-
-      /* ── STAGE ── */
-      #stage {
-        position: relative;
-        width: var(--W);
-        height: var(--H);
-        flex-shrink: 0;
-        z-index: 1;
-      }
-
-      /* ── SLIDES ── */
-      .slide {
-        position: absolute;
-        inset: 0;
-        width: var(--W);
-        height: var(--H);
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
-          linear-gradient(180deg, #0a1421 0%, #07111d 100%);
-        border-radius: var(--R);
-        border: 1px solid var(--bdr);
-        overflow: hidden;
-        display: none;
-        flex-direction: column;
-        box-shadow:
-          0 30px 90px rgba(0, 0, 0, 0.72),
-          0 0 0 1px rgba(255, 138, 61, 0.05),
-          inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      }
-
-      .slide.active {
-        display: flex;
-        animation: fadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
-      }
-
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(12px) scale(0.986);
-        }
-
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-
-      /* ── NAV BAR ── */
-      #nav-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-shrink: 0;
-        z-index: 1;
-      }
-
-      /* Instructor card — compact pill on the side */
-      #instr-card {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(13, 23, 38, 0.82);
-        border: 1px solid var(--bdr);
-        border-radius: 50px;
-        padding: 5px 14px 5px 6px;
-        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
-        backdrop-filter: blur(14px);
-      }
-
-      .instr-avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        border: 2px solid var(--acc);
-        flex-shrink: 0;
-        overflow: hidden;
-      }
-
-      .instr-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-
-      .instr-info {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .instr-name {
-        font-size: 12.5px;
-        font-weight: 800;
-        color: var(--wh);
-        line-height: 1.2;
-        white-space: nowrap;
-      }
-
-      .instr-role {
-        font-size: 9.5px;
-        color: var(--sub);
-        font-family: var(--mono);
-        white-space: nowrap;
-      }
-
-      #nav {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        background: rgba(13, 23, 38, 0.82);
-        border: 1px solid var(--bdr);
-        border-radius: 50px;
-        padding: 5px 6px;
-        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
-        backdrop-filter: blur(14px);
-        flex-shrink: 0;
-      }
-
-      .nb {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.18s ease;
-        color: var(--sub);
-        background: transparent;
-      }
-
-      .nb:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--wh);
-        transform: translateY(-1px);
-      }
-
-      .nb:disabled {
-        opacity: 0.22;
-        cursor: not-allowed;
-      }
-
-      .nb.next {
-        background: linear-gradient(135deg, var(--acc), var(--acc2));
-        color: #fff;
-        margin-right: 4px;
-        box-shadow: 0 10px 20px rgba(255, 138, 61, 0.28);
-      }
-
-      .nb.next:hover:not(:disabled) {
-        background: var(--acc2);
-      }
-
-      #ctr {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--dim);
-        padding: 0 10px;
-        white-space: nowrap;
-      }
-
-      #dots {
-        display: flex;
-        gap: 3px;
-        align-items: center;
-        padding: 0 4px;
-        max-width: 200px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .dot {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: var(--bdr2);
-        cursor: pointer;
-        transition: all 0.22s;
-      }
-
-      .dot.on {
-        background: var(--acc);
-        width: 14px;
-        border-radius: 3px;
-      }
-
-      /* ── TOPBAR ── */
-      .tb {
-        height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 32px;
-        border-bottom: 1px solid var(--bdr);
-        background: rgba(10, 20, 33, 0.84);
-        backdrop-filter: blur(10px);
-        flex-shrink: 0;
-        position: relative;
-        z-index: 2;
-      }
-
-      .tb .tag {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--acc);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .tb .pn {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--dim);
-      }
-
-      .tb .cid {
-        font-size: 10.5px;
-        color: var(--dim);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .dlive {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--acc);
-        animation: pulse 2s infinite;
-        display: inline-block;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-
-        50% {
-          opacity: 0.22;
-        }
-      }
-
-      .sb {
-        flex: 1;
-        padding: 22px 32px 18px;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        z-index: 1;
-        overflow: auto;
-      }
-
-      .sh {
-        font-size: 23px;
-        font-weight: 900;
-        color: var(--wh);
-        text-align: right;
-        line-height: 1.25;
-        margin-bottom: 16px;
-      }
-
-      .sh .a {
-        color: var(--acc);
-      }
-
-      .sh .a2 {
-        color: var(--bl);
-      }
-
-      .sh .ag {
-        color: var(--gn);
-      }
-
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-family: var(--mono);
-        font-size: 10px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--sub);
-        border: 1px solid var(--bdr);
-      }
-
-      .cmd {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--gn);
-        background: rgba(16, 217, 122, 0.07);
-        border: 1px solid rgba(16, 217, 122, 0.18);
-        border-radius: 5px;
-        padding: 2px 8px;
-        display: inline-block;
-      }
-
-      .note {
-        background: linear-gradient(135deg, rgba(255, 138, 61, 0.12), rgba(255, 195, 112, 0.06));
-        border: 1px solid rgba(255, 138, 61, 0.2);
-        border-radius: 8px;
-        padding: 9px 14px;
-        font-size: 12px;
-        color: #ffd9ba;
-        text-align: right;
-        font-style: normal;
-        line-height: 1.6;
-      }
-
-      /* ═══════════════════════════════════════════════════════════════
-   S1 — HOME / COURSE COVER
-═══════════════════════════════════════════════════════════════ */
-      #s1 {
-        flex-direction: row;
-      }
-
-      .home-left {
-        width: 340px;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
-          linear-gradient(180deg, #0e1828 0%, #0b1522 100%);
-        border-left: 1px solid var(--bdr);
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .home-left::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--acc), rgba(79, 195, 255, 0.55), transparent);
-      }
-
-      .home-code {
-        flex: 1;
-        padding: 24px 20px;
-        font-family: var(--mono);
-        font-size: 12px;
-        line-height: 2;
-        color: #5f7ea4;
-        overflow: auto;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
-          linear-gradient(180deg, #08111d, #091320);
-      }
-
-      .home-left-ft {
-        height: 50px;
-        border-top: 1px solid var(--bdr);
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        gap: 10px;
-        flex-shrink: 0;
-      }
-
-      .home-left-ft i {
-        font-size: 16px;
-      }
-
-      .home-left-ft .sp {
-        flex: 1;
-      }
-
-      .home-left-ft .ver {
-        font-family: var(--mono);
-        font-size: 9px;
-        color: var(--dim);
-      }
-
-      .home-right {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 32px 44px 28px 24px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .home-right::before {
-        content: "";
-        position: absolute;
-        top: -80px;
-        left: -80px;
-        width: 380px;
-        height: 380px;
-        background: radial-gradient(
-          circle,
-          rgba(249, 115, 22, 0.07) 0%,
-          transparent 70%
-        );
-        pointer-events: none;
-      }
-
-      .home-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        background: linear-gradient(135deg, rgba(255, 138, 61, 0.16), rgba(79, 195, 255, 0.12));
-        border: 1px solid rgba(255, 138, 61, 0.2);
-        border-radius: 999px;
-        padding: 6px 14px;
-        font-size: 11.5px;
-        font-weight: 700;
-        color: var(--acc);
-        align-self: flex-end;
-        margin-bottom: 18px;
-      }
-
-      .home-eyebrow {
-        font-size: 12.5px;
-        color: var(--sub);
-        text-align: right;
-        margin-bottom: 6px;
-      }
-
-      .home-h {
-        font-size: 42px;
-        font-weight: 900;
-        line-height: 1.02;
-        text-align: right;
-        color: var(--wh);
-        letter-spacing: -0.02em;
-      }
-
-      .home-h span {
-        color: #ffb067;
-        display: block;
-      }
-
-      .home-desc {
-        font-size: 13px;
-        color: var(--sub);
-        text-align: right;
-        margin-top: 10px;
-        line-height: 1.6;
-        max-width: 400px;
-        margin-right: 0;
-        margin-left: auto;
-      }
-
-      .home-stats {
-        display: flex;
-        gap: 9px;
-        justify-content: flex-end;
-        margin-top: 20px;
-      }
-
-      .hstat {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
-        border: 1px solid var(--bdr);
-        border-radius: 12px;
-        padding: 10px 14px;
-        text-align: center;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      }
-
-      .hstat .hl {
-        font-size: 9px;
-        color: var(--sub);
-        display: block;
-        margin-bottom: 3px;
-      }
-
-      .hstat .hv {
-        font-size: 16px;
-        font-weight: 900;
-        color: var(--wh);
-      }
-
-      .hstat .hu {
-        font-size: 9px;
-        color: var(--acc);
-      }
-
-      /* ═══════════════════════════════════════════════════════════════
-   S2 — COURSE INDEX (14 modules grid)
-═══════════════════════════════════════════════════════════════ */
-      .idx-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-        flex: 1;
-      }
-
-      .idx-card {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
-        border: 1px solid var(--bdr);
-        border-radius: 14px;
-        padding: 12px 12px 11px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-        transition:
-          border-color 0.22s,
-          transform 0.22s,
-          box-shadow 0.22s;
-        position: relative;
-        overflow: hidden;
-        text-decoration: none;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      }
-
-      .idx-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: var(--acc);
-        opacity: 0;
-        transition: opacity 0.18s;
-        z-index: 0;
-      }
-
-      .idx-card:hover {
-        border-color: var(--acc);
-        transform: translateY(-4px);
-        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.22);
-      }
-
-      .idx-card:hover::before {
-        opacity: 1;
-      }
-
-      .idx-num {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--acc);
-        font-weight: 700;
-        position: relative;
-        z-index: 1;
-      }
-
-      .idx-icon {
-        font-size: 20px;
-        margin: 3px 0;
-        position: relative;
-        z-index: 1;
-      }
-
-      .idx-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--wh);
-        text-align: right;
-        line-height: 1.4;
-        position: relative;
-        z-index: 1;
-      }
-
-      .idx-lecs {
-        font-size: 9.5px;
-        color: var(--dim);
-        text-align: right;
-        font-family: var(--mono);
-        position: relative;
-        z-index: 1;
-      }
-
-      .idx-hrs {
-        font-size: 9px;
-        color: var(--sub);
-        text-align: right;
-        position: relative;
-        z-index: 1;
-      }
-
-      .idx-icon {
-        font-size: 20px;
-        margin: 3px 0;
-      }
-
-      .idx-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--wh);
-        text-align: right;
-        line-height: 1.4;
-      }
-
-      .idx-lecs {
-        font-size: 9.5px;
-        color: var(--dim);
-        text-align: right;
-        font-family: var(--mono);
-      }
-
-      .idx-hrs {
-        font-size: 9px;
-        color: var(--sub);
-        text-align: right;
-      }
-
-      /* ═══════════════════════════════════════════════════════════════
-   MODULE PAGES (S3..S16 — one per module)
-═══════════════════════════════════════════════════════════════ */
-      .mod-layout {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        overflow: hidden;
-      }
-
-      .mod-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 0 0 14px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        margin-bottom: 14px;
-        flex-shrink: 0;
-        padding-bottom: 16px;
-      }
-
-      .mod-num-badge {
-        width: 52px;
-        height: 52px;
-        border-radius: 10px;
-        background: rgba(249, 115, 22, 0.1);
-        border: 1px solid rgba(249, 115, 22, 0.25);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--mono);
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--acc);
-        flex-shrink: 0;
-      }
-
-      .mod-info {
-        flex: 1;
-      }
-
-      .mod-title-main {
-        font-size: 19px;
-        font-weight: 900;
-        color: var(--wh);
-        text-align: right;
-      }
-
-      .mod-meta {
-        font-size: 11px;
-        color: var(--sub);
-        text-align: right;
-        margin-top: 3px;
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-      }
-
-      .mod-meta span {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .lec-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 9px;
-        flex: 1;
-        overflow: hidden;
-        align-content: start;
-      }
-
-      .lec-card {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
-        border: 1px solid var(--bdr);
-        border-radius: 12px;
-        padding: 12px 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        text-decoration: none;
-        transition:
-          border-color 0.22s,
-          transform 0.22s,
-          box-shadow 0.22s;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      }
-
-      .lec-card::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: var(--acc);
-        opacity: 0;
-        transition: opacity 0.18s;
-      }
-
-      .lec-card:hover {
-        border-color: var(--acc);
-        transform: translateY(-3px);
-        box-shadow: 0 18px 28px rgba(0, 0, 0, 0.22);
-      }
-
-      .lec-card:hover::after {
-        opacity: 1;
-      }
-
-      .lec-num {
-        font-family: var(--mono);
-        font-size: 9.5px;
-        color: var(--acc);
-        font-weight: 700;
-      }
-
-      .lec-title {
-        font-size: 12.5px;
-        font-weight: 800;
-        color: var(--wh);
-        text-align: right;
-        line-height: 1.35;
-      }
-
-      .lec-desc {
-        font-size: 11px;
-        color: var(--sub);
-        text-align: right;
-        line-height: 1.45;
-      }
-
-      .lec-time {
-        font-size: 10px;
-        color: var(--dim);
-        font-family: var(--mono);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .lec-link-icon {
-        position: absolute;
-        left: 10px;
-        bottom: 10px;
-        font-size: 11px;
-        color: var(--dim);
-        opacity: 0;
-        transition: opacity 0.18s;
-      }
-
-      .lec-card:hover .lec-link-icon {
-        opacity: 1;
-      }
-
-      /* ═══════════════════════════════════════════════════════════════
-   S17 — INSTRUCTOR / CLOSING
-═══════════════════════════════════════════════════════════════ */
-      #s17 {
-        flex-direction: row;
-      }
-
-      .close-left {
-        width: 300px;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
-          linear-gradient(180deg, #0e1828 0%, #0b1522 100%);
-        border-left: 1px solid var(--bdr);
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .close-left::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--acc), rgba(185, 141, 255, 0.65), transparent);
-      }
-
-      /* Instructor photo area */
-      .instr-photo-area {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 24px 20px;
-        gap: 12px;
-      }
-
-      .instr-photo-wrap {
-        width: 110px;
-        height: 110px;
-        border-radius: 50%;
-        border: 3px solid var(--acc);
-        background: var(--card);
-        overflow: hidden;
-        position: relative;
-        flex-shrink: 0;
-      }
-
-      .instr-photo-wrap img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .instr-photo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 42px;
-        color: var(--bdr2);
-        background: linear-gradient(135deg, var(--card), var(--surf));
-      }
-
-      .instr-name-big {
-        font-size: 16px;
-        font-weight: 900;
-        color: var(--wh);
-        text-align: center;
-      }
-
-      .instr-title-tag {
-        font-size: 11px;
-        color: var(--acc);
-        text-align: center;
-        font-family: var(--mono);
-      }
-
-      .instr-bio {
-        font-size: 11.5px;
-        color: var(--sub);
-        text-align: center;
-        line-height: 1.55;
-        max-width: 220px;
-      }
-
-      .instr-links {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 4px;
-      }
-
-      .instr-link-btn {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 10.5px;
-        color: var(--sub);
-        background: var(--card);
-        border: 1px solid var(--bdr);
-        border-radius: 5px;
-        padding: 4px 10px;
-        text-decoration: none;
-        transition:
-          border-color 0.15s,
-          color 0.15s;
-        font-family: var(--mono);
-      }
-
-      .instr-link-btn:hover {
-        border-color: var(--acc);
-        color: var(--acc);
-      }
-
-      .close-left-ft {
-        height: 44px;
-        border-top: 1px solid var(--bdr);
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        gap: 8px;
-        flex-shrink: 0;
-      }
-
-      .close-left-ft i {
-        font-size: 14px;
-      }
-
-      .close-left-ft .sp {
-        flex: 1;
-      }
-
-      .close-left-ft .ver {
-        font-family: var(--mono);
-        font-size: 9px;
-        color: var(--dim);
-      }
-
-      .close-right {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 32px 44px 28px 24px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .close-right::before {
-        content: "";
-        position: absolute;
-        top: -80px;
-        left: -80px;
-        width: 380px;
-        height: 380px;
-        background: radial-gradient(
-          circle,
-          rgba(249, 115, 22, 0.06) 0%,
-          transparent 70%
-        );
-        pointer-events: none;
-      }
-
-      /* Thank you section */
-      .thanks-big {
-        font-size: 48px;
-        font-weight: 900;
-        line-height: 1.1;
-        text-align: right;
-      }
-
-      .thanks-big .l1 {
-        color: var(--wh);
-      }
-
-      .thanks-big .l2 {
-        color: var(--acc);
-      }
-
-      .thanks-desc {
-        font-size: 13px;
-        color: var(--sub);
-        text-align: right;
-        margin-top: 12px;
-        line-height: 1.6;
-      }
-
-      .thanks-next {
-        font-family: var(--mono);
-        font-size: 10.5px;
-        color: var(--dim);
-        text-align: right;
-        margin-top: 14px;
-      }
-
-      /* Company section */
-      .company-section {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        justify-content: flex-end;
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid var(--bdr);
-      }
-
-      .company-logo {
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-        background: var(--card);
-        border: 1px solid var(--bdr);
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .company-logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        padding: 6px;
-      }
-
-      .company-info {
-        text-align: right;
-      }
-
-      .company-name {
-        font-size: 13px;
-        font-weight: 800;
-        color: var(--wh);
-      }
-
-      .company-tagline {
-        font-size: 10.5px;
-        color: var(--sub);
-      }
-
-      .company-label {
-        font-size: 9.5px;
-        color: var(--dim);
-        font-family: var(--mono);
-        margin-bottom: 3px;
-      }
-
-      /* Module color accents for idx-cards (top bar on hover) */
-      .m1 .idx-card::before {
-        background: #f97316;
-      }
-
-      .m2 .idx-card::before {
-        background: #38bdf8;
-      }
-
-      .m3 .idx-card::before {
-        background: #10d97a;
-      }
-
-      .m4 .idx-card::before {
-        background: #c084fc;
-      }
-
-      .m5 .idx-card::before {
-        background: #f87171;
-      }
-
-      .m6 .idx-card::before {
-        background: #fbbf24;
-      }
-
-      .m7 .idx-card::before {
-        background: #34d399;
-      }
-
-      .m8 .idx-card::before {
-        background: #60a5fa;
-      }
-
-      .m9 .idx-card::before {
-        background: #a78bfa;
-      }
-
-      .m10 .idx-card::before {
-        background: #fb923c;
-      }
-
-      .m11 .idx-card::before {
-        background: #2dd4bf;
-      }
-
-      .m12 .idx-card::before {
-        background: #06b6d4;
-      }
-
-      .m13 .idx-card::before {
-        background: #f59e0b;
-      }
-
-      .m14 .idx-card::before {
-        background: #8b5cf6;
-      }
-
-      /* idx hover border colors per module */
-      .m1 .idx-card:hover {
-        border-color: #f97316;
-      }
-
-      .m2 .idx-card:hover {
-        border-color: #38bdf8;
-      }
-
-      .m3 .idx-card:hover {
-        border-color: #10d97a;
-      }
-
-      .m4 .idx-card:hover {
-        border-color: #c084fc;
-      }
-
-      .m5 .idx-card:hover {
-        border-color: #f87171;
-      }
-
-      .m6 .idx-card:hover {
-        border-color: #fbbf24;
-      }
-
-      .m7 .idx-card:hover {
-        border-color: #34d399;
-      }
-
-      .m8 .idx-card:hover {
-        border-color: #60a5fa;
-      }
-
-      .m9 .idx-card:hover {
-        border-color: #a78bfa;
-      }
-
-      .m10 .idx-card:hover {
-        border-color: #fb923c;
-      }
-
-      .m11 .idx-card:hover {
-        border-color: #2dd4bf;
-      }
-
-      .m12 .idx-card:hover {
-        border-color: #06b6d4;
-      }
-
-      .m13 .idx-card:hover {
-        border-color: #f59e0b;
-      }
-
-      .m14 .idx-card:hover {
-        border-color: #8b5cf6;
-      }
-
-      /* mod-num-badge per module */
-      .m1 .mod-num-badge {
-        background: rgba(249, 115, 22, 0.1);
-        border-color: rgba(249, 115, 22, 0.25);
-        color: #f97316;
-      }
-
-      .m2 .mod-num-badge {
-        background: rgba(56, 189, 248, 0.1);
-        border-color: rgba(56, 189, 248, 0.25);
-        color: #38bdf8;
-      }
-
-      .m3 .mod-num-badge {
-        background: rgba(16, 217, 122, 0.1);
-        border-color: rgba(16, 217, 122, 0.25);
-        color: #10d97a;
-      }
-
-      .m4 .mod-num-badge {
-        background: rgba(192, 132, 252, 0.1);
-        border-color: rgba(192, 132, 252, 0.25);
-        color: #c084fc;
-      }
-
-      .m5 .mod-num-badge {
-        background: rgba(248, 113, 113, 0.1);
-        border-color: rgba(248, 113, 113, 0.25);
-        color: #f87171;
-      }
-
-      .m6 .mod-num-badge {
-        background: rgba(251, 191, 36, 0.1);
-        border-color: rgba(251, 191, 36, 0.25);
-        color: #fbbf24;
-      }
-
-      .m7 .mod-num-badge {
-        background: rgba(52, 211, 153, 0.1);
-        border-color: rgba(52, 211, 153, 0.25);
-        color: #34d399;
-      }
-
-      .m8 .mod-num-badge {
-        background: rgba(96, 165, 250, 0.1);
-        border-color: rgba(96, 165, 250, 0.25);
-        color: #60a5fa;
-      }
-
-      .m9 .mod-num-badge {
-        background: rgba(167, 139, 250, 0.1);
-        border-color: rgba(167, 139, 250, 0.25);
-        color: #a78bfa;
-      }
-
-      .m10 .mod-num-badge {
-        background: rgba(251, 146, 60, 0.1);
-        border-color: rgba(251, 146, 60, 0.25);
-        color: #fb923c;
-      }
-
-      .m11 .mod-num-badge {
-        background: rgba(45, 212, 191, 0.1);
-        border-color: rgba(45, 212, 191, 0.25);
-        color: #2dd4bf;
-      }
-
-      .m12 .mod-num-badge {
-        background: rgba(6, 182, 212, 0.1);
-        border-color: rgba(6, 182, 212, 0.25);
-        color: #06b6d4;
-      }
-
-      .m13 .mod-num-badge {
-        background: rgba(245, 158, 11, 0.1);
-        border-color: rgba(245, 158, 11, 0.25);
-        color: #f59e0b;
-      }
-
-      .m14 .mod-num-badge {
-        background: rgba(139, 92, 246, 0.1);
-        border-color: rgba(139, 92, 246, 0.25);
-        color: #8b5cf6;
-      }
-
-      /* lec-card right accent per module */
-      .m1 .lec-card::after {
-        background: #f97316;
-      }
-
-      .m2 .lec-card::after {
-        background: #38bdf8;
-      }
-
-      .m3 .lec-card::after {
-        background: #10d97a;
-      }
-
-      .m4 .lec-card::after {
-        background: #c084fc;
-      }
-
-      .m5 .lec-card::after {
-        background: #f87171;
-      }
-
-      .m6 .lec-card::after {
-        background: #fbbf24;
-      }
-
-      .m7 .lec-card::after {
-        background: #34d399;
-      }
-
-      .m8 .lec-card::after {
-        background: #60a5fa;
-      }
-
-      .m9 .lec-card::after {
-        background: #a78bfa;
-      }
-
-      .m10 .lec-card::after {
-        background: #fb923c;
-      }
-
-      .m11 .lec-card::after {
-        background: #2dd4bf;
-      }
-
-      .m12 .lec-card::after {
-        background: #06b6d4;
-      }
-
-      .m13 .lec-card::after {
-        background: #f59e0b;
-      }
-
-      .m14 .lec-card::after {
-        background: #8b5cf6;
-      }
-    </style>
+    <link rel="stylesheet" href="./assets/css/deck.css" />
+    <link rel="stylesheet" href="./assets/css/index.css" />
   </head>
 
   <body>
-    <div id="stage">
+    <div id="scale-wrap"><div id="stage">
       <!-- ══════════════════════════════════════════════════════════════
      S1 — HOME COVER
 ══════════════════════════════════════════════════════════════ -->
@@ -1374,7 +28,7 @@
             namespace App\Http\Controllers;<br />
             <br />
             use App\Models\Product;<br />
-            useF App\Models\Order;<br />
+            use App\Models\Order;<br />
             <br />
             class SouqProController<br />
             &nbsp;&nbsp;extends Controller {<br />
@@ -1792,8 +446,8 @@
                 📝 المحور الثالث — Eloquent والـ CRUD
               </div>
               <div class="mod-meta">
-                <span><i class="fas fa-play-circle"></i> 7 محاضرات</span
-                ><span><i class="fas fa-clock"></i> 7.5 ساعات</span>
+                <span><i class="fas fa-play-circle"></i> 8 محاضرات</span
+                ><span><i class="fas fa-clock"></i> 8.5 ساعات</span>
               </div>
             </div>
             <div
@@ -1810,15 +464,24 @@
           <div class="lec-grid">
             <a class="lec-card m3" href="./lectures/module-03/lecture-08.html" target="_blank"
               ><div class="lec-num">محاضرة 08</div>
-              <div class="lec-title">Eloquent Basics</div>
+              <div class="lec-title">Authentication: حماية لوحة التحكم من البداية</div>
               <div class="lec-desc">
-                all(), find(), where(), $fillable, Accessors & Mutators
+                Breeze، Middleware Auth، Route Names، مفهوم Guard، CSRF
               </div>
-              <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 60-75 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
             <a class="lec-card m3" href="./lectures/module-03/lecture-09.html" target="_blank"
               ><div class="lec-num">محاضرة 09</div>
+              <div class="lec-title">Controllers & Routes بالعمق + Eloquent Basics</div>
+              <div class="lec-desc">
+                Resource Controllers، Route::resource، Route Groups، route:list، all()، find()، $fillable
+              </div>
+              <div class="lec-time"><i class="fas fa-clock"></i> 75 دقيقة</div>
+              <i class="fas fa-external-link-alt lec-link-icon"></i
+            ></a>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-10.html" target="_blank"
+              ><div class="lec-num">محاضرة 10</div>
               <div class="lec-title">CRUD: Create & Read + Pagination</div>
               <div class="lec-desc">
                 create()، عرض البيانات، بحث، Pagination، قائمة المنتجات
@@ -1826,8 +489,8 @@
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/module-03/lecture-10.html" target="_blank"
-              ><div class="lec-num">محاضرة 10</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-11.html" target="_blank"
+              ><div class="lec-num">محاضرة 11</div>
               <div class="lec-title">CRUD: Update & Delete</div>
               <div class="lec-desc">
                 update()، delete()، Flash Messages، Route Model Binding
@@ -1835,8 +498,8 @@
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/module-03/lecture-11.html" target="_blank"
-              ><div class="lec-num">محاضرة 11</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-12.html" target="_blank"
+              ><div class="lec-num">محاضرة 12</div>
               <div class="lec-title">Validation وCustom Rules</div>
               <div class="lec-desc">
                 validate()، Form Request، Rules، @error، Custom Rules
@@ -1844,8 +507,8 @@
               <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/module-03/lecture-12.html" target="_blank"
-              ><div class="lec-num">محاضرة 12</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-13.html" target="_blank"
+              ><div class="lec-num">محاضرة 13</div>
               <div class="lec-title">File Upload وStorage</div>
               <div class="lec-desc">
                 Storage Disks، رفع الصور، تحديثها، وعرضها
@@ -1853,15 +516,15 @@
               <div class="lec-time"><i class="fas fa-clock"></i> 60 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/module-03/lecture-13.html" target="_blank"
-              ><div class="lec-num">محاضرة 13</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-14.html" target="_blank"
+              ><div class="lec-num">محاضرة 14</div>
               <div class="lec-title">CRUD تطبيق كامل — SouqPro</div>
               <div class="lec-desc">Admin Panel كامل للمنتجات والفئات مع تنظيف الكود</div>
               <div class="lec-time"><i class="fas fa-clock"></i> 90 دقيقة</div>
               <i class="fas fa-external-link-alt lec-link-icon"></i
             ></a>
-            <a class="lec-card m3" href="./lectures/module-03/lecture-14.html" target="_blank"
-              ><div class="lec-num">محاضرة 14</div>
+            <a class="lec-card m3" href="./lectures/module-03/lecture-15.html" target="_blank"
+              ><div class="lec-num">محاضرة 15</div>
               <div class="lec-title">عرض المنتجات للزوار</div>
               <div class="lec-desc">
                 صفحة المتجر العامة، فلترة، ترتيب، وتفاصيل المنتج
@@ -2437,7 +1100,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div></div>
     <!-- /stage -->
 
     <!-- ══════════════════════════════════════════════════════════════
@@ -2446,74 +1109,57 @@
     <div id="nav-row">
       <!-- Instructor chip -->
       <div id="instr-card">
-        <div class="instr-avatar">
-          <img src="./assets/alsaeyd.jpeg" alt="" />
+        <div class="iav">
+          <img src="./assets/alsaeyd.jpeg" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E3A5F&color=38BDF8&size=80&bold=true'" />
         </div>
-        <div class="instr-info">
-          <div class="instr-name">السيد الاخرسي</div>
-          <div class="instr-role">Full Stack Dev & Laravel Instructor</div>
+        <div>
+          <div class="inm">السيد الاخرسي</div>
+          <div class="irl">Full Stack Dev &amp; Laravel Instructor</div>
         </div>
       </div>
 
       <!-- Nav buttons -->
       <div id="nav">
-        <button class="nb next" id="btnN">
+        <button class="nb" id="btnP" disabled>
           <i class="fas fa-chevron-right"></i>
         </button>
-        <div id="dots"></div>
+        <div id="progress" aria-hidden="true"><div id="progress-fill"></div></div>
         <span id="ctr">1 / 17</span>
-        <button class="nb" id="btnP" disabled>
+        <button class="nb next" id="btnN">
           <i class="fas fa-chevron-left"></i>
         </button>
       </div>
     </div>
 
+    <script src="./assets/js/deck.js"></script>
     <script>
-      const N = 17;
-      let c = 1;
-      const ctr = document.getElementById("ctr");
-      const btnN = document.getElementById("btnN");
-      const btnP = document.getElementById("btnP");
-      const dotsEl = document.getElementById("dots");
-
-      for (let i = 1; i <= N; i++) {
-        const d = document.createElement("div");
-        d.className = "dot" + (i === 1 ? " on" : "");
-        d.onclick = () => go(i);
-        dotsEl.appendChild(d);
-      }
-
-      // Global so onclick= works from HTML attributes
+      // Shim for the 14 index-grid cards' onclick="goTo(n)" handlers.
+      // assets/js/deck.js keeps its own slide-switch logic (go()) private
+      // inside an IIFE, so it isn't reused here directly; this mirrors the
+      // same steps (toggle .active, update #ctr, update #progress-fill,
+      // update button disabled state) without modifying the shared file.
       window.goTo = function (n) {
-        go(n);
+        const N = document.querySelectorAll(".slide").length;
+        const current = document.querySelector(".slide.active");
+        if (!current || n < 1 || n > N) return;
+        const currentNum = parseInt(current.id.slice(1), 10);
+        if (n === currentNum) return;
+
+        current.classList.remove("active");
+        const target = document.getElementById("s" + n);
+        target.classList.add("active");
+
+        const ctr = document.getElementById("ctr");
+        if (ctr) ctr.textContent = n + " / " + N;
+
+        const progressFill = document.getElementById("progress-fill");
+        if (progressFill) progressFill.style.width = (n / N) * 100 + "%";
+
+        const btnP = document.getElementById("btnP");
+        const btnN = document.getElementById("btnN");
+        if (btnP) btnP.disabled = n === 1;
+        if (btnN) btnN.disabled = n === N;
       };
-
-      function go(n) {
-        if (n < 1 || n > N || n === c) return;
-        document.getElementById("s" + c).classList.remove("active");
-        c = n;
-        document.getElementById("s" + c).classList.add("active");
-        ctr.textContent = c + " / " + N;
-        btnP.disabled = c === 1;
-        btnN.disabled = c === N;
-        dotsEl
-          .querySelectorAll(".dot")
-          .forEach((d, i) => d.classList.toggle("on", i + 1 === c));
-      }
-
-      btnN.onclick = () => go(c + 1);
-      btnP.onclick = () => go(c - 1);
-
-      document.addEventListener("keydown", (e) => {
-        if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
-          e.preventDefault();
-          go(c + 1);
-        }
-        if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
-          e.preventDefault();
-          go(c - 1);
-        }
-      });
     </script>
   </body>
 </html>

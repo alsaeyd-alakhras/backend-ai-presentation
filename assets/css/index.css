@@ -1,0 +1,882 @@
+/* index.html companion stylesheet — layered on top of ./assets/css/deck.css.
+   Contains only classes specific to the course landing/index page: the
+   cover slide (home-*), the 14-module index grid (idx-*), the per-module
+   pages (mod-*, lec-*), and the closing/instructor-bio slide (close-*,
+   instr-photo-*, thanks-*, company-*). Do not duplicate anything already
+   defined in the shared deck.css (topbar, .sb, .card, .pill, .note,
+   #nav-row, #instr-card nav chip, #nav, .nb, #ctr, #progress). Shared
+   deck.css hardcodes the closing-slide selector to #s15; this page's real
+   last slide is #s17, so that override is re-scoped below. */
+
+/* ── S1: cover / course hero ── */
+#s1 {
+  flex-direction: row;
+}
+
+.home-left {
+  width: 340px;
+  background: linear-gradient(165deg, var(--acc) 0%, var(--acc2) 100%);
+  border-left: 1px solid var(--acc2);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.home-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), transparent);
+}
+
+.home-code {
+  flex: 1;
+  padding: 24px 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.32);
+  direction: ltr;
+  text-align: left;
+  overflow: auto;
+}
+
+.home-left-ft {
+  height: 50px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.home-left-ft i {
+  font-size: 16px;
+}
+
+.home-left-ft .sp {
+  flex: 1;
+}
+
+.home-left-ft .ver {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.home-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 44px 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-right::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(30, 64, 175, 0.1);
+  border: 1px solid rgba(30, 64, 175, 0.24);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--acc);
+  align-self: flex-end;
+  margin-bottom: 18px;
+}
+
+.home-eyebrow {
+  font-size: 12.5px;
+  color: var(--sub);
+  text-align: right;
+  margin-bottom: 6px;
+}
+
+.home-h {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: right;
+  color: var(--wh);
+  letter-spacing: -0.01em;
+}
+
+.home-h span {
+  color: var(--acc);
+  display: block;
+}
+
+.home-desc {
+  font-size: 13px;
+  color: var(--sub);
+  text-align: right;
+  margin-top: 10px;
+  line-height: 1.7;
+  max-width: 400px;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.home-stats {
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.hstat {
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.hstat .hl {
+  font-size: 9px;
+  color: var(--sub);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.hstat .hv {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--wh);
+}
+
+.hstat .hu {
+  font-size: 9px;
+  color: var(--acc);
+}
+
+/* ── S2: 14-module index grid ── */
+.idx-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.idx-card {
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  border-radius: 14px;
+  padding: 12px 12px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  transition:
+    border-color 0.22s,
+    transform 0.22s,
+    box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.idx-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--acc);
+  opacity: 0;
+  transition: opacity 0.18s;
+  z-index: 0;
+}
+
+.idx-card:hover {
+  border-color: var(--acc);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px rgba(15, 23, 42, 0.14);
+}
+
+.idx-card:hover::before {
+  opacity: 1;
+}
+
+.idx-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--acc);
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.idx-icon {
+  font-size: 20px;
+  margin: 3px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.idx-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--wh);
+  text-align: right;
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
+}
+
+.idx-lecs {
+  font-size: 9.5px;
+  color: var(--dim);
+  text-align: right;
+  font-family: var(--mono);
+  position: relative;
+  z-index: 1;
+}
+
+.idx-hrs {
+  font-size: 9px;
+  color: var(--sub);
+  text-align: right;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Module pages (S3..S16) ── */
+.mod-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.mod-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--bdr);
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.mod-num-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: rgba(30, 64, 175, 0.1);
+  border: 1px solid rgba(30, 64, 175, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--acc);
+  flex-shrink: 0;
+}
+
+.mod-info {
+  flex: 1;
+}
+
+.mod-title-main {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--wh);
+  text-align: right;
+}
+
+.mod-meta {
+  font-size: 11px;
+  color: var(--sub);
+  text-align: right;
+  margin-top: 3px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.mod-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 9px;
+  flex: 1;
+  overflow: hidden;
+  align-content: start;
+  min-height: 0;
+}
+
+.lec-card {
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  transition:
+    border-color 0.22s,
+    transform 0.22s,
+    box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lec-card::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--acc);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.lec-card:hover {
+  border-color: var(--acc);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 28px rgba(15, 23, 42, 0.12);
+}
+
+.lec-card:hover::after {
+  opacity: 1;
+}
+
+.lec-num {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--acc);
+  font-weight: 700;
+}
+
+.lec-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--wh);
+  text-align: right;
+  line-height: 1.35;
+}
+
+.lec-desc {
+  font-size: 11px;
+  color: var(--sub);
+  text-align: right;
+  line-height: 1.5;
+}
+
+.lec-time {
+  font-size: 10px;
+  color: var(--dim);
+  font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lec-link-icon {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-size: 11px;
+  color: var(--dim);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.lec-card:hover .lec-link-icon {
+  opacity: 1;
+}
+
+/* ── S17: instructor bio + closing (re-scoped to this page's actual last
+   slide, #s17, overriding the shared deck.css #s15 rule which doesn't
+   apply here) ── */
+#s17 {
+  flex-direction: row;
+}
+
+.close-left {
+  width: 300px;
+  background: linear-gradient(165deg, var(--acc) 0%, var(--acc2) 100%);
+  border-left: 1px solid var(--acc2);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.close-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), transparent);
+}
+
+.instr-photo-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  gap: 12px;
+}
+
+.instr-photo-wrap {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.instr-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.instr-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.instr-name-big {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+}
+
+.instr-title-tag {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  font-family: var(--mono);
+}
+
+.instr-bio {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 220px;
+}
+
+.instr-links {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.instr-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 5px;
+  padding: 4px 10px;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  font-family: var(--mono);
+}
+
+.instr-link-btn:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.close-left-ft {
+  height: 44px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.close-left-ft i {
+  font-size: 14px;
+}
+
+.close-left-ft .sp {
+  flex: 1;
+}
+
+.close-left-ft .ver {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.close-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 44px 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.close-right::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.thanks-big {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.thanks-big .l1 {
+  color: var(--wh);
+}
+
+.thanks-big .l2 {
+  color: var(--acc);
+}
+
+.thanks-desc {
+  font-size: 13px;
+  color: var(--sub);
+  text-align: right;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+.thanks-next {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--dim);
+  text-align: right;
+  margin-top: 14px;
+}
+
+.company-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: flex-end;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--bdr);
+}
+
+.company-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.company-info {
+  text-align: right;
+}
+
+.company-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--wh);
+}
+
+.company-tagline {
+  font-size: 10.5px;
+  color: var(--sub);
+}
+
+.company-label {
+  font-size: 9.5px;
+  color: var(--dim);
+  font-family: var(--mono);
+  margin-bottom: 3px;
+}
+
+/* ── Per-module accent colors (14 distinct hues, reconciled with the
+   light theme so each stays a legible accent on a cream/white card
+   instead of a neon leftover from the old dark theme) ── */
+.m1 .idx-card::before,
+.m1 .lec-card::after {
+  background: #ea580c;
+}
+
+.m1 .idx-card:hover {
+  border-color: #ea580c;
+}
+
+.m1 .mod-num-badge {
+  background: rgba(234, 88, 12, 0.1);
+  border-color: rgba(234, 88, 12, 0.28);
+  color: #ea580c;
+}
+
+.m2 .idx-card::before,
+.m2 .lec-card::after {
+  background: #0284c7;
+}
+
+.m2 .idx-card:hover {
+  border-color: #0284c7;
+}
+
+.m2 .mod-num-badge {
+  background: rgba(2, 132, 199, 0.1);
+  border-color: rgba(2, 132, 199, 0.28);
+  color: #0284c7;
+}
+
+.m3 .idx-card::before,
+.m3 .lec-card::after {
+  background: #16a34a;
+}
+
+.m3 .idx-card:hover {
+  border-color: #16a34a;
+}
+
+.m3 .mod-num-badge {
+  background: rgba(22, 163, 74, 0.1);
+  border-color: rgba(22, 163, 74, 0.28);
+  color: #16a34a;
+}
+
+.m4 .idx-card::before,
+.m4 .lec-card::after {
+  background: #7c3aed;
+}
+
+.m4 .idx-card:hover {
+  border-color: #7c3aed;
+}
+
+.m4 .mod-num-badge {
+  background: rgba(124, 58, 237, 0.1);
+  border-color: rgba(124, 58, 237, 0.28);
+  color: #7c3aed;
+}
+
+.m5 .idx-card::before,
+.m5 .lec-card::after {
+  background: #dc2626;
+}
+
+.m5 .idx-card:hover {
+  border-color: #dc2626;
+}
+
+.m5 .mod-num-badge {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.28);
+  color: #dc2626;
+}
+
+.m6 .idx-card::before,
+.m6 .lec-card::after {
+  background: #b45309;
+}
+
+.m6 .idx-card:hover {
+  border-color: #b45309;
+}
+
+.m6 .mod-num-badge {
+  background: rgba(180, 83, 9, 0.1);
+  border-color: rgba(180, 83, 9, 0.28);
+  color: #b45309;
+}
+
+.m7 .idx-card::before,
+.m7 .lec-card::after {
+  background: #059669;
+}
+
+.m7 .idx-card:hover {
+  border-color: #059669;
+}
+
+.m7 .mod-num-badge {
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.28);
+  color: #059669;
+}
+
+.m8 .idx-card::before,
+.m8 .lec-card::after {
+  background: #2563eb;
+}
+
+.m8 .idx-card:hover {
+  border-color: #2563eb;
+}
+
+.m8 .mod-num-badge {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.28);
+  color: #2563eb;
+}
+
+.m9 .idx-card::before,
+.m9 .lec-card::after {
+  background: #8b5cf6;
+}
+
+.m9 .idx-card:hover {
+  border-color: #8b5cf6;
+}
+
+.m9 .mod-num-badge {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.28);
+  color: #8b5cf6;
+}
+
+.m10 .idx-card::before,
+.m10 .lec-card::after {
+  background: #ea580c;
+}
+
+.m10 .idx-card:hover {
+  border-color: #ea580c;
+}
+
+.m10 .mod-num-badge {
+  background: rgba(234, 88, 12, 0.1);
+  border-color: rgba(234, 88, 12, 0.28);
+  color: #ea580c;
+}
+
+.m11 .idx-card::before,
+.m11 .lec-card::after {
+  background: #0d9488;
+}
+
+.m11 .idx-card:hover {
+  border-color: #0d9488;
+}
+
+.m11 .mod-num-badge {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.28);
+  color: #0d9488;
+}
+
+.m12 .idx-card::before,
+.m12 .lec-card::after {
+  background: #0891b2;
+}
+
+.m12 .idx-card:hover {
+  border-color: #0891b2;
+}
+
+.m12 .mod-num-badge {
+  background: rgba(8, 145, 178, 0.1);
+  border-color: rgba(8, 145, 178, 0.28);
+  color: #0891b2;
+}
+
+.m13 .idx-card::before,
+.m13 .lec-card::after {
+  background: #d97706;
+}
+
+.m13 .idx-card:hover {
+  border-color: #d97706;
+}
+
+.m13 .mod-num-badge {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.28);
+  color: #d97706;
+}
+
+.m14 .idx-card::before,
+.m14 .lec-card::after {
+  background: #7c3aed;
+}
+
+.m14 .idx-card:hover {
+  border-color: #7c3aed;
+}
+
+.m14 .mod-num-badge {
+  background: rgba(124, 58, 237, 0.1);
+  border-color: rgba(124, 58, 237, 0.28);
+  color: #7c3aed;
+}
