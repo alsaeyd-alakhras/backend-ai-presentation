@@ -138,4 +138,18 @@
   }
 
   initCopyButtons();
+
+  /* Tabbed panels (.tabs-wrap / .tab-btn / .tab-pane) */
+  window.showTab = function (name, btn) {
+    const trigger = btn || (window.event && window.event.currentTarget);
+    const wrap = trigger ? trigger.closest(".tabs-wrap") : document.querySelector(".tabs-wrap");
+    if (!wrap) return;
+
+    wrap.querySelectorAll(".tab-btn").forEach((el) => el.classList.remove("on"));
+    wrap.querySelectorAll(".tab-pane").forEach((el) => el.classList.remove("on"));
+
+    if (trigger) trigger.classList.add("on");
+    const pane = wrap.querySelector("#tab-" + name);
+    if (pane) pane.classList.add("on");
+  };
 })();
