@@ -2,7 +2,7 @@
 <html dir="rtl" lang="ar">
 <head>
   <meta charset="utf-8" />
-  <title>المحاضرة 19 — BelongsToMany: Product Tags</title>
+  <title>المحاضرة 14 — HasMany: Category و Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -24,70 +24,79 @@
 </head>
 <body>
 <div id="scale-wrap"><div id="stage">
-<div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">Schema::create('product_tag', function (Blueprint $table) {
-    $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
-    $table->primary(['product_id', 'tag_id']);
-    $table->boolean('is_primary')->default(false);
-    $table->timestamps();
-});</div><div class="hero-foot"><i class="fas fa-tags" style="color:#c084fc"></i><i class="fas fa-table-cells" style="color:#38bdf8"></i><span class="sp"></span><span class="v">Many-to-Many</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-shuffle"></i> Module 04 - Lecture 19</div><div class="hero-eye">BelongsToMany — Product Tags</div><div class="hero-h">أدر العلاقة المتعددة <span>باستخدام Pivot</span></div><div class="hero-desc">نطبّق علاقة Product/Tag بالكامل: بناء جدول pivot، تعريف العلاقة، إدارة attach/detach/sync، وقراءة بيانات pivot.</div></div></div>
+<div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">class Category extends Model {
+    public function products(): HasMany {
+        return $this->hasMany(Product::class);
+    }
+}
 
-<div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Concept</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">متى نحتاج <span class="a">Many-to-Many</span>؟</div><div class="grid-2"><div class="card"><div class="card-lbl">Real Example</div><div class="list"><div class="li"><i class="fas fa-box"></i><span>منتج واحد يحمل عدة Tags.</span></div><div class="li"><i class="fas fa-tag"></i><span>Tag واحد مرتبط بعدة منتجات.</span></div><div class="li"><i class="fas fa-table"></i><span>الحل: جدول وسيط `product_tag`.</span></div></div></div><div class="card"><div class="card-lbl">Why Pivot</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>يمثل العلاقة بدقة بدون تكرار.</span></div><div class="li"><i class="fas fa-check"></i><span>يسمح بإضافة بيانات إضافية مثل `is_primary`.</span></div><div class="li"><i class="fas fa-check"></i><span>أساس جيد للفلاتر والتقارير لاحقاً.</span></div></div></div></div></div></div>
+class Product extends Model {
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class);
+    }
+}</div><div class="hero-foot"><i class="fas fa-link" style="color:#c084fc"></i><i class="fas fa-database" style="color:#38bdf8"></i><span class="sp"></span><span class="v">One-to-Many Relations</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-diagram-project"></i> Module 04 - Lecture 14</div><div class="hero-eye">HasMany — Category و Products</div><div class="hero-h">ابنِ العلاقة صح <span>وتجنب N+1</span></div><div class="hero-desc">في هذه المحاضرة سنثبت علاقة Category/Product عملياً، ثم نكشف N+1 Problem ونحلها بـ Eager Loading في SouqPro.</div></div></div>
 
-<div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Setup</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">بناء الجداول <span class="a">tags + product_tag</span></div><div class="grid-2"><div class="card"><div class="card-lbl">tags table</div><div class="cb"><div class="cb-label">PHP</div>Schema::create('tags', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->string('slug')->unique();
-    $table->timestamps();
-});</div></div><div class="card"><div class="card-lbl">pivot table</div><div class="cb"><div class="cb-label">PHP</div>Schema::create('product_tag', function (Blueprint $table) {
-    $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
-    $table->primary(['product_id', 'tag_id']);
-    $table->boolean('is_primary')->default(false);
-    $table->timestamps();
-});</div></div></div></div></div>
+<div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Concept</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">فهم علاقة <span class="a">One-to-Many</span> بسرعة</div><div class="grid-2"><div class="card"><div class="card-lbl">Category (Parent)</div><div class="list"><div class="li"><i class="fas fa-folder"></i><span>الفئة الواحدة تحتوي عدة منتجات.</span></div><div class="li"><i class="fas fa-key"></i><span>المفتاح الأساسي: `categories.id`.</span></div></div></div><div class="card"><div class="card-lbl">Product (Child)</div><div class="list"><div class="li"><i class="fas fa-box"></i><span>كل منتج ينتمي لفئة واحدة.</span></div><div class="li"><i class="fas fa-link"></i><span>المفتاح الأجنبي: `products.category_id`.</span></div></div></div></div><div class="note">قاعدة ذهبية: `hasMany` على الأب، و`belongsTo` على الابن.</div></div></div>
 
-<div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Model Relation</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">تعريف `belongsToMany` في الموديلات</div><div class="grid-2"><div class="card"><div class="card-lbl">Product.php</div><div class="cb"><div class="cb-label">PHP</div>public function tags(): BelongsToMany
+<div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Definition</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">تعريف العلاقة داخل <span class="a">Models</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Category.php</div><div class="cb"><div class="cb-label">PHP</div>public function products(): HasMany
 {
-    return $this->belongsToMany(Tag::class)
-        ->withPivot('is_primary')
-        ->withTimestamps();
-}</div></div><div class="card"><div class="card-lbl">Tag.php</div><div class="cb"><div class="cb-label">PHP</div>public function products(): BelongsToMany
+    return $this->hasMany(Product::class);
+}
+
+public function activeProducts(): HasMany
 {
-    return $this->belongsToMany(Product::class)
-        ->withTimestamps();
+    return $this->hasMany(Product::class)
+        ->where('is_active', true);
+}</div></div><div class="card"><div class="card-lbl">Product.php</div><div class="cb"><div class="cb-label">PHP</div>public function category(): BelongsTo
+{
+    return $this->belongsTo(Category::class);
 }</div></div></div></div></div>
 
-<div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">attach/detach</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">إدارة العلاقة: <span class="a">attach</span> و <span class="a">detach</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Attach</div><div class="cb"><div class="cb-label">PHP</div>$product->tags()->attach(1);
-$product->tags()->attach([1, 2, 3]);
-$product->tags()->attach(1, ['is_primary' => true]);</div></div><div class="card"><div class="card-lbl">Detach</div><div class="cb"><div class="cb-label">PHP</div>$product->tags()->detach(1);
-$product->tags()->detach([1, 2]);
-$product->tags()->detach(); // remove all tags</div></div></div></div></div>
+<div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Access</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">الوصول للعلاقة والإنشاء عبرها</div><div class="grid-2"><div class="card"><div class="card-lbl">Read</div><div class="cb"><div class="cb-label">PHP</div>$category = Category::find(1);
+$products = $category->products;
+$count = $category->products()->count();
 
-<div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">sync family</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">الأهم في النماذج: <span class="a">sync()</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Sync API</div><div class="cb"><div class="cb-label">PHP</div>$product->tags()->sync([1, 2, 3]);
-$product->tags()->syncWithoutDetaching([4, 5]);
-$product->tags()->toggle([1, 2, 3]);</div></div><div class="card"><div class="card-lbl">When to use</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>`sync` عند حفظ form نهائي لقائمة الوسوم.</span></div><div class="li"><i class="fas fa-check"></i><span>`syncWithoutDetaching` لإضافة وسوم بدون حذف القديمة.</span></div><div class="li"><i class="fas fa-check"></i><span>`toggle` لتبديل سريع في واجهات تفاعلية.</span></div></div></div></div></div></div>
+$product = Product::find(5);
+$name = $product->category->name;</div></div><div class="card"><div class="card-lbl">Create from Relation</div><div class="cb"><div class="cb-label">PHP</div>$category->products()->create([
+    'name' => 'iPhone 15',
+    'price' => 999,
+    'stock' => 5,
+]);
+// category_id set automatically</div></div></div></div></div>
 
-<div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Read & Filter</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">قراءة بيانات Pivot والفلترة بـ <span class="a">whereHas</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Read Pivot</div><div class="cb"><div class="cb-label">PHP</div>$product = Product::with('tags')->find(1);
+<div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">N+1 Problem</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">المشكلة الشهيرة: <span class="a">N+1 Queries</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Bad Pattern</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::all();
 
-foreach ($product->tags as $tag) {
-    echo $tag->name;
-    echo $tag->pivot->is_primary;
-}</div></div><div class="card"><div class="card-lbl">Filter Products by Tag</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::whereHas('tags', fn($q) =>
-    $q->where('slug', 'sale')
-)->active()->get();
+foreach ($products as $product) {
+    echo $product->category->name;
+}
 
-$products = Product::whereHas('tags', fn($q) =>
-    $q->whereIn('slug', ['sale', 'new-arrival'])
-)->get();</div></div></div></div></div>
+// 20 products => 21 queries</div></div><div class="card"><div class="card-lbl">Why Dangerous</div><div class="list"><div class="li"><i class="fas fa-bolt"></i><span>يزيد زمن الاستجابة بشكل كبير.</span></div><div class="li"><i class="fas fa-server"></i><span>يضغط قاعدة البيانات في الشاشات الكثيفة.</span></div><div class="li"><i class="fas fa-chart-line"></i><span>يزداد الضرر مع كل نمو في البيانات.</span></div></div></div></div></div></div>
 
-<div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="sh">واجب المحاضرة — إدارة وسوم المنتجات في <span class="a">Admin</span></div><div class="homework"><div class="hw"><div class="n">1</div><div><strong style="color:var(--wh)">ابنِ علاقة Product/Tag</strong><div style="font-size:11.5px;color:var(--sub)">أنشئ migrations والعلاقات مع `withPivot('is_primary')`.</div></div></div><div class="hw"><div class="n">2</div><div><strong style="color:var(--wh)">أضف Multi-select للوسوم</strong><div style="font-size:11.5px;color:var(--sub)">في create/update واستخدم `sync($request->input('tags', []))`.</div></div></div><div class="hw"><div class="n">3</div><div><strong style="color:var(--wh)">أضف فلتر by tag</strong><div style="font-size:11.5px;color:var(--sub)">فلترة المنتجات على الواجهة حسب slug الوسم.</div></div></div></div><div class="note">هذه الخطوة ستفيدك جداً لاحقاً في البحث والتصنيف والترويج داخل المتجر.</div></div></div>
+<div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Eager Loading</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">الحل: <span class="a">with()</span> و <span class="a">withCount()</span></div><div class="grid-2"><div class="card"><div class="card-lbl">with()</div><div class="cb"><div class="cb-label">PHP</div>$products = Product::with('category')->get();
 
-<div class="slide closing" id="s9"><div class="closing-side"><div class="closing-code">belongsToMany()
-product_tag pivot
-attach / detach
-sync / toggle
-whereHas('tags')</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:#c084fc"></i><i class="fas fa-list-check" style="color:#10d97a"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">الآن علاقتك المتعددة</span><span class="l2">مكتملة فعلياً</span></div><div class="subt">بعد هذه المحاضرة تقدر تدير أي Many-to-Many في Laravel بثقة، وتتحكم ببيانات pivot مثلها مثل أي كيان أساسي في النظام.</div></div></div>
+foreach ($products as $product) {
+    echo $product->category->name;
+}
+
+// always 2 queries</div></div><div class="card"><div class="card-lbl">withCount()</div><div class="cb"><div class="cb-label">PHP</div>$categories = Category::withCount('products')->get();
+
+// $category->products_count
+
+Product::with('category:id,name,slug')->get();</div></div></div></div></div>
+
+<div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Nested Loading</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">تحميل متقدم مع شروط <span class="a">Nested Eager Loading</span></div><div class="grid-2"><div class="card"><div class="card-lbl">Example</div><div class="cb"><div class="cb-label">PHP</div>$categories = Category::with([
+    'products' => function ($query) {
+        $query->active()->inStock()->latest();
+    }
+])->get();</div></div><div class="card"><div class="card-lbl">Rule of Thumb</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>إذا استخدمت علاقة داخل loop استخدم `with()` مباشرة.</span></div><div class="li"><i class="fas fa-check"></i><span>حمّل الأعمدة التي تحتاجها فقط.</span></div><div class="li"><i class="fas fa-check"></i><span>راقب عدد الـ queries عبر Debugbar.</span></div></div></div></div></div></div>
+
+<div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="sh">واجب المحاضرة — اجعل علاقات المنتجات <span class="a">جاهزة للإنتاج</span></div><div class="homework"><div class="hw"><div class="n">1</div><div><strong style="color:var(--wh)">عرّف العلاقات</strong><div style="font-size:11.5px;color:var(--sub)">`products()` في Category و`category()` في Product.</div></div></div><div class="hw"><div class="n">2</div><div><strong style="color:var(--wh)">أصلح N+1</strong><div style="font-size:11.5px;color:var(--sub)">حدث صفحة المنتجات لاستخدام `with('category')`.</div></div></div><div class="hw"><div class="n">3</div><div><strong style="color:var(--wh)">اعرض إحصاءات</strong><div style="font-size:11.5px;color:var(--sub)">أضف `withCount('products')` في صفحة الفئات.</div></div></div></div><div class="note">أي شاشة List فيها loop على العلاقات يجب أن تمر على هذا الواجب.</div></div></div>
+
+<div class="slide closing" id="s9"><div class="closing-side"><div class="closing-code">hasMany()
+belongsTo()
+with('category')
+withCount('products')
+N+1 => solved</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:#c084fc"></i><i class="fas fa-list-check" style="color:#10d97a"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">العلاقة أصبحت واضحة</span><span class="l2">والأداء أيضاً</span></div><div class="subt">بناء العلاقة وحده لا يكفي، المهم أن تتعامل معها بأداء صحيح حتى يبقى التطبيق سريعاً مع زيادة البيانات.</div></div></div>
 </div></div>
 
 <div id="nav-row"><div id="instr-card"><div class="iav"><img src="../../assets/alsaeyd.jpeg" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=1E1B2D&color=C084FC&size=80&bold=true'"/></div><div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div></div><div id="nav"><button class="nb next" id="btnN"><i class="fas fa-chevron-right"></i></button><div id="dots"></div><span id="ctr">1 / 9</span><button class="nb" id="btnP" disabled><i class="fas fa-chevron-left"></i></button></div></div>

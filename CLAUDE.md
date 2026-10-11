@@ -26,7 +26,7 @@ A self-contained, static HTML slide-deck course: **"Backend with AI — Laravel 
 
 ## Current state of the content
 
-- **Modules 1–4 (lectures 01–19)** are fully built reference decks (~2500–2900 lines each) — these define the actual visual/narrative standard.
+- **Modules 1–4** are fully built reference decks (~2500–2900 lines each) — these define the actual visual/narrative standard. As of 2026-10-09, module 3 is lectures 08–13 (6) and module 4 is lectures 14–16 (3) — see `files/restructure-modules-3-4.md` for the restructuring that moved Validation/Scopes/Soft-Deletes to an unnumbered `lectures/module-advanced/` module and merged the old lecture-14+15 into the new lecture-13. Lecture numbers 17–19 are intentionally unused (gap) until modules 5–14 are renumbered; module 5 still starts at lecture-20.
 - **Modules 5–14 (lectures 20–46)** currently exist only as thin placeholder stubs (~450–500 lines: hero shell + title, no real slide content yet). Building these out is the main ongoing task, and `files/remaining-modules-05-14-execution-map.md` is the execution plan for doing so in order (module 5 → module 14), since each module assumes the SouqPro project state left by the previous one.
 
 There is no test suite, linter, or build/run command — validate work by opening the `.html` file in a browser.

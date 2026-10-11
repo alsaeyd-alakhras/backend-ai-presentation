@@ -1,78 +1,59 @@
 <!doctype html>
-<html dir="rtl" lang="ar"><head><meta charset="utf-8" /><title>المحاضرة الثانية عشرة — Validation وCustom Rules</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" /><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" /><link rel="stylesheet" href="../../assets/css/deck.css" />
-  <link rel="stylesheet" href="module-03.css" /></head><body class="lecture-11"><div id="scale-wrap"><div id="stage"><div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">class StoreProductRequest extends FormRequest
-{
-    public function rules(): array
-    {
-        return [
-            'name' => 'required|string|min:3|max:255',
-            'price' => ['required', 'numeric', new ValidSalePrice],
-            'image' => 'nullable|image|max:2048',
-        ];
+<html dir="rtl" lang="ar"><head><meta charset="utf-8" /><title>المحاضرة الثانية عشرة — File Upload وStorage</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" /><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" /><link rel="stylesheet" href="../../assets/css/deck.css" />
+  <link rel="stylesheet" href="module-03.css" /></head><body class="lecture-12"><div id="scale-wrap"><div id="stage"><div class="slide active hero" id="s1"><div class="hero-side"><div class="hero-code">if ($request->hasFile('image')) {
+    $data['image'] = $request->file('image')
+        ->store('products', 'public');
+}
+
+if ($product->image) {
+    Storage::disk('public')->delete($product->image);
+}
+
+&lt;img src="{{ Storage::url($product->image) }}"&gt;</div><div class="hero-foot"><i class="fas fa-image" style="color:#10d97a"></i><i class="fas fa-hard-drive" style="color:#38bdf8"></i><i class="fas fa-link" style="color:#fbbf24"></i><span class="sp"></span><span class="v">Upload + Storage</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-file-arrow-up"></i> Module 03 - Lecture 12</div><div class="hero-eye">File Upload و Storage</div><div class="hero-h">ارفع الصور <span>بأمان ووضوح</span></div><div class="hero-desc">في هذه المحاضرة نربط نموذج المنتج برفع الصور، ونفهم الفرق بين الأقراص التخزينية، وكيف نحذف الصورة القديمة ونعرض الجديدة بطريقة نظيفة.</div><div class="hero-chips"><div class="chip"><span class="cl">المدة</span><span class="cv">60 دقيقة</span></div><div class="chip"><span class="cl">التركيز</span><span class="cv">Storage API</span></div><div class="chip"><span class="cl">النتيجة</span><span class="cv">Upload صحيح</span></div></div></div></div><div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Storage Disks</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">أولاً: افهم الفرق بين <span class="a">local</span> و <span class="a">public</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">FOLDER MAP</div><div class="cb"><div class="cb-label">TEXT</div>storage/
+  app/
+    private/   ← local disk
+    public/    ← public disk
+
+public/
+  storage/     ← symlink إلى storage/app/public</div></div><div class="card c-yl"><div class="card-lbl">RULE OF THUMB</div><div class="list"><div class="li"><i class="fas fa-lock"></i><span>استخدم `local` للملفات الداخلية غير المعروضة للويب.</span></div><div class="li"><i class="fas fa-globe"></i><span>استخدم `public` للصور التي يجب عرضها في المتصفح.</span></div><div class="li"><i class="fas fa-link"></i><span>نفّذ `storage:link` مرة واحدة لربط المسار العام.</span></div></div></div></div></div></div><div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Store Image</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">رفع الصورة عند <span class="a">الإضافة</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">STORE ACTION</div><div class="cb"><div class="cb-label">PHP</div>$data = $request->validated();
+
+if ($request->hasFile('image')) {
+    $data['image'] = $request->file('image')
+        ->store('products', 'public');
+}
+
+Product::create($data);</div></div><div class="card c-pu"><div class="card-lbl">IMPORTANT DETAILS</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>Laravel يولد اسماً عشوائياً آمناً للملف.</span></div><div class="li"><i class="fas fa-check"></i><span>القيمة المخزنة في DB تكون مثل `products/random.jpg`.</span></div><div class="li"><i class="fas fa-check"></i><span>لا تخزن الرابط الكامل داخل قاعدة البيانات.</span></div></div></div></div></div></div><div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Form Setup</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">تجهيز الـ form حتى يصل الملف فعلاً إلى <span class="a">Laravel</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">BLADE FORM</div><div class="cb"><div class="cb-label">BLADE</div>&lt;form method="POST" enctype="multipart/form-data"&gt;
+  @csrf
+  &lt;input type="file" name="image" accept="image/*"&gt;
+&lt;/form&gt;</div></div><div class="card c-rd"><div class="card-lbl">COMMON MISTAKES</div><div class="list"><div class="li"><i class="fas fa-xmark"></i><span>نسيان `enctype="multipart/form-data"`.</span></div><div class="li"><i class="fas fa-xmark"></i><span>الاعتماد على اسم الملف الأصلي من المستخدم.</span></div><div class="li"><i class="fas fa-xmark"></i><span>تجاوز validation للنوع والحجم.</span></div></div></div></div></div></div><div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Replace Image</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">في التعديل: استبدال الصورة مع حذف <span class="a">القديمة</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">UPDATE IMAGE</div><div class="cb"><div class="cb-label">PHP</div>if ($request->hasFile('image')) {
+    if ($product->image) {
+        Storage::disk('public')->delete($product->image);
     }
-}</div><div class="hero-foot"><i class="fas fa-shield" style="color:#10d97a"></i><i class="fas fa-list-check" style="color:#38bdf8"></i><i class="fas fa-puzzle-piece" style="color:#fbbf24"></i><span class="sp"></span><span class="v">Validation Workflow</span></div></div><div class="hero-main"><div class="hero-badge"><i class="fas fa-circle-check"></i> Module 03 - Lecture 12</div><div class="hero-eye">Validation و Custom Rules</div><div class="hero-h">من validation بسيط <span>إلى نظام احترافي</span></div><div class="hero-desc">هذه المحاضرة ترفع جودة الكود والنماذج بشكل واضح: نبدأ بالتحقق المباشر، ثم نفصل القواعد في Form Requests، ثم نضيف قواعد مخصصة تناسب SouqPro.</div><div class="hero-chips"><div class="chip"><span class="cl">المدة</span><span class="cv">90 دقيقة</span></div><div class="chip"><span class="cl">التركيز</span><span class="cv">Requests + Rules</span></div><div class="chip"><span class="cl">النتيجة</span><span class="cv">Forms موثوقة</span></div></div></div></div><div class="slide" id="s2"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Validation Basics</span><span class="pn">02 / 09</span></div><div class="sb"><div class="sh">أبسط نقطة بداية: validation مباشر داخل <span class="a">Controller</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">DIRECT VALIDATION</div><div class="cb"><div class="cb-label">PHP</div>$validated = $request->validate([
-    'name' => 'required|string|min:3|max:255',
-    'email' => 'required|email|unique:users,email',
-    'price' => 'required|numeric|min:0.01',
-    'stock' => 'required|integer|min:0',
-]);</div></div><div class="card c-pu"><div class="card-lbl">WHAT HAPPENS</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>إذا فشل التحقق يعود المستخدم تلقائياً مع الأخطاء والقيم القديمة.</span></div><div class="li"><i class="fas fa-check"></i><span>`$validated` يحتوي فقط الحقول المسموح بها في القواعد.</span></div><div class="li"><i class="fas fa-check"></i><span>ممتاز للبدايات أو النماذج الصغيرة.</span></div></div></div></div></div></div><div class="slide" id="s3"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Form Requests</span><span class="pn">03 / 09</span></div><div class="sb"><div class="sh">متى ننتقل إلى <span class="a">Form Request</span>؟</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">ARTISAN</div><div class="cb"><div class="cb-label">BASH</div>php artisan make:request StoreProductRequest
-php artisan make:request UpdateProductRequest</div><div class="cb" style="margin-top:10px"><div class="cb-label">PHP</div>public function store(StoreProductRequest $request)
+
+    $data['image'] = $request->file('image')
+        ->store('products', 'public');
+}
+
+$product->update($data);</div></div><div class="card c-yl"><div class="card-lbl">WHY DELETE OLD FILE</div><div class="list"><div class="li"><i class="fas fa-broom"></i><span>حتى لا تتراكم ملفات غير مستخدمة داخل التخزين.</span></div><div class="li"><i class="fas fa-coins"></i><span>يحافظ على المساحة خاصة عند مشاريع الصور الكبيرة.</span></div><div class="li"><i class="fas fa-check"></i><span>يبقي البيانات والملفات متناسقة دائماً.</span></div></div></div></div></div></div><div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Display Image</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">عرض الصورة في Blade أو داخل <span class="a">Model Accessor</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">BLADE</div><div class="cb"><div class="cb-label">BLADE</div>@if($product->image)
+  &lt;img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"&gt;
+@else
+  &lt;img src="{{ asset('images/no-image.png') }}" alt="لا توجد صورة"&gt;
+@endif</div></div><div class="card c-pu"><div class="card-lbl">ACCESSOR</div><div class="cb"><div class="cb-label">PHP</div>protected function imageUrl(): Attribute
 {
-    Product::create($request->validated());
-}</div></div><div class="card c-yl"><div class="card-lbl">ADVANTAGES</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>يفصل التحقق عن منطق الـ controller.</span></div><div class="li"><i class="fas fa-check"></i><span>يسهل إعادة الاستخدام بين `store` و`update`.</span></div><div class="li"><i class="fas fa-check"></i><span>مكان طبيعي لـ `messages()` و`authorize()`.</span></div></div></div></div></div></div><div class="slide" id="s4"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Rules</span><span class="pn">04 / 09</span></div><div class="sb"><div class="sh">بناء القواعد والرسائل داخل <span class="a">StoreProductRequest</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">RULES</div><div class="cb"><div class="cb-label">PHP</div>public function rules(): array
-{
-    return [
-        'name' => 'required|string|min:3|max:255',
-        'category_id' => 'required|exists:categories,id',
-        'price' => 'required|numeric|min:0.01',
-        'sale_price' => 'nullable|numeric|min:0',
-        'stock' => 'required|integer|min:0',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'is_active' => 'boolean',
-    ];
-}</div></div><div class="card c-pu"><div class="card-lbl">MESSAGES</div><div class="cb"><div class="cb-label">PHP</div>public function messages(): array
-{
-    return [
-        'name.required' => 'اسم المنتج مطلوب',
-        'price.required' => 'السعر مطلوب',
-        'category_id.exists' => 'الفئة المختارة غير موجودة',
-    ];
-}</div></div></div></div></div><div class="slide" id="s5"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Unique Ignore</span><span class="pn">05 / 09</span></div><div class="sb"><div class="sh">في التعديل: `unique` مع <span class="a">ignore</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">UPDATE RULE</div><div class="cb"><div class="cb-label">PHP</div>'name' => [
-    'required',
-    'string',
-    Rule::unique('products', 'name')
-        ->ignore($this->product->id),
-],</div></div><div class="card c-yl"><div class="card-lbl">WHY</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>بدون `ignore` سيعتبر Laravel نفس اسم المنتج الحالي تكراراً.</span></div><div class="li"><i class="fas fa-check"></i><span>هذا النمط أساسي في كل تحديث يعتمد على قيم فريدة.</span></div><div class="li"><i class="fas fa-check"></i><span>نفس الفكرة تطبق على email والslug وأي unique field.</span></div></div></div></div></div></div><div class="slide" id="s6"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Blade Errors</span><span class="pn">06 / 09</span></div><div class="sb"><div class="sh">عرض الأخطاء داخل <span class="a">Blade</span> بطريقة واضحة</div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">FIELD ERROR</div><div class="cb"><div class="cb-label">BLADE</div>&lt;input
-  name="name"
-  value="{{ old('name', $product->name ?? '') }}"
-  class="{{ $errors->has('name') ? 'border-red-500' : '' }}"
-&gt;
-@error('name')
-  &lt;span&gt;{{ $message }}&lt;/span&gt;
-@enderror</div></div><div class="card c-rd"><div class="card-lbl">ALL ERRORS</div><div class="cb"><div class="cb-label">BLADE</div>@if($errors->any())
-  &lt;ul&gt;
-    @foreach($errors->all() as $error)
-      &lt;li&gt;{{ $error }}&lt;/li&gt;
-    @endforeach
-  &lt;/ul&gt;
-@endif</div></div></div><div class="note" style="margin-top:12px">في الواجهة النهائية اعرض الخطأ قرب الحقل. عرض كل الأخطاء دفعة واحدة مفيد أكثر أثناء التطوير والـ debugging.</div></div></div><div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Custom Rules</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">عندما لا تكفي القواعد الجاهزة: <span class="a">Custom Validation Rules</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">VALID SALE PRICE</div><div class="cb"><div class="cb-label">PHP</div>class ValidSalePrice implements ValidationRule
-{
-    public function validate(string $attribute, mixed $value, Closure $fail): void
-    {
-        $price = request('price');
-        if ($value && $price && $value >= $price) {
-            $fail('سعر الخصم يجب أن يكون أقل من السعر الأصلي.');
-        }
-    }
-}</div></div><div class="card c-pu"><div class="card-lbl">ANOTHER REAL CASE</div><div class="list"><div class="li"><i class="fas fa-box"></i><span>`SufficientStock` للتحقق أن الكمية المطلوبة لا تتجاوز المخزون.</span></div><div class="li"><i class="fas fa-check"></i><span>هذا النوع من القواعد يجعل منطق التحقق reusable ونظيفاً.</span></div><div class="li"><i class="fas fa-check"></i><span>ضعه داخل `app/Rules` ومرره داخل request ككائن rule.</span></div></div></div></div></div></div><div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="badge-line"><span class="pill acc"><i class="fas fa-list-check"></i> التطبيق</span><span class="pill pu"><i class="fas fa-book-open"></i> الواجب</span></div><div class="sh">ثبّت المحاضرة عبر <span class="a">التطبيق والواجب</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CHECKLIST</div><div class="cb"><div class="cb-label">NOTES</div>$request->validate([...])
-php artisan make:request StoreProductRequest
-Rule::unique(...)->ignore(...)
-@error('field')
-php artisan make:rule ValidSalePrice</div></div><div class="card c-pu"><div class="card-lbl">HOMEWORK</div><div class="homework"><div class="hw"><div class="n">1</div><div><div style="color:var(--wh);font-weight:800;font-size:12.5px">حوّل الـ validation</div><div class="subt" style="margin-top:4px;font-size:11.5px">استبدل validation المباشر في المنتجات بـ `StoreProductRequest` و`UpdateProductRequest`.</div></div></div><div class="hw"><div class="n">2</div><div><div style="color:var(--wh);font-weight:800;font-size:12.5px">أضف rule مخصصة</div><div class="subt" style="margin-top:4px;font-size:11.5px">طبّق `ValidSalePrice` أو `SufficientStock` داخل مشروع SouqPro.</div></div></div></div></div></div><div class="note" style="margin-top:12px">نفّذ هذه النقاط قبل الانتقال للمحاضرة التالية.</div></div></div><div class="slide" id="s9"><div class="closing-side"><div class="closing-code">$request->validate([...])
-php artisan make:request StoreProductRequest
-Rule::unique(...)->ignore(...)
-@error('field')
-php artisan make:rule ValidSalePrice</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:var(--acc)"></i><i class="fas fa-list-check" style="color:var(--gn)"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">الآن صارت النماذج أقوى وأكثر مهنية</span></div><div class="subt">هذا المستوى من التحقق لا يحسن التجربة فقط، بل يحمي النظام نفسه من إدخالات خاطئة ومنطق أعمال غير صحيح.</div><div class="next-box"><div class="nx-label">FINAL NOTE</div><div class="nx-title">نفّذ واجب السلايد السابق ثم انتقل للمحاضرة التالية.</div></div></div></div></div></div><div id="nav-row"><div id="instr-card"><div class="iav"><img src="../../assets/alsaeyd.jpeg" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=143042&color=10D97A&size=80&bold=true'"/></div><div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div></div><div id="nav">
+    return Attribute::make(
+        get: fn () => $this->image
+            ? Storage::url($this->image)
+            : asset('images/no-image.png')
+    );
+}</div></div></div></div></div><div class="slide" id="s7"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Workflow</span><span class="pn">07 / 09</span></div><div class="sb"><div class="sh">أفضل workflow عملي لملفات <span class="a">المنتجات</span></div><div class="grid-3"><div class="card c-acc"><div class="card-lbl">1. Validate</div><div class="list"><div class="li"><i class="fas fa-check"></i><span>`image|mimes:jpg,jpeg,png,webp|max:2048`</span></div></div></div><div class="card c-yl"><div class="card-lbl">2. Store</div><div class="list"><div class="li"><i class="fas fa-upload"></i><span>احفظ المسار فقط داخل DB.</span></div></div></div><div class="card c-pu"><div class="card-lbl">3. Replace / Delete</div><div class="list"><div class="li"><i class="fas fa-trash"></i><span>احذف الملف القديم عند الاستبدال أو الحذف النهائي.</span></div></div></div></div><div class="note" style="margin-top:12px">إذا بدأ منطق الصور يتكرر بين المنتجات والفئات، انقله إلى Service مثل `ImageService` في المحاضرة التالية.</div></div></div><div class="slide" id="s8"><div class="tb"><div class="cid"><span class="dlive"></span> Backend with AI - SouqPro</div><span class="tag">Homework</span><span class="pn">08 / 09</span></div><div class="sb"><div class="badge-line"><span class="pill acc"><i class="fas fa-list-check"></i> التطبيق</span><span class="pill pu"><i class="fas fa-book-open"></i> الواجب</span></div><div class="sh">ثبّت المحاضرة عبر <span class="a">التطبيق والواجب</span></div><div class="grid-2"><div class="card c-acc"><div class="card-lbl">CHECKLIST</div><div class="cb"><div class="cb-label">NOTES</div>php artisan storage:link
+
+$request->file('image')->store('products', 'public')
+Storage::disk('public')->delete(...)
+Storage::url($product->image)</div></div><div class="card c-pu"><div class="card-lbl">HOMEWORK</div><div class="homework"><div class="hw"><div class="n">1</div><div><div style="color:var(--wh);font-weight:800;font-size:12.5px">أضف صورة للمنتج</div><div class="subt" style="margin-top:4px;font-size:11.5px">طبّق الرفع في `store` و`update` مع حذف الصورة القديمة.</div></div></div><div class="hw"><div class="n">2</div><div><div style="color:var(--wh);font-weight:800;font-size:12.5px">اعرض fallback</div><div class="subt" style="margin-top:4px;font-size:11.5px">أظهر صورة افتراضية عندما لا يكون للمنتج صورة مرفوعة.</div></div></div></div></div></div><div class="note" style="margin-top:12px">نفّذ هذه النقاط قبل الانتقال للمحاضرة التالية.</div></div></div><div class="slide" id="s9"><div class="closing-side"><div class="closing-code">php artisan storage:link
+
+$request->file('image')->store('products', 'public')
+Storage::disk('public')->delete(...)
+Storage::url($product->image)</div><div class="hero-foot"><i class="fas fa-flag-checkered" style="color:var(--acc)"></i><i class="fas fa-list-check" style="color:var(--gn)"></i><span class="sp"></span><span class="v">Final Wrap-up</span></div></div><div class="closing-main"><div class="big"><span class="l1">الآن تقدر ترفع وتدير الصور صح</span></div><div class="subt">التعامل الصحيح مع الملفات ليس مجرد رفع صورة؛ هو دورة كاملة من validation، تخزين، عرض، واستبدال بدون فوضى داخل المشروع.</div><div class="next-box"><div class="nx-label">FINAL NOTE</div><div class="nx-title">نفّذ واجب السلايد السابق ثم انتقل للمحاضرة التالية.</div></div></div></div></div></div><div id="nav-row"><div id="instr-card"><div class="iav"><img src="../../assets/alsaeyd.jpeg" alt="" onerror="this.src='https://ui-avatars.com/api/?name=SA&background=143042&color=10D97A&size=80&bold=true'"/></div><div><div class="inm">السيد الاخرسي</div><div class="irl">Full Stack Developer &amp; Instructor</div></div></div><div id="nav">
     <button class="nb" id="btnP" disabled><i class="fas fa-chevron-right"></i></button>
     <div id="progress" aria-hidden="true"><div id="progress-fill"></div></div>
     <span id="ctr">1 / 9</span>
